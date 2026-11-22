@@ -1,0 +1,106 @@
+import { STORAGE_KEYS } from '@/offline/storage';
+import { ProgressRepository } from '@/offline/progress';
+import type { LocalAttemptResult } from '@/offline/types';
+import { MemoryStorage } from '@/testing/memory-storage';
+
+import { setProgressRepository, useProgressStore } from '../progressStore';
+
+function result(overrides: Partial<LocalAttemptResult> = {}): LocalAttemptResult {
+  return {
+    clientAttemptId: 'client-1',
+    lessonId: 'foundations-1',
+    startedAt: '2026-01-01T00:00:00.000Z',
+    completedAt: '2026-01-01T00:03:00.000Z',
+    answers: [],
+    score: 0.8,
+    passed: true,
+    xpEarned: 40,
+    heartsLost: 0,
+    mistakes: [],
+    ...overrides,
+  };
+}
+
+let storage: MemoryStorage;
+
+beforeEach(() => {
+  storage = new MemoryStorage();
+  setProgressRepository(new ProgressRepository(storage));
+  useProgressStore.setState({
+    userId: null,
+    lessons: {},
+    pendingXp: 0,
+    pendingXpByAttempt: {},
+    lastResult: null,
+  });
+});
+
+describe('progressStore', () => {
+  it('marks a passed lesson complete and records pending XP', async () => {
+    await useProgressStore.getState().setUser('user-1');
+    await useProgressStore.getState().applyLocalResult(result());
+
+    const state = useProgressStore.getState();
+
+    expect(state.lessons['foundations-1']).toMatchObject({
+      status: 'completed',
+      bestScore: 0.8,
+      attempts: 1,
+    });
+    expect(state.pendingXp).toBe(40);
+    expect(state.lastResult?.clientAttemptId).toBe('client-1');
+    expect(await storage.getItem(STORAGE_KEYS.progress('user-1'))).toContain(
+      'foundations-1',
+    );
+  });
+
+  it('keeps an in-progress lesson and the best score', async () => {
+    await useProgressStore.getState().setUser('user-1');
+    await useProgressStore
+      .getState()
+      .applyLocalResult(result({ passed: false, score: 0.5 }));
+    await useProgressStore.getState().applyLocalResult(
+      result({ clientAttemptId: 'client-2', passed: false, score: 0.7 }),
+    );
+
+    const lesson = useProgressStore.getState().lessons['foundations-1'];
+
+    expect(lesson.status).toBe('in_progress');
+    expect(lesson.bestScore).toBe(0.7);
+    expect(lesson.attempts).toBe(2);
+  });
+
+  it('applies XP once for the same attempt', async () => {
+    await useProgressStore.getState().setUser('user-1');
+    await useProgressStore.getState().applyLocalResult(result());
+    await useProgressStore.getState().applyLocalResult(result());
+
+    expect(useProgressStore.getState().pendingXp).toBe(40);
+  });
+
+  it('hydrates saved progress for a user', async () => {
+    await useProgressStore.getState().setUser('user-1');
+    await useProgressStore.getState().applyLocalResult(result());
+
+    useProgressStore.setState({ lessons: {} });
+    await useProgressStore.getState().hydrate();
+
+    expect(useProgressStore.getState().lessons['foundations-1']).toMatchObject({
+      status: 'completed',
+    });
+  });
+
+  it('clears user data without touching the content pack', async () => {
+    await storage.setItem(STORAGE_KEYS.contentPack, '{"version":"1.0.0"}');
+    await useProgressStore.getState().setUser('user-1');
+    await useProgressStore.getState().applyLocalResult(result());
+
+    useProgressStore.getState().clear();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(await storage.getItem(STORAGE_KEYS.progress('user-1'))).toBeNull();
+    expect(await storage.getItem(STORAGE_KEYS.contentPack)).not.toBeNull();
+    expect(useProgressStore.getState().userId).toBeNull();
+    expect(useProgressStore.getState().pendingXp).toBe(0);
+  });
+});
