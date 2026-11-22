@@ -1,12 +1,42 @@
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useEffect } from 'react';
+
+import { AppProviders } from '@/providers/AppProviders';
+import { useAppFonts } from '@/theme/fonts';
+
+void SplashScreen.preventAutoHideAsync().catch(() => {
+  // The splash screen is already hidden or unavailable; nothing to do.
+});
 
 export default function RootLayout() {
+  const { loaded, error } = useAppFonts();
+
+  useEffect(() => {
+    if (loaded) {
+      void SplashScreen.hideAsync().catch(() => {
+        // Hiding twice is harmless.
+      });
+    }
+  }, [loaded]);
+
+  useEffect(() => {
+    if (error) {
+      console.warn('Nunito failed to load; using system fonts.', error);
+    }
+  }, [error]);
+
+  // Keep the native splash up until fonts resolve, but never block the app on
+  // a font failure.
+  if (!loaded && !error) {
+    return null;
+  }
+
   return (
-    <SafeAreaProvider>
+    <AppProviders>
       <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false }} />
-    </SafeAreaProvider>
+    </AppProviders>
   );
 }

@@ -1,30 +1,9 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { Redirect } from 'expo-router';
 
 /**
- * Placeholder splash screen. Task 8 replaces this with the session and
- * onboarding redirect guard.
+ * Temporary landing: until the session/onboarding guard lands, the app opens
+ * on the Learn tab so it is navigable.
  */
-export default function SplashScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.wordmark}>Hodlo</Text>
-      <ActivityIndicator color="#6C4CF1" />
-    </View>
-  );
+export default function Index() {
+  return <Redirect href="/learn" />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 16,
-    backgroundColor: '#F5F2FF',
-  },
-  wordmark: {
-    fontSize: 40,
-    lineHeight: 44,
-    fontWeight: '900',
-    color: '#1E1538',
-  },
-});
