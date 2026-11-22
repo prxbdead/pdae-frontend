@@ -1,5 +1,7 @@
 module.exports = {
   preset: 'jest-expo',
+  // Reanimated 4 needs its resolver so worklet `.native` files are skipped in Jest.
+  resolver: '<rootDir>/node_modules/react-native-reanimated/jest/resolver.js',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
