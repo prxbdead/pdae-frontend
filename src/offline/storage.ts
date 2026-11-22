@@ -11,6 +11,7 @@ export const STORAGE_KEYS = {
   progress: (userId: string) => `hodlo:v1:progress:${userId}`,
   outbox: (userId: string) => `hodlo:v1:outbox:${userId}`,
   lessonSession: 'hodlo:v1:lesson-session',
+  session: 'hodlo:v1:session',
   settings: 'hodlo:v1:settings',
   queryCache: 'hodlo:v1:query-cache',
 } as const;

@@ -10,3 +10,4 @@ export { ProgressBar, type ProgressBarProps } from './ProgressBar';
 export { ProgressRing, type ProgressRingProps } from './ProgressRing';
 export { Sheet, type SheetProps } from './Sheet';
 export { Skeleton, type SkeletonProps } from './Skeleton';
+export { TextField, type TextFieldProps } from './TextField';
