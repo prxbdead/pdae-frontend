@@ -51,8 +51,29 @@ function HealthContent({ isDarkMode }: { isDarkMode: boolean }) {
   }, []);
 
   useEffect(() => {
-    checkConnection();
-  }, [checkConnection]);
+    let active = true;
+
+    // The initial state is already "checking", so no synchronous setState here.
+    (async () => {
+      try {
+        const health = await getHealth();
+        if (active) {
+          setConnection({ status: 'online', timestamp: health.timestamp });
+        }
+      } catch (error) {
+        if (active) {
+          setConnection({
+            status: 'offline',
+            message: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const colors = isDarkMode ? darkColors : lightColors;
 
