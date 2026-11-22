@@ -3,7 +3,6 @@ import { Text } from 'react-native';
 
 import { useSessionStore } from '@/auth/sessionStore';
 import { useRootRedirect } from '@/auth/rootRedirect';
-import { useOnboardingStore } from '@/stores/onboardingStore';
 import { mockUser } from '@/api/fixtures';
 import {
   routerMock,
@@ -21,15 +20,14 @@ function Probe() {
 
 function renderProbe(options: {
   status: 'loading' | 'authenticated' | 'anonymous';
-  onboarding: boolean;
   pathname: string;
   segments: string[];
 }) {
   useSessionStore.setState({
     status: options.status,
     user: options.status === 'authenticated' ? mockUser : null,
+    returnTo: null,
   });
-  useOnboardingStore.setState({ completed: options.onboarding });
   setPathname(options.pathname);
   setSegments(options.segments);
 
@@ -44,7 +42,6 @@ describe('useRootRedirect', () => {
   it('does not redirect while the session is loading', () => {
     renderProbe({
       status: 'loading',
-      onboarding: false,
       pathname: '/learn',
       segments: ['(tabs)', 'learn'],
     });
@@ -52,21 +49,9 @@ describe('useRootRedirect', () => {
     expect(routerMock.replace).not.toHaveBeenCalled();
   });
 
-  it('sends a fresh anonymous visitor to onboarding', () => {
+  it('sends an anonymous visitor to login with returnTo', () => {
     renderProbe({
       status: 'anonymous',
-      onboarding: false,
-      pathname: '/learn',
-      segments: ['(tabs)', 'learn'],
-    });
-
-    expect(routerMock.replace).toHaveBeenCalledWith('/onboarding');
-  });
-
-  it('sends a returning anonymous visitor to login with returnTo', () => {
-    renderProbe({
-      status: 'anonymous',
-      onboarding: true,
       pathname: '/learn',
       segments: ['(tabs)', 'learn'],
     });
@@ -75,21 +60,30 @@ describe('useRootRedirect', () => {
     expect(routerMock.replace).toHaveBeenCalledWith('/login');
   });
 
-  it('sends an authenticated visitor with incomplete onboarding to onboarding', () => {
+  it('sends the anonymous landing route to login without returnTo', () => {
     renderProbe({
-      status: 'authenticated',
-      onboarding: false,
-      pathname: '/learn',
-      segments: ['(tabs)', 'learn'],
+      status: 'anonymous',
+      pathname: '/',
+      segments: [],
     });
 
-    expect(routerMock.replace).toHaveBeenCalledWith('/onboarding');
+    expect(useSessionStore.getState().returnTo).toBeNull();
+    expect(routerMock.replace).toHaveBeenCalledWith('/login');
+  });
+
+  it('leaves the auth flow alone for anonymous visitors', () => {
+    renderProbe({
+      status: 'anonymous',
+      pathname: '/login',
+      segments: ['(auth)', 'login'],
+    });
+
+    expect(routerMock.replace).not.toHaveBeenCalled();
   });
 
   it('leaves an authenticated visitor on the Learn path', () => {
     renderProbe({
       status: 'authenticated',
-      onboarding: true,
       pathname: '/learn',
       segments: ['(tabs)', 'learn'],
     });
@@ -97,10 +91,9 @@ describe('useRootRedirect', () => {
     expect(routerMock.replace).not.toHaveBeenCalled();
   });
 
-  it('moves an onboarded user out of auth routes', () => {
+  it('moves an authenticated user out of auth routes', () => {
     renderProbe({
       status: 'authenticated',
-      onboarding: true,
       pathname: '/login',
       segments: ['(auth)', 'login'],
     });
@@ -108,21 +101,9 @@ describe('useRootRedirect', () => {
     expect(routerMock.replace).toHaveBeenCalledWith('/(tabs)/learn');
   });
 
-  it('leaves the auth flow alone for anonymous visitors', () => {
-    renderProbe({
-      status: 'anonymous',
-      onboarding: false,
-      pathname: '/login',
-      segments: ['(auth)', 'login'],
-    });
-
-    expect(routerMock.replace).not.toHaveBeenCalled();
-  });
-
-  it('moves an onboarded user off the splash route', () => {
+  it('moves an authenticated user off the splash route', () => {
     renderProbe({
       status: 'authenticated',
-      onboarding: true,
       pathname: '/',
       segments: [],
     });

@@ -11,7 +11,6 @@ import {
   writeJson,
   type KeyValueStorage,
 } from '@/offline/storage';
-import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useProgressStore } from '@/stores/progressStore';
 
 export type SessionStatus = 'loading' | 'authenticated' | 'anonymous';
@@ -54,14 +53,6 @@ export function setSessionApi(next: AuthApi | null): void {
   authApi = next;
 }
 
-function syncOnboarding(user: UserProfile): void {
-  if (user.onboardingCompleted) {
-    useOnboardingStore.getState().markCompleted();
-  } else {
-    useOnboardingStore.getState().reset();
-  }
-}
-
 async function persistSession(
   user: UserProfile,
   lastValidatedAt: string | null,
@@ -89,7 +80,6 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
       isOffline: false,
     });
 
-    syncOnboarding(user);
     await persistSession(user, now);
     await useProgressStore.getState().setUser(user.id);
   },
@@ -100,7 +90,6 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
     }
 
     set({ user, isOffline: false });
-    syncOnboarding(user);
     void persistSession(user, get().lastValidatedAt);
   },
 
@@ -124,7 +113,6 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
 
     useProgressStore.getState().clear();
     queryClient.clear();
-    useOnboardingStore.getState().reset();
 
     if (userId) {
       await clearUserData(storage, userId);
@@ -160,7 +148,6 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
       user: cached.user,
       lastValidatedAt: cached.lastValidatedAt,
     });
-    syncOnboarding(cached.user);
     await useProgressStore.getState().setUser(cached.user.id);
   },
 
@@ -189,7 +176,6 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
         lastValidatedAt: now,
         isOffline: false,
       });
-      syncOnboarding(fresh);
       await persistSession(fresh, now);
     } catch (error) {
       if (error instanceof ApiError && error.status === 401) {

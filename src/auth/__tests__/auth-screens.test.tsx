@@ -112,13 +112,6 @@ describe('LoginScreen', () => {
     );
   });
 
-  it('navigates to onboarding from the start link', () => {
-    renderScreen(<LoginScreen />);
-
-    fireEvent.press(screen.getByTestId('start-onboarding'));
-
-    expect(routerMock.push).toHaveBeenCalledWith('/onboarding');
-  });
 });
 
 describe('RegisterScreen', () => {

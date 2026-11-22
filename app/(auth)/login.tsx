@@ -6,12 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useApi } from '@/api/ApiProvider';
 import { ApiError } from '@/api/errors';
 import { useSessionStore } from '@/auth/sessionStore';
-import {
-  AuthDivider,
-  AuthError,
-  AuthHint,
-  AuthScreen,
-} from '@/auth/AuthScreen';
+import { AuthDivider, AuthError, AuthScreen } from '@/auth/AuthScreen';
 import {
   loginFormSchema,
   type LoginFormValues,
@@ -121,17 +116,7 @@ export default function LoginScreen() {
         fullWidth
       />
 
-      <Button
-        label="Start onboarding"
-        testID="start-onboarding"
-        variant="ghost"
-        onPress={() => router.push('/onboarding')}
-        fullWidth
-      />
 
-      <AuthHint>
-        Set up your profile first — you create the account at the end.
-      </AuthHint>
     </AuthScreen>
   );
 }

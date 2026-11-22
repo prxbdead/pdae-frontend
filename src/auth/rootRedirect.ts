@@ -2,15 +2,13 @@ import { usePathname, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 
 import { useSessionStore } from '@/auth/sessionStore';
-import { useOnboardingStore } from '@/stores/onboardingStore';
 
 /**
- * Single owner of the session/onboarding routing rules. Navigation is
- * declarative: screens never decide whether the user is allowed to be there.
+ * Single owner of the session routing rules. Anonymous visitors only see the
+ * auth flow; authenticated users are kept out of it and off the splash.
  */
 export function useRootRedirect(): void {
   const status = useSessionStore((state) => state.status);
-  const onboardingCompleted = useOnboardingStore((state) => state.completed);
   const segments = useSegments();
   const pathname = usePathname();
   const router = useRouter();
@@ -21,36 +19,24 @@ export function useRootRedirect(): void {
     }
 
     const inAuth = segments[0] === '(auth)';
-    const inOnboarding = segments[0] === 'onboarding';
-    const onSplash = pathname === '/';
 
     if (status === 'anonymous') {
-      if (inAuth || inOnboarding) {
+      if (inAuth) {
         return;
       }
 
-      if (!onboardingCompleted) {
-        router.replace('/onboarding');
-
-        return;
+      // The landing route has no useful destination to return to.
+      if (pathname !== '/') {
+        useSessionStore.getState().setReturnTo(pathname);
       }
 
-      useSessionStore.getState().setReturnTo(pathname);
       router.replace('/login');
 
       return;
     }
 
-    if (!onboardingCompleted) {
-      if (!inOnboarding) {
-        router.replace('/onboarding');
-      }
-
-      return;
-    }
-
-    if (inAuth || inOnboarding || onSplash) {
+    if (inAuth || pathname === '/') {
       router.replace('/(tabs)/learn');
     }
-  }, [status, onboardingCompleted, segments, pathname, router]);
+  }, [status, segments, pathname, router]);
 }

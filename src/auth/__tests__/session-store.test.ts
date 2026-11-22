@@ -7,7 +7,6 @@ import {
   useSessionStore,
 } from '@/auth/sessionStore';
 import { STORAGE_KEYS } from '@/offline/storage';
-import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useProgressStore } from '@/stores/progressStore';
 import { MemoryStorage } from '@/testing/memory-storage';
 
@@ -31,7 +30,6 @@ beforeEach(() => {
     isOffline: false,
     returnTo: null,
   });
-  useOnboardingStore.setState({ completed: false });
   useProgressStore.setState({ userId: null });
 });
 
@@ -112,23 +110,11 @@ describe('sessionStore', () => {
     expect(useSessionStore.getState().consumeReturnTo()).toBeNull();
   });
 
-  it('signs in, persists the session, and syncs onboarding state', async () => {
-    await useSessionStore.getState().signIn({
-      ...mockUser,
-      onboardingCompleted: true,
-    });
+  it('signs in, persists the session, and scopes progress to the user', async () => {
+    await useSessionStore.getState().signIn(mockUser);
 
     expect(useSessionStore.getState().status).toBe('authenticated');
     expect(await storage.getItem(SESSION_STORAGE_KEY)).toContain(mockUser.email);
-    expect(useOnboardingStore.getState().completed).toBe(true);
     expect(useProgressStore.getState().userId).toBe(mockUser.id);
-  });
-
-  it('resets onboarding state for a user who has not finished it', async () => {
-    useOnboardingStore.setState({ completed: true });
-
-    await useSessionStore.getState().signIn(mockUser);
-
-    expect(useOnboardingStore.getState().completed).toBe(false);
   });
 });

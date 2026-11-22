@@ -21,8 +21,8 @@ export interface AuthScreenProps {
 }
 
 /**
- * Shared shell for every auth/onboarding surface so headers, card spacing,
- * typography, and the demo badge never drift between screens.
+ * Shared shell for every auth surface so headers, card spacing, typography,
+ * and the demo badge never drift between screens.
  */
 export function AuthScreen({
   headerTitle,

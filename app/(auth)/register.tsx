@@ -59,13 +59,7 @@ export default function RegisterScreen() {
       });
 
       await signIn(user);
-      const returnTo = consumeReturnTo();
-
-      router.replace(
-        user.onboardingCompleted
-          ? (returnTo ?? '/(tabs)/learn')
-          : '/onboarding',
-      );
+      router.replace(consumeReturnTo() ?? '/(tabs)/learn');
     } catch (error) {
       setApiError(
         error instanceof ApiError

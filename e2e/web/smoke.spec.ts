@@ -12,5 +12,6 @@ test('signs in through the demo API and reaches the guard', async ({
   await expect(submit).toBeEnabled();
   await submit.click();
 
-  await expect(page.getByText('Set up your profile')).toBeVisible();
+  await page.waitForURL('**/learn');
+  await expect(page.getByText('Your path starts here')).toBeVisible();
 });
