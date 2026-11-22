@@ -81,7 +81,9 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
     });
 
     await persistSession(user, now);
-    await useProgressStore.getState().setUser(user.id);
+    await useProgressStore
+      .getState()
+      .setUser(user.id, user.dailyGoalXp);
   },
 
   updateUser: (user) => {
@@ -148,7 +150,9 @@ export const useSessionStore = create<SessionState>()((set, get) => ({
       user: cached.user,
       lastValidatedAt: cached.lastValidatedAt,
     });
-    await useProgressStore.getState().setUser(cached.user.id);
+    await useProgressStore
+      .getState()
+      .setUser(cached.user.id, cached.user.dailyGoalXp);
   },
 
   refresh: async () => {

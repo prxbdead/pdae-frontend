@@ -40,9 +40,10 @@ export function SyncProvider({ children }: { children: ReactNode }) {
     return new SyncEngine({
       api: client,
       outbox: new Outbox(storage, userId),
-      onResult: async () => {
-        // Server-authoritative XP and streak reconciliation lands with the
-        // result screen; locally applied progress is already written.
+      onResult: async (result) => {
+        // The server re-scores attempts. Reconciling here keeps XP, streak,
+        // and lesson status authoritative without applying anything twice.
+        await useProgressStore.getState().applyServerResult(result);
       },
       isOnline: () => onlineState.online,
       now: Date.now,
@@ -62,7 +63,10 @@ export function SyncProvider({ children }: { children: ReactNode }) {
     void engine.flush();
 
     const unsubscribeNet = NetInfo.addEventListener((state) => {
-      const reachable = state.isInternetReachable !== false;
+      // Reachability can still probe true on a disconnected device, so both
+      // signals must agree before a submission is attempted.
+      const reachable =
+        state.isConnected !== false && state.isInternetReachable !== false;
       onlineState.online = reachable;
 
       if (reachable) {

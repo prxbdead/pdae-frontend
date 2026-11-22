@@ -7,6 +7,7 @@ export const routerMock = {
   push: jest.fn(),
   back: jest.fn(),
   navigate: jest.fn(),
+  dismissTo: jest.fn(),
 };
 
 let currentPathname = '/learn';

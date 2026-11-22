@@ -1,14 +1,13 @@
 import { randomUUID } from 'expo-crypto';
 
 import type { OfflineLesson, SubmittedAnswer } from '@/api/contracts';
+import { xpForScore } from '@/features/gamification/xp';
 import type { LocalAttemptResult } from '@/offline/types';
 
 import type { LessonAction, LessonSession } from './types';
 
 export const DEFAULT_HEARTS = 5;
 export const PASS_SCORE = 0.8;
-export const FIRST_TRY_XP = 10;
-export const PERFECT_BONUS_XP = 10;
 
 export function createLessonSession(
   lesson: OfflineLesson,
@@ -125,10 +124,7 @@ export function scoreAttempt(
 
   const score = total === 0 ? 0 : correct / total;
   const passed = score >= PASS_SCORE;
-  const xpEarned =
-    lesson.xpReward === 0
-      ? 0
-      : correct * FIRST_TRY_XP + (score === 1 ? PERFECT_BONUS_XP : 0);
+  const xpEarned = xpForScore(score, total, lesson.xpReward);
 
   const mistakes = lesson.exercises
     .filter((exercise) => {

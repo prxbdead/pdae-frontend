@@ -1,3 +1,4 @@
+import { toLocalDateKey } from '@/features/gamification/streak';
 import { STORAGE_KEYS } from '@/offline/storage';
 import { ProgressRepository } from '@/offline/progress';
 import type { LocalAttemptResult } from '@/offline/types';
@@ -32,6 +33,17 @@ beforeEach(() => {
     pendingXp: 0,
     pendingXpByAttempt: {},
     lastResult: null,
+    lastServerResult: null,
+    xpToday: 0,
+    xpTodayDate: toLocalDateKey(new Date()),
+    dailyGoalXp: 30,
+    streak: {
+      current: 0,
+      longest: 0,
+      lastLessonDate: null,
+      freezesEquipped: 0,
+      restDay: null,
+    },
   });
 });
 
