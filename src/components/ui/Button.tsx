@@ -48,13 +48,17 @@ export function Button({
   const reducedMotion = useReducedMotion();
   const pressed = useSharedValue(0);
   const isDisabled = disabled || loading;
+  // A disabled button is neutral rather than a dimmed variant, so it can
+  // never be mistaken for an available secondary action.
+  const showDisabled = disabled && !loading;
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: pressed.value }],
   }));
 
-  const fill =
-    variant === 'primary'
+  const fill = showDisabled
+    ? theme.colors.surfaceAlt
+    : variant === 'primary'
       ? theme.colors.primary
       : variant === 'secondary'
         ? theme.colors.secondary
@@ -62,8 +66,9 @@ export function Button({
           ? theme.colors.danger
           : 'transparent';
 
-  const labelColor =
-    variant === 'primary'
+  const labelColor = showDisabled
+    ? theme.colors.textMuted
+    : variant === 'primary'
       ? theme.colors.onPrimary
       : variant === 'secondary'
         ? theme.colors.onSecondary
@@ -71,8 +76,9 @@ export function Button({
           ? theme.colors.onDanger
           : theme.colors.primary;
 
-  const ledge =
-    variant === 'primary'
+  const ledge = showDisabled
+    ? theme.colors.border
+    : variant === 'primary'
       ? ledgeColors.purple
       : variant === 'secondary'
         ? ledgeColors.lilac
@@ -103,11 +109,7 @@ export function Button({
         }
       }}
       testID={testID}
-      style={[
-        styles.pressable,
-        fullWidth && styles.fullWidth,
-        isDisabled && styles.disabled,
-      ]}
+      style={[styles.pressable, fullWidth && styles.fullWidth]}
     >
       <View
         style={[
@@ -159,9 +161,6 @@ const styles = StyleSheet.create({
   },
   fullWidth: {
     alignSelf: 'stretch',
-  },
-  disabled: {
-    opacity: 0.5,
   },
   ledge: {
     justifyContent: 'flex-start',

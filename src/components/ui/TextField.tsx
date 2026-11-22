@@ -1,14 +1,23 @@
 import { useState } from 'react';
 import {
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
   type TextInputProps,
+  type TextStyle,
 } from 'react-native';
 
 import { useTheme } from '@/theme/useTheme';
+
+// React Native Web leaves the browser's default focus ring on the inner
+// input, which fights the themed border. The border change is the focus cue.
+const webOutlineReset =
+  Platform.OS === 'web'
+    ? ({ outlineStyle: 'none' } as unknown as TextStyle)
+    : null;
 
 export interface TextFieldProps extends Omit<TextInputProps, 'style'> {
   label: string;
@@ -22,11 +31,19 @@ export function TextField({
   testID,
   secureTextEntry = false,
   accessibilityLabel,
+  onFocus,
+  onBlur,
   ...inputProps
 }: TextFieldProps) {
   const theme = useTheme();
   const [hidden, setHidden] = useState(true);
+  const [focused, setFocused] = useState(false);
   const isPassword = secureTextEntry;
+  const borderColor = error
+    ? theme.colors.danger
+    : focused
+      ? theme.colors.primary
+      : theme.colors.border;
 
   return (
     <View style={styles.wrapper}>
@@ -45,7 +62,7 @@ export function TextField({
           styles.inputRow,
           {
             backgroundColor: theme.colors.surface,
-            borderColor: error ? theme.colors.danger : theme.colors.border,
+            borderColor,
             borderRadius: theme.radii.sm,
           },
         ]}
@@ -55,11 +72,20 @@ export function TextField({
           testID={testID}
           accessibilityLabel={accessibilityLabel ?? label}
           secureTextEntry={isPassword ? hidden : false}
+          onFocus={(event) => {
+            setFocused(true);
+            onFocus?.(event);
+          }}
+          onBlur={(event) => {
+            setFocused(false);
+            onBlur?.(event);
+          }}
           placeholderTextColor={theme.colors.textMuted}
           style={[
             styles.input,
             theme.typography.body,
             { color: theme.colors.text },
+            webOutlineReset,
           ]}
         />
 

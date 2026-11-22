@@ -5,7 +5,6 @@ import { Controller, useForm } from 'react-hook-form';
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -66,7 +65,7 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={[styles.flex, { backgroundColor: theme.colors.background }]}
     >
-      <PageHeader title="Welcome back" tier="compact" />
+      <PageHeader title="Log in" tier="compact" />
 
       <ScrollView contentContainerStyle={styles.scroll}>
         <View
@@ -83,7 +82,7 @@ export default function LoginScreen() {
             <Text
               style={[theme.typography.title, { color: theme.colors.text }]}
             >
-              Log in
+              Welcome back
             </Text>
             {mode === 'mock' ? <Badge label="Demo mode" tone="lilac" /> : null}
           </View>
@@ -156,45 +155,49 @@ export default function LoginScreen() {
             label="Log in"
             testID="login-submit"
             onPress={() => void onSubmit()}
-            variant={isValid ? 'primary' : 'secondary'}
             disabled={!isValid}
             loading={submitting}
             fullWidth
           />
 
-          <View style={styles.links}>
-            <Pressable
-              accessibilityRole="link"
-              testID="create-account"
-              onPress={() => router.push('/register')}
+          <View
+            style={[styles.divider, { borderTopColor: theme.colors.border }]}
+          >
+            <Text
+              style={[
+                theme.typography.caption,
+                { color: theme.colors.textMuted },
+              ]}
             >
-              <Text
-                style={[
-                  theme.typography.body,
-                  styles.link,
-                  { color: theme.colors.primary },
-                ]}
-              >
-                Create account
-              </Text>
-            </Pressable>
-
-            <Pressable
-              accessibilityRole="link"
-              testID="start-onboarding"
-              onPress={() => router.push('/onboarding')}
-            >
-              <Text
-                style={[
-                  theme.typography.body,
-                  styles.link,
-                  { color: theme.colors.textMuted },
-                ]}
-              >
-                Start onboarding
-              </Text>
-            </Pressable>
+              New to Hodlo?
+            </Text>
           </View>
+
+          <Button
+            label="Create account"
+            testID="create-account"
+            variant="secondary"
+            onPress={() => router.push('/register')}
+            fullWidth
+          />
+
+          <Button
+            label="Start onboarding"
+            testID="start-onboarding"
+            variant="ghost"
+            onPress={() => router.push('/onboarding')}
+            fullWidth
+          />
+
+          <Text
+            style={[
+              theme.typography.caption,
+              styles.hint,
+              { color: theme.colors.textMuted },
+            ]}
+          >
+            Set up your profile first — you create the account at the end.
+          </Text>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -225,12 +228,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 12,
   },
-  links: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  divider: {
+    alignItems: 'center',
+    borderTopWidth: 1,
     marginTop: 4,
+    paddingTop: 16,
   },
-  link: {
-    fontWeight: '700',
+  hint: {
+    marginTop: -8,
+    textAlign: 'center',
   },
 });

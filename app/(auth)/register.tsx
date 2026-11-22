@@ -248,7 +248,6 @@ export default function RegisterScreen() {
             label="Create account"
             testID="register-submit"
             onPress={() => void onSubmit()}
-            variant={canSubmit ? 'primary' : 'secondary'}
             disabled={!canSubmit}
             loading={submitting}
             fullWidth
