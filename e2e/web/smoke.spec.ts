@@ -13,5 +13,5 @@ test('signs in through the demo API and reaches the guard', async ({
   await submit.click();
 
   await page.waitForURL('**/learn');
-  await expect(page.getByText('Your path starts here')).toBeVisible();
+  await expect(page.getByText('UNIT 1 · HODLO')).toBeVisible();
 });

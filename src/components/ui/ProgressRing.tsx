@@ -9,6 +9,8 @@ export interface ProgressRingProps {
   strokeWidth?: number;
   tone?: 'purple' | 'mint' | 'yellow';
   label?: string;
+  /** Hide the visual label when the ring is smaller than the text. */
+  showLabel?: boolean;
 }
 
 export function ProgressRing({
@@ -17,6 +19,7 @@ export function ProgressRing({
   strokeWidth = 6,
   tone = 'purple',
   label,
+  showLabel = true,
 }: ProgressRingProps) {
   const theme = useTheme();
   const clamped = Math.min(Math.max(value, 0), 1);
@@ -65,7 +68,7 @@ export function ProgressRing({
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
       </Svg>
-      {label ? (
+      {label && showLabel ? (
         <View style={styles.label}>
           <Text style={[theme.typography.caption, { color: theme.colors.text }]}>
             {label}
