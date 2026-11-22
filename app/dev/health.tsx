@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { API_BASE_URL, getHealth } from '@/api/client';
+import { API_BASE_URL, getHealth } from '@/api/health';
 
 type ConnectionState =
   | { status: 'checking' }

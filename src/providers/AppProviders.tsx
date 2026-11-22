@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { ApiProvider } from '@/api/ApiProvider';
 import { ThemeProvider } from '@/theme/ThemeProvider';
 import { useTheme } from '@/theme/useTheme';
 
@@ -31,7 +32,9 @@ export function AppProviders({ children }: AppProvidersProps) {
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <ThemeProvider>
-          <ThemedSurface>{children}</ThemedSurface>
+          <ApiProvider>
+            <ThemedSurface>{children}</ThemedSurface>
+          </ApiProvider>
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
