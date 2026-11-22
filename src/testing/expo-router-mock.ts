@@ -11,6 +11,7 @@ export const routerMock = {
 
 let currentPathname = '/learn';
 let currentSegments: string[] = [];
+let currentParams: Record<string, string> = {};
 
 export function setPathname(pathname: string): void {
   currentPathname = pathname;
@@ -18,6 +19,14 @@ export function setPathname(pathname: string): void {
 
 export function setSegments(segments: string[]): void {
   currentSegments = segments;
+}
+
+export function setLocalSearchParams(params: Record<string, string>): void {
+  currentParams = params;
+}
+
+export function useLocalSearchParams(): Record<string, string> {
+  return currentParams;
 }
 
 export function useRouter() {

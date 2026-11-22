@@ -180,7 +180,9 @@ export const exerciseSchema = z.discriminatedUnion('type', [
       title: z.string(),
       body: z.string(),
     }),
-    hotspots: z.array(optionSchema.extend({ text: z.string() })).min(1),
+    hotspots: z
+      .array(optionSchema.extend({ label: z.string(), text: z.string() }))
+      .min(1),
   }),
   z.object({
     ...baseExerciseFields,
