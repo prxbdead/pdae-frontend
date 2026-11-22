@@ -35,7 +35,6 @@ export function Icon({
         stroke={color}
         strokeWidth={2}
         testID={testID}
-        accessible={false}
       >
         <Circle cx={12} cy={12} r={4} />
       </Svg>

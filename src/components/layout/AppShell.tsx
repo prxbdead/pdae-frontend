@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { useBreakpoint } from '@/theme/useBreakpoint';
+import { useTheme } from '@/theme/useTheme';
 
 import { BottomTabs } from './BottomTabs';
 import { ContentColumn } from './ContentColumn';
@@ -19,10 +20,15 @@ export interface AppShellProps {
  */
 export function AppShell({ children }: AppShellProps) {
   const { isMobile, isTablet } = useBreakpoint();
+  const theme = useTheme();
+  const themedRoot = [
+    styles.root,
+    { backgroundColor: theme.colors.background },
+  ];
 
   if (isMobile) {
     return (
-      <View style={styles.root}>
+      <View style={themedRoot}>
         <View style={styles.fill}>{children}</View>
         <BottomTabs />
       </View>
@@ -31,7 +37,7 @@ export function AppShell({ children }: AppShellProps) {
 
   if (isTablet) {
     return (
-      <View style={[styles.root, styles.row]}>
+      <View style={[themedRoot, styles.row]}>
         <IconRail />
         <View style={styles.fill}>{children}</View>
       </View>
@@ -39,7 +45,7 @@ export function AppShell({ children }: AppShellProps) {
   }
 
   return (
-    <View style={[styles.root, styles.row]}>
+    <View style={[themedRoot, styles.row]}>
       <Sidebar />
       <ContentColumn>{children}</ContentColumn>
       <RightRail />

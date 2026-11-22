@@ -35,7 +35,6 @@ export function IconBase({
       strokeLinecap="round"
       strokeLinejoin="round"
       testID={testID}
-      accessible={false}
     >
       {children}
     </Svg>
