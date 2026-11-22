@@ -1,10 +1,9 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
 
-import { Button } from '@/components/ui';
 import { useSessionStore } from '@/auth/sessionStore';
+import { AuthHint, AuthScreen } from '@/auth/AuthScreen';
+import { Button } from '@/components/ui';
 import { useOnboardingStore } from '@/stores/onboardingStore';
-import { useTheme } from '@/theme/useTheme';
 
 /**
  * Temporary landing for the onboarding route. The resumable eight-step flow
@@ -12,45 +11,19 @@ import { useTheme } from '@/theme/useTheme';
  * target real and lets the shell be reached.
  */
 export default function OnboardingLanding() {
-  const theme = useTheme();
   const router = useRouter();
   const markCompleted = useOnboardingStore((state) => state.markCompleted);
   const status = useSessionStore((state) => state.status);
   const authenticated = status === 'authenticated';
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    <AuthScreen
+      headerTitle="Set up your profile"
+      title="Welcome to Hodlo"
+      subtitle="The step-by-step setup arrives next."
     >
-      <View
-        style={[
-          styles.card,
-          {
-            backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.border,
-            borderRadius: theme.radii.lg,
-          },
-        ]}
-      >
-        <Text
-          style={[theme.typography.display, { color: theme.colors.primary }]}
-        >
-          Hodlo
-        </Text>
-        <Text
-          style={[theme.typography.heading, { color: theme.colors.text }]}
-        >
-          Set up your profile
-        </Text>
-        <Text
-          style={[theme.typography.body, { color: theme.colors.textMuted }]}
-        >
-          {authenticated
-            ? 'The step-by-step setup arrives next. Continue to the app for now.'
-            : 'The step-by-step setup arrives next. Sign in to continue.'}
-        </Text>
-
-        {authenticated ? (
+      {authenticated ? (
+        <>
           <Button
             label="Continue to the app"
             fullWidth
@@ -59,38 +32,28 @@ export default function OnboardingLanding() {
               router.replace('/(tabs)/learn');
             }}
           />
-        ) : (
-          <>
-            <Button
-              label="Log in"
-              fullWidth
-              onPress={() => router.push('/login')}
-            />
-            <Button
-              label="Create account"
-              variant="ghost"
-              fullWidth
-              onPress={() => router.push('/register')}
-            />
-          </>
-        )}
-      </View>
-    </View>
+          <AuthHint>
+            Your preferences will be collected here in the next step.
+          </AuthHint>
+        </>
+      ) : (
+        <>
+          <Button
+            label="Log in"
+            fullWidth
+            onPress={() => router.push('/login')}
+          />
+          <Button
+            label="Create account"
+            variant="secondary"
+            fullWidth
+            onPress={() => router.push('/register')}
+          />
+          <AuthHint>
+            Sign in to continue — the setup flow will start here.
+          </AuthHint>
+        </>
+      )}
+    </AuthScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 24,
-  },
-  card: {
-    borderWidth: 1,
-    gap: 16,
-    maxWidth: 440,
-    padding: 24,
-    width: '100%',
-  },
-});
