@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui';
+import { useSessionStore } from '@/auth/sessionStore';
 import { useOnboardingStore } from '@/stores/onboardingStore';
 import { useTheme } from '@/theme/useTheme';
 
@@ -14,6 +15,8 @@ export default function OnboardingLanding() {
   const theme = useTheme();
   const router = useRouter();
   const markCompleted = useOnboardingStore((state) => state.markCompleted);
+  const status = useSessionStore((state) => state.status);
+  const authenticated = status === 'authenticated';
 
   return (
     <View
@@ -42,24 +45,35 @@ export default function OnboardingLanding() {
         <Text
           style={[theme.typography.body, { color: theme.colors.textMuted }]}
         >
-          The step-by-step setup arrives next. For now you can preview the app.
+          {authenticated
+            ? 'The step-by-step setup arrives next. Continue to the app for now.'
+            : 'The step-by-step setup arrives next. Sign in to continue.'}
         </Text>
 
-        <Button
-          label="Preview the app"
-          fullWidth
-          onPress={() => {
-            markCompleted();
-            router.replace('/(tabs)/learn');
-          }}
-        />
-
-        <Button
-          label="Log in instead"
-          variant="ghost"
-          fullWidth
-          onPress={() => router.push('/login')}
-        />
+        {authenticated ? (
+          <Button
+            label="Continue to the app"
+            fullWidth
+            onPress={() => {
+              markCompleted();
+              router.replace('/(tabs)/learn');
+            }}
+          />
+        ) : (
+          <>
+            <Button
+              label="Log in"
+              fullWidth
+              onPress={() => router.push('/login')}
+            />
+            <Button
+              label="Create account"
+              variant="ghost"
+              fullWidth
+              onPress={() => router.push('/register')}
+            />
+          </>
+        )}
       </View>
     </View>
   );
