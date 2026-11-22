@@ -19,7 +19,7 @@ import { useTheme } from '@/theme/useTheme';
 import { JumpToUnitSheet, scrollToUnit } from './JumpToUnitSheet';
 import { LearnHeaderStats } from './LearnHeaderStats';
 import { ChestTile, PathNode } from './PathNode';
-import { PathConnector } from './PathConnector';
+import { PathCurve } from './PathCurve';
 import { UnitBanner } from './UnitBanner';
 import { useLearnPath } from './useLearnPath';
 
@@ -89,9 +89,10 @@ export function LearnScreen() {
           };
         }}
       >
+        <PathCurve count={unit.lessons.length} />
+
         {unit.lessons.map((lesson, index) => (
           <View key={lesson.id} style={styles.item}>
-            <PathConnector />
             <PathNode
               lesson={lesson}
               index={index}

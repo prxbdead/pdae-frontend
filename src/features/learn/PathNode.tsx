@@ -1,6 +1,8 @@
 import type { LessonSummary } from '@/api/contracts';
 import { Icon, ProgressRing } from '@/components/ui';
 import { ledgeColors } from '@/theme/tokens';
+
+import { nodeOffsetX } from './pathGeometry';
 import { useTheme } from '@/theme/useTheme';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -43,7 +45,7 @@ export function PathNode({ lesson, index, onPress }: PathNodeProps) {
     <View
       style={[
         styles.row,
-        { transform: [{ translateX: index % 2 === 0 ? -40 : 40 }] },
+        { transform: [{ translateX: nodeOffsetX(index) }] },
       ]}
     >
       <Pressable
