@@ -7,7 +7,10 @@ test('signs in through the demo API and reaches the guard', async ({
 
   await page.getByTestId('login-email').fill('learner@hodlo.app');
   await page.getByTestId('login-password').fill('password123');
-  await page.getByTestId('login-submit').click();
+
+  const submit = page.getByTestId('login-submit');
+  await expect(submit).toBeEnabled();
+  await submit.click();
 
   await expect(page.getByText('Set up your profile')).toBeVisible();
 });

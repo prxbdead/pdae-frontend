@@ -31,13 +31,27 @@ beforeEach(() => {
 });
 
 describe('LoginScreen', () => {
-  it('shows validation messages for empty fields', async () => {
+  it('keeps submit disabled until both fields are valid', async () => {
     renderScreen(<LoginScreen />);
 
-    fireEvent.press(screen.getByTestId('login-submit'));
+    expect(screen.getByTestId('login-submit')).toBeDisabled();
 
+    fireEvent.changeText(screen.getByTestId('login-email'), 'not-an-email');
     expect(await screen.findByText('Enter a valid email')).toBeOnTheScreen();
-    expect(await screen.findByText('Password is required')).toBeOnTheScreen();
+    expect(screen.getByTestId('login-submit')).toBeDisabled();
+
+    fireEvent.changeText(
+      screen.getByTestId('login-email'),
+      'learner@hodlo.app',
+    );
+    fireEvent.changeText(
+      screen.getByTestId('login-password'),
+      'password123',
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId('login-submit')).toBeEnabled(),
+    );
   });
 
   it('shows the API message when credentials are rejected', async () => {
@@ -48,6 +62,9 @@ describe('LoginScreen', () => {
 
     fireEvent.changeText(screen.getByTestId('login-email'), 'learner@hodlo.app');
     fireEvent.changeText(screen.getByTestId('login-password'), 'wrongpass');
+    await waitFor(() =>
+      expect(screen.getByTestId('login-submit')).toBeEnabled(),
+    );
     fireEvent.press(screen.getByTestId('login-submit'));
 
     expect(
@@ -64,6 +81,9 @@ describe('LoginScreen', () => {
 
     fireEvent.changeText(screen.getByTestId('login-email'), mockUser.email);
     fireEvent.changeText(screen.getByTestId('login-password'), 'password123');
+    await waitFor(() =>
+      expect(screen.getByTestId('login-submit')).toBeEnabled(),
+    );
     fireEvent.press(screen.getByTestId('login-submit'));
 
     await waitFor(() => expect(signIn).toHaveBeenCalledWith(mockUser));
@@ -80,6 +100,9 @@ describe('LoginScreen', () => {
 
     fireEvent.changeText(screen.getByTestId('login-email'), mockUser.email);
     fireEvent.changeText(screen.getByTestId('login-password'), 'password123');
+    await waitFor(() =>
+      expect(screen.getByTestId('login-submit')).toBeEnabled(),
+    );
     fireEvent.press(screen.getByTestId('login-submit'));
 
     await waitFor(() =>
@@ -99,18 +122,18 @@ describe('LoginScreen', () => {
 });
 
 describe('RegisterScreen', () => {
-  it('rejects a short password', async () => {
+  it('rejects a short password and keeps submit disabled', async () => {
     renderScreen(<RegisterScreen />);
 
     fireEvent.changeText(screen.getByTestId('register-display-name'), 'Robin');
     fireEvent.changeText(screen.getByTestId('register-email'), 'robin@hodlo.app');
     fireEvent.changeText(screen.getByTestId('register-password'), 'short');
     fireEvent.changeText(screen.getByTestId('register-confirm'), 'short');
-    fireEvent.press(screen.getByTestId('register-submit'));
 
     expect(
       await screen.findByText('Password must be at least 8 characters'),
     ).toBeOnTheScreen();
+    expect(screen.getByTestId('register-submit')).toBeDisabled();
   });
 
   it('rejects mismatched passwords', async () => {
@@ -120,10 +143,38 @@ describe('RegisterScreen', () => {
     fireEvent.changeText(screen.getByTestId('register-email'), 'robin@hodlo.app');
     fireEvent.changeText(screen.getByTestId('register-password'), 'password123');
     fireEvent.changeText(screen.getByTestId('register-confirm'), 'password124');
-    fireEvent.press(screen.getByTestId('register-submit'));
 
     expect(
       await screen.findByText('Passwords do not match'),
     ).toBeOnTheScreen();
+    expect(screen.getByTestId('register-submit')).toBeDisabled();
+  });
+
+  it('returns to login without requiring history', () => {
+    renderScreen(<RegisterScreen />);
+
+    fireEvent.press(screen.getByTestId('register-login-link'));
+
+    expect(routerMock.replace).toHaveBeenCalledWith('/login');
+  });
+
+  it('requires the terms checkbox before enabling submit', async () => {
+    renderScreen(<RegisterScreen />);
+
+    fireEvent.changeText(screen.getByTestId('register-display-name'), 'Robin');
+    fireEvent.changeText(screen.getByTestId('register-email'), 'robin@hodlo.app');
+    fireEvent.changeText(screen.getByTestId('register-password'), 'password123');
+    fireEvent.changeText(screen.getByTestId('register-confirm'), 'password123');
+
+    await waitFor(() =>
+      expect(screen.getByTestId('register-terms')).toBeTruthy(),
+    );
+    expect(screen.getByTestId('register-submit')).toBeDisabled();
+
+    fireEvent.press(screen.getByTestId('register-terms'));
+
+    await waitFor(() =>
+      expect(screen.getByTestId('register-submit')).toBeEnabled(),
+    );
   });
 });

@@ -34,9 +34,10 @@ export default function LoginScreen() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
+    mode: 'onChange',
     defaultValues: { email: '', password: '' },
   });
 
@@ -155,6 +156,8 @@ export default function LoginScreen() {
             label="Log in"
             testID="login-submit"
             onPress={() => void onSubmit()}
+            variant={isValid ? 'primary' : 'secondary'}
+            disabled={!isValid}
             loading={submitting}
             fullWidth
           />

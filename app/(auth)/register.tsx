@@ -35,9 +35,10 @@ export default function RegisterScreen() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema),
+    mode: 'onChange',
     defaultValues: {
       displayName: '',
       email: '',
@@ -46,6 +47,8 @@ export default function RegisterScreen() {
       terms: false,
     },
   });
+
+  const canSubmit = isValid && termsAccepted;
 
   const onSubmit = handleSubmit(async (values) => {
     setApiError(null);
@@ -82,7 +85,11 @@ export default function RegisterScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={[styles.flex, { backgroundColor: theme.colors.background }]}
     >
-      <PageHeader title="Join Hodlo" tier="compact" onBack={() => router.back()} />
+      <PageHeader
+        title="Join Hodlo"
+        tier="compact"
+        onBack={() => router.replace('/login')}
+      />
 
       <ScrollView contentContainerStyle={styles.scroll}>
         <View
@@ -241,13 +248,16 @@ export default function RegisterScreen() {
             label="Create account"
             testID="register-submit"
             onPress={() => void onSubmit()}
+            variant={canSubmit ? 'primary' : 'secondary'}
+            disabled={!canSubmit}
             loading={submitting}
             fullWidth
           />
 
           <Pressable
             accessibilityRole="link"
-            onPress={() => router.back()}
+            testID="register-login-link"
+            onPress={() => router.replace('/login')}
             style={styles.loginLink}
           >
             <Text
