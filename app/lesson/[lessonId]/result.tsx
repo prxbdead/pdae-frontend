@@ -37,7 +37,7 @@ export default function LessonResultScreen() {
           title="Result unavailable"
           message="This attempt is not on this device. Your progress is still saved."
           actionLabel="Back to Learn"
-          onAction={() => router.replace('/(tabs)/learn')}
+          onAction={() => router.dismissTo('/(tabs)/learn')}
         />
       ) : (
         <View style={styles.content}>
@@ -75,7 +75,7 @@ export default function LessonResultScreen() {
 
           <Button
             label="Continue"
-            onPress={() => router.replace('/(tabs)/learn')}
+            onPress={() => router.dismissTo('/(tabs)/learn')}
             size="lg"
             fullWidth
             testID="result-continue"

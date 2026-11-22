@@ -252,7 +252,7 @@ export default function LessonPlayScreen() {
       <HeartsOutModal
         visible={session.phase === 'hearts_out'}
         onRefill={refill}
-        onLeave={() => router.back()}
+        onLeave={() => router.dismissTo(`/lesson/${lessonId}`)}
       />
 
       <Sheet
@@ -270,7 +270,7 @@ export default function LessonPlayScreen() {
           label="Leave"
           onPress={() => {
             setLeaveOpen(false);
-            router.back();
+            router.dismissTo(`/lesson/${lessonId}`);
           }}
           fullWidth
           testID="leave-lesson"

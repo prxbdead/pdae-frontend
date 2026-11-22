@@ -94,7 +94,7 @@ export default function LessonIntroScreen() {
           />
           <Button
             label="Back to Learn"
-            onPress={() => router.push('/(tabs)/learn')}
+            onPress={() => router.dismissTo('/(tabs)/learn')}
             variant="secondary"
             fullWidth
           />
