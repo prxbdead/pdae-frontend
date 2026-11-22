@@ -1,43 +1,36 @@
-/**
- * PDAE mobile app
- *
- * @format
- */
-
+import { Redirect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
-  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   View,
 } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { API_BASE_URL, getHealth } from './src/api/client';
+import { API_BASE_URL, getHealth } from '@/api/client';
 
 type ConnectionState =
   | { status: 'checking' }
   | { status: 'online'; timestamp: string }
   | { status: 'offline'; message: string };
 
-function App() {
+/**
+ * Development-only backend health check. Moved from the old App.tsx template.
+ */
+export default function HealthScreen() {
   const isDarkMode = useColorScheme() === 'dark';
 
-  return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent isDarkMode={isDarkMode} />
-    </SafeAreaProvider>
-  );
+  if (!__DEV__) {
+    return <Redirect href="/" />;
+  }
+
+  return <HealthContent isDarkMode={isDarkMode} />;
 }
 
-function AppContent({ isDarkMode }: { isDarkMode: boolean }) {
+function HealthContent({ isDarkMode }: { isDarkMode: boolean }) {
   const safeAreaInsets = useSafeAreaInsets();
   const [connection, setConnection] = useState<ConnectionState>({
     status: 'checking',
@@ -74,7 +67,7 @@ function AppContent({ isDarkMode }: { isDarkMode: boolean }) {
         },
       ]}
     >
-      <Text style={[styles.title, { color: colors.text }]}>PDAE</Text>
+      <Text style={[styles.title, { color: colors.text }]}>Hodlo</Text>
       <Text style={[styles.subtitle, { color: colors.muted }]}>
         React Native {'0.88'} · .NET 10
       </Text>
@@ -238,5 +231,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-
-export default App;
