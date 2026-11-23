@@ -68,10 +68,9 @@ export function SyncProvider({ children }: { children: ReactNode }) {
       const reachable =
         state.isConnected !== false && state.isInternetReachable !== false;
       onlineState.online = reachable;
-
-      if (reachable) {
-        void engine.flush();
-      }
+      // Flushing while offline publishes the offline status for the UI and
+      // resumes the outbox as soon as connectivity returns.
+      void engine.flush();
     });
 
     const appState = AppState.addEventListener('change', (next) => {

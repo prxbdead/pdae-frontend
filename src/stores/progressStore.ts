@@ -39,11 +39,14 @@ export interface ProgressState {
   xpTodayDate: string;
   dailyGoalXp: number;
   streak: StreakState;
+  /** Exercise ids missed at least once and not yet reviewed. */
+  mistakeIds: string[];
   setUser(userId: string | null, dailyGoalXp?: number): Promise<void>;
   hydrate(): Promise<void>;
   applyLocalResult(result: LocalAttemptResult): Promise<void>;
   applyServerResult(result: AttemptResult): Promise<void>;
   setDailyGoal(xp: number): void;
+  clearMistake(exerciseId: string): void;
   clear(): void;
 }
 
@@ -70,6 +73,7 @@ export const useProgressStore = create<ProgressState>()((set, get) => {
       xpTodayDate: state.xpTodayDate,
       dailyGoalXp: state.dailyGoalXp,
       streak: state.streak,
+      mistakeIds: state.mistakeIds,
     };
 
     await repository.save(state.userId, snapshot);
@@ -86,6 +90,7 @@ export const useProgressStore = create<ProgressState>()((set, get) => {
     xpTodayDate: toLocalDateKey(new Date()),
     dailyGoalXp: DEFAULT_DAILY_GOAL,
     streak: { ...EMPTY_STREAK },
+    mistakeIds: [],
 
     setUser: async (userId, dailyGoalXp = DEFAULT_DAILY_GOAL) => {
       set({
@@ -99,6 +104,7 @@ export const useProgressStore = create<ProgressState>()((set, get) => {
         xpTodayDate: toLocalDateKey(new Date()),
         dailyGoalXp: clampDailyGoal(dailyGoalXp),
         streak: { ...EMPTY_STREAK },
+        mistakeIds: [],
       });
 
       if (userId) {
@@ -126,6 +132,7 @@ export const useProgressStore = create<ProgressState>()((set, get) => {
           stored?.dailyGoalXp ?? get().dailyGoalXp,
         ),
         streak: stored?.streak ?? { ...EMPTY_STREAK },
+        mistakeIds: stored?.mistakeIds ?? [],
       });
     },
 
@@ -172,6 +179,9 @@ export const useProgressStore = create<ProgressState>()((set, get) => {
           result.xpEarned,
         xpTodayDate: completedDate,
         streak: { ...state.streak, ...nextStreak },
+        mistakeIds: Array.from(
+          new Set([...(state.mistakeIds ?? []), ...result.mistakes]),
+        ),
       });
 
       await persist();
@@ -230,6 +240,15 @@ export const useProgressStore = create<ProgressState>()((set, get) => {
       void persist();
     },
 
+    clearMistake: (exerciseId) => {
+      set({
+        mistakeIds: (get().mistakeIds ?? []).filter(
+          (id) => id !== exerciseId,
+        ),
+      });
+      void persist();
+    },
+
     clear: () => {
       const { userId } = get();
 
@@ -244,6 +263,7 @@ export const useProgressStore = create<ProgressState>()((set, get) => {
         xpTodayDate: toLocalDateKey(new Date()),
         dailyGoalXp: DEFAULT_DAILY_GOAL,
         streak: { ...EMPTY_STREAK },
+        mistakeIds: [],
       });
 
       if (userId) {

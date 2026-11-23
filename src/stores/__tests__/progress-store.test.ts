@@ -102,6 +102,49 @@ describe('progressStore', () => {
     });
   });
 
+  it('records missed exercises without duplicates', async () => {
+    await useProgressStore.getState().setUser('user-1');
+    await useProgressStore
+      .getState()
+      .applyLocalResult(result({ mistakes: ['e1', 'e2'] }));
+    await useProgressStore.getState().applyLocalResult(
+      result({
+        clientAttemptId: 'client-2',
+        mistakes: ['e2', 'e3'],
+      }),
+    );
+
+    expect(useProgressStore.getState().mistakeIds).toEqual(['e1', 'e2', 'e3']);
+  });
+
+  it('clears one reviewed mistake and persists the rest', async () => {
+    await useProgressStore.getState().setUser('user-1');
+    await useProgressStore
+      .getState()
+      .applyLocalResult(result({ mistakes: ['e1', 'e2'] }));
+
+    useProgressStore.getState().clearMistake('e1');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(useProgressStore.getState().mistakeIds).toEqual(['e2']);
+
+    useProgressStore.setState({ mistakeIds: [] });
+    await useProgressStore.getState().hydrate();
+
+    expect(useProgressStore.getState().mistakeIds).toEqual(['e2']);
+  });
+
+  it('resets mistakes when the user data is cleared', async () => {
+    await useProgressStore.getState().setUser('user-1');
+    await useProgressStore
+      .getState()
+      .applyLocalResult(result({ mistakes: ['e1'] }));
+
+    useProgressStore.getState().clear();
+
+    expect(useProgressStore.getState().mistakeIds).toEqual([]);
+  });
+
   it('clears user data without touching the content pack', async () => {
     await storage.setItem(STORAGE_KEYS.contentPack, '{"version":"1.0.0"}');
     await useProgressStore.getState().setUser('user-1');

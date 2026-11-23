@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { Answer, Exercise, OfflineLesson } from '@/api/contracts';
 import { useContent } from '@/content/ContentProvider';
+import { MISTAKES_LESSON_ID } from '@/features/practice/usePracticeData';
 import { useSync } from '@/offline/SyncProvider';
 import {
   createAsyncStorageKeyValue,
@@ -61,6 +62,7 @@ export function useLessonSession(lessonId: string): LessonSessionValue {
   const applyLocalResult = useProgressStore(
     (state) => state.applyLocalResult,
   );
+  const clearMistake = useProgressStore((state) => state.clearMistake);
   const { enqueue, flush } = useSync();
   const storage = useMemo(() => createAsyncStorageKeyValue(), []);
   const [lesson, setLesson] = useState<OfflineLesson | null>(null);
@@ -187,6 +189,13 @@ export function useLessonSession(lessonId: string): LessonSessionValue {
     const result = scoreAttempt(lesson, session);
 
     await applyLocalResult(result);
+
+    if (result.passed && lesson.id === MISTAKES_LESSON_ID) {
+      for (const exercise of lesson.exercises) {
+        clearMistake(exercise.id);
+      }
+    }
+
     await enqueue({
       clientAttemptId: result.clientAttemptId,
       lessonId: result.lessonId,
@@ -197,7 +206,15 @@ export function useLessonSession(lessonId: string): LessonSessionValue {
     await storage.removeItem(STORAGE_KEYS.lessonSession);
 
     return result;
-  }, [lesson, session, applyLocalResult, enqueue, flush, storage]);
+  }, [
+    lesson,
+    session,
+    applyLocalResult,
+    clearMistake,
+    enqueue,
+    flush,
+    storage,
+  ]);
 
   const retry = useCallback(() => {
     setIsLoading(true);

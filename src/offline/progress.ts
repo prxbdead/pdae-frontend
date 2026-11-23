@@ -20,6 +20,7 @@ export interface PersistedProgress {
   xpTodayDate?: string;
   dailyGoalXp?: number;
   streak?: StreakState;
+  mistakeIds?: string[];
 }
 
 export class ProgressRepository {

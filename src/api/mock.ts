@@ -9,6 +9,7 @@ import type {
   LessonSummary,
   LoginInput,
   OfflinePack,
+  Portfolio,
   RegisterInput,
   SubmitAttemptInput,
   Trade,
@@ -65,17 +66,23 @@ function toSummary(lesson: Lesson): LessonSummary {
  * idempotency and profile updates observable; content comes from the bundled
  * fixture pack.
  */
+function round(value: number, digits: number): number {
+  return Number(value.toFixed(digits));
+}
+
 export class MockApiClient implements ApiClient {
   private currentUser: UserProfile | null = null;
   private readonly attemptsByClientId = new Map<string, AttemptResult>();
   private readonly tradesByClientId = new Map<string, Trade>();
   private readonly progressByLesson = new Map<string, LessonProgress>();
+  private portfolio: Portfolio = clone(mockPortfolio);
 
   reset(): void {
     this.currentUser = null;
     this.attemptsByClientId.clear();
     this.tradesByClientId.clear();
     this.progressByLesson.clear();
+    this.portfolio = clone(mockPortfolio);
   }
 
   private requireUser(): UserProfile {
@@ -247,7 +254,7 @@ export class MockApiClient implements ApiClient {
     getPortfolio: async () => {
       await delay();
 
-      return clone(mockPortfolio);
+      return clone(this.portfolio);
     },
     getQuotes: async (symbols: string[]) => {
       await delay();
@@ -266,7 +273,7 @@ export class MockApiClient implements ApiClient {
     ): Promise<Trade> => {
       await delay();
 
-      if (input.quantity <= 0) {
+      if (!Number.isFinite(input.quantity) || input.quantity <= 0) {
         throw new ApiError('Quantity must be greater than zero', 400, {
           code: 'invalid_quantity',
         });
@@ -284,13 +291,90 @@ export class MockApiClient implements ApiClient {
         throw new ApiError('Unknown symbol', 404, { code: 'not_found' });
       }
 
+      const cost = input.quantity * quote.price;
+      const holding = this.portfolio.holdings.find(
+        (entry) => entry.symbol === input.symbol,
+      );
+
+      if (input.side === 'buy' && cost > this.portfolio.cash + 0.000001) {
+        throw new ApiError('Insufficient virtual cash', 422, {
+          code: 'insufficient_funds',
+        });
+      }
+
+      if (
+        input.side === 'sell' &&
+        input.quantity > (holding?.quantity ?? 0) + 0.000001
+      ) {
+        throw new ApiError('Not enough of that asset to sell', 422, {
+          code: 'insufficient_holdings',
+        });
+      }
+
+      if (input.side === 'buy') {
+        this.portfolio.cash = round(this.portfolio.cash - cost, 2);
+
+        if (holding) {
+          const nextQuantity = round(holding.quantity + input.quantity, 8);
+          holding.averageCost = round(
+            (holding.quantity * holding.averageCost + cost) / nextQuantity,
+            2,
+          );
+          holding.quantity = nextQuantity;
+        } else {
+          this.portfolio.holdings.push({
+            symbol: input.symbol,
+            quantity: round(input.quantity, 8),
+            averageCost: quote.price,
+            currentPrice: quote.price,
+            value: round(cost, 2),
+            pnl: 0,
+          });
+        }
+      } else {
+        this.portfolio.cash = round(this.portfolio.cash + cost, 2);
+
+        if (holding) {
+          holding.quantity = round(holding.quantity - input.quantity, 8);
+
+          if (holding.quantity <= 0.000001) {
+            this.portfolio.holdings = this.portfolio.holdings.filter(
+              (entry) => entry.symbol !== input.symbol,
+            );
+          }
+        }
+      }
+
+      for (const entry of this.portfolio.holdings) {
+        entry.currentPrice = entry.symbol === input.symbol
+          ? quote.price
+          : (mockQuotes.find((item) => item.symbol === entry.symbol)?.price ??
+            entry.currentPrice);
+        entry.value = round(entry.quantity * entry.currentPrice, 2);
+        entry.pnl = round(
+          (entry.currentPrice - entry.averageCost) * entry.quantity,
+          2,
+        );
+      }
+
+      this.portfolio.totalValue = round(
+        this.portfolio.cash +
+          this.portfolio.holdings.reduce((sum, entry) => sum + entry.value, 0),
+        2,
+      );
+      this.portfolio.totalPnl = round(
+        this.portfolio.holdings.reduce((sum, entry) => sum + entry.pnl, 0),
+        2,
+      );
+      this.portfolio.updatedAt = new Date().toISOString();
+
       const trade: Trade = {
         id: `trade-${this.tradesByClientId.size + 1}`,
         symbol: input.symbol,
         side: input.side,
         quantity: input.quantity,
         price: quote.price,
-        executedAt: new Date().toISOString(),
+        executedAt: this.portfolio.updatedAt,
       };
 
       this.tradesByClientId.set(clientTradeId, trade);

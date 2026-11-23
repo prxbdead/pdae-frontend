@@ -110,8 +110,8 @@ export const mockAchievements: Achievement[] = achievementTitles.map(
 
 export const mockPortfolio: Portfolio = {
   cash: 5000,
-  totalValue: 6500,
-  totalPnl: 500,
+  totalValue: 8250,
+  totalPnl: 250,
   holdings: [
     {
       symbol: 'BTC',
