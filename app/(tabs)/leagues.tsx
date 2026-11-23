@@ -1,26 +1,5 @@
-import { StyleSheet, View } from 'react-native';
+import { LeaguesScreen } from '@/features/leagues/LeaguesScreen';
 
-import { EmptyState } from '@/components/ui/EmptyState';
-import { PageHeader } from '@/components/ui/PageHeader';
-import { useTheme } from '@/theme/useTheme';
-
-export default function LeaguesScreen() {
-  const theme = useTheme();
-
-  return (
-    <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
-      <PageHeader title="Leagues" tier="standard" />
-      <EmptyState
-        icon="leagues"
-        title="This week's ladder opens soon"
-        message="Earn XP to join a league and climb."
-      />
-    </View>
-  );
+export default function LeaguesRoute() {
+  return <LeaguesScreen />;
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-});
