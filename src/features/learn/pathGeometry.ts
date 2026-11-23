@@ -1,4 +1,4 @@
-export const NODE_ROW_HEIGHT = 96;
+export const NODE_ROW_HEIGHT = 116;
 export const CHEST_HEIGHT = 76;
 export const PATH_AMPLITUDE = 72;
 

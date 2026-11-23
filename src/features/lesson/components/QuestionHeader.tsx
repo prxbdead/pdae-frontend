@@ -24,23 +24,36 @@ export function QuestionHeader({
         accessibilityLabel="Close lesson"
         onPress={onClose}
         testID="lesson-close"
-        style={styles.close}
+        style={({ pressed }) => [
+          styles.close,
+          {
+            backgroundColor: theme.colors.surface,
+            borderColor: theme.colors.border,
+            opacity: pressed ? 0.75 : 1,
+          },
+        ]}
       >
         <Icon name="close" color={theme.colors.textMuted} size={22} />
       </Pressable>
 
       <View style={styles.progress}>
-        <ProgressBar value={progress} max={1} />
+        <ProgressBar value={progress} max={1} tone="mint" height={16} />
       </View>
 
       <View
         accessible
         accessibilityLabel={`${hearts} hearts remaining`}
-        style={styles.hearts}
+        style={[
+          styles.hearts,
+          {
+            backgroundColor: theme.colors.surface,
+            borderColor: theme.colors.border,
+          },
+        ]}
       >
-        <Icon name="heart" color={theme.colors.danger} size={20} />
+        <Icon name="heart" color={theme.colors.danger} size={18} />
         <Text
-          style={[theme.typography.caption, { color: theme.colors.text }]}
+          style={[theme.typography.caption, styles.count, { color: theme.colors.danger }]}
         >
           {hearts}
         </Text>
@@ -53,22 +66,32 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 12,
+    gap: 10,
     width: '100%',
   },
   close: {
     alignItems: 'center',
-    height: 44,
+    borderRadius: 999,
+    borderWidth: 2,
+    height: 40,
     justifyContent: 'center',
-    width: 44,
+    width: 40,
   },
   progress: {
     flex: 1,
   },
   hearts: {
     alignItems: 'center',
+    borderRadius: 999,
+    borderWidth: 2,
     flexDirection: 'row',
     gap: 4,
-    minWidth: 44,
+    height: 40,
+    justifyContent: 'center',
+    minWidth: 58,
+    paddingHorizontal: 10,
+  },
+  count: {
+    fontWeight: '800',
   },
 });

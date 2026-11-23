@@ -1,10 +1,20 @@
+import { useEffect } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, {
+  cancelAnimation,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
+
 import type { LessonSummary } from '@/api/contracts';
 import { Icon, ProgressRing } from '@/components/ui';
+import { useReducedMotion } from '@/theme/useReducedMotion';
 import { ledgeColors } from '@/theme/tokens';
 
 import { nodeOffsetX } from './pathGeometry';
 import { useTheme } from '@/theme/useTheme';
-import { Pressable, StyleSheet, View } from 'react-native';
 
 const STATUS_LABEL = {
   locked: 'locked',
@@ -16,14 +26,36 @@ const STATUS_LABEL = {
 export interface PathNodeProps {
   lesson: LessonSummary;
   index: number;
+  isCurrent?: boolean;
   onPress?: () => void;
 }
 
-export function PathNode({ lesson, index, onPress }: PathNodeProps) {
+export function PathNode({
+  lesson,
+  index,
+  isCurrent = false,
+  onPress,
+}: PathNodeProps) {
   const theme = useTheme();
+  const reducedMotion = useReducedMotion();
   const locked = lesson.status === 'locked';
   const completed = lesson.status === 'completed';
   const inProgress = lesson.status === 'in_progress';
+  const bob = useSharedValue(0);
+
+  useEffect(() => {
+    if (!isCurrent || reducedMotion) {
+      return;
+    }
+
+    bob.value = withRepeat(withTiming(-4, { duration: 800 }), -1, true);
+
+    return () => cancelAnimation(bob);
+  }, [bob, isCurrent, reducedMotion]);
+
+  const bubbleStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: bob.value }],
+  }));
 
   const fill = completed
     ? theme.colors.success
@@ -48,39 +80,65 @@ export function PathNode({ lesson, index, onPress }: PathNodeProps) {
         { transform: [{ translateX: nodeOffsetX(index) }] },
       ]}
     >
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`Lesson ${index + 1}, ${STATUS_LABEL[lesson.status]}`}
-        accessibilityState={{ disabled: locked }}
-        disabled={locked}
-        onPress={onPress}
-        testID={`path-node-${lesson.id}`}
+      {isCurrent ? (
+        <Animated.View style={[styles.startBubble, bubbleStyle]}>
+          <Text
+            style={[
+              theme.typography.caption,
+              styles.startText,
+              { color: theme.colors.primary },
+            ]}
+          >
+            START
+          </Text>
+        </Animated.View>
+      ) : null}
+
+      <View
         style={[
-          styles.node,
-          {
-            backgroundColor: fill,
-            borderBottomColor: ledge,
-            borderBottomWidth: 4,
-          },
+          styles.nodeLedge,
+          { backgroundColor: ledge, borderRadius: 44 },
         ]}
       >
-        {inProgress ? (
-          <ProgressRing
-            value={lesson.bestScore ?? 0.5}
-            size={44}
-            strokeWidth={4}
-            tone="mint"
-            label={`Lesson ${index + 1} progress`}
-            showLabel={false}
-          />
-        ) : (
-          <Icon
-            name={completed ? 'check' : locked ? 'lock' : 'play'}
-            color={iconColor}
-            size={28}
-          />
-        )}
-      </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Lesson ${index + 1}, ${STATUS_LABEL[lesson.status]}`}
+          accessibilityState={{ disabled: locked }}
+          disabled={locked}
+          onPress={onPress}
+          testID={`path-node-${lesson.id}`}
+          style={({ pressed }) => [
+            styles.node,
+            {
+              backgroundColor: fill,
+              borderColor: locked ? theme.colors.border : ledge,
+              borderRadius: 44,
+              transform: [{ translateY: pressed ? 4 : 0 }],
+            },
+          ]}
+        >
+          {!locked ? (
+            <View pointerEvents="none" style={styles.highlight} />
+          ) : null}
+
+          {inProgress ? (
+            <ProgressRing
+              value={lesson.bestScore ?? 0.5}
+              size={46}
+              strokeWidth={4}
+              tone="mint"
+              label={`Lesson ${index + 1} progress`}
+              showLabel={false}
+            />
+          ) : (
+            <Icon
+              name={completed ? 'check' : locked ? 'lock' : 'play'}
+              color={iconColor}
+              size={30}
+            />
+          )}
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -103,7 +161,8 @@ export function ChestTile({ testID }: { testID?: string }) {
           {
             backgroundColor: theme.colors.warning,
             borderBottomColor: ledgeColors.yellow,
-            borderBottomWidth: 4,
+            borderBottomWidth: 5,
+            borderRadius: 18,
           },
         ]}
       >
@@ -116,15 +175,48 @@ export function ChestTile({ testID }: { testID?: string }) {
 const styles = StyleSheet.create({
   row: {
     alignItems: 'center',
-    height: 96,
-    justifyContent: 'center',
+    height: 116,
+    justifyContent: 'flex-end',
+    paddingBottom: 4,
+  },
+  nodeLedge: {
+    alignItems: 'center',
+    height: 84,
+    justifyContent: 'flex-start',
+    width: 84,
   },
   node: {
     alignItems: 'center',
-    borderRadius: 36,
-    height: 72,
+    borderWidth: 4,
+    height: 80,
     justifyContent: 'center',
-    width: 72,
+    overflow: 'hidden',
+    width: 80,
+  },
+  highlight: {
+    position: 'absolute',
+    top: 7,
+    left: 7,
+    right: 7,
+    bottom: 7,
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.18)',
+  },
+  startBubble: {
+    position: 'absolute',
+    top: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 3,
+    borderRadius: 999,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#C9BFE8',
+    borderWidth: 2,
+    zIndex: 2,
+  },
+  startText: {
+    fontWeight: '900',
+    letterSpacing: 1,
   },
   chestRow: {
     alignItems: 'center',
@@ -133,7 +225,6 @@ const styles = StyleSheet.create({
   },
   chest: {
     alignItems: 'center',
-    borderRadius: 16,
     height: 56,
     justifyContent: 'center',
     width: 56,

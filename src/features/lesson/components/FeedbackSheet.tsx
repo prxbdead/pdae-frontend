@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Button, Sheet } from '@/components/ui';
+import { Button } from '@/components/ui';
 import { useTheme } from '@/theme/useTheme';
 
 export interface FeedbackSheetProps {
@@ -20,55 +20,77 @@ export function FeedbackSheet({
 }: FeedbackSheetProps) {
   const theme = useTheme();
 
+  if (!visible) {
+    return null;
+  }
+
+  const ink = correct ? theme.colors.onSuccess : theme.colors.onDanger;
+
   return (
-    <Sheet visible={visible} title={correct ? 'Correct!' : 'Not quite'}>
+    <View
+      accessibilityLiveRegion="polite"
+      testID="feedback-panel"
+      style={[
+        styles.panel,
+        {
+          backgroundColor: correct
+            ? theme.colors.success
+            : theme.colors.danger,
+          borderTopLeftRadius: theme.radii.lg,
+          borderTopRightRadius: theme.radii.lg,
+        },
+      ]}
+    >
       <View
-        accessibilityLiveRegion="polite"
-        style={[
-          styles.banner,
-          {
-            backgroundColor: correct
-              ? theme.colors.success
-              : theme.colors.danger,
-            borderRadius: theme.radii.md,
-          },
-        ]}
+        style={[styles.inner, { maxWidth: theme.breakpoints.lessonWidth }]}
       >
-        <Text
-          style={[
-            theme.typography.heading,
-            {
-              color: correct
-                ? theme.colors.onSuccess
-                : theme.colors.onDanger,
-            },
-          ]}
-        >
-          {correct ? 'Nice work.' : 'Here is the idea.'}
+        <Text style={[theme.typography.title, { color: ink }]}>
+          {correct ? 'Correct!' : 'Not quite'}
         </Text>
+
+        {explanation ? (
+          <Text style={[theme.typography.body, styles.copy, { color: ink }]}>
+            {explanation}
+          </Text>
+        ) : null}
+
+        {!correct && correctAnswerLabel ? (
+          <Text
+            style={[theme.typography.body, styles.answer, { color: ink }]}
+          >
+            Correct answer: {correctAnswerLabel}
+          </Text>
+        ) : null}
+
+        <Button
+          label="Continue"
+          onPress={onContinue}
+          variant="contrast"
+          size="lg"
+          fullWidth
+          testID="feedback-continue"
+        />
       </View>
-
-      {explanation ? (
-        <Text style={[theme.typography.body, { color: theme.colors.text }]}>
-          {explanation}
-        </Text>
-      ) : null}
-
-      {!correct && correctAnswerLabel ? (
-        <Text
-          style={[theme.typography.body, { color: theme.colors.textMuted }]}
-        >
-          Correct answer: {correctAnswerLabel}
-        </Text>
-      ) : null}
-
-      <Button label="Continue" onPress={onContinue} fullWidth testID="feedback-continue" />
-    </Sheet>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  banner: {
-    padding: 12,
+  panel: {
+    paddingBottom: 20,
+    paddingTop: 20,
+    width: '100%',
+  },
+  inner: {
+    alignSelf: 'center',
+    gap: 10,
+    paddingHorizontal: 16,
+    width: '100%',
+  },
+  copy: {
+    opacity: 0.95,
+  },
+  answer: {
+    fontWeight: '800',
   },
 });

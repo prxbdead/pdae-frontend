@@ -7,6 +7,8 @@ export interface ProgressBarProps {
   max?: number;
   tone?: 'purple' | 'mint' | 'yellow' | 'coral';
   label?: string;
+  /** Bar thickness in pixels; defaults to 12. */
+  height?: number;
 }
 
 export function ProgressBar({
@@ -14,6 +16,7 @@ export function ProgressBar({
   max = 1,
   tone = 'purple',
   label,
+  height = 12,
 }: ProgressBarProps) {
   const theme = useTheme();
   const upperBound = max > 0 ? max : 1;
@@ -47,6 +50,7 @@ export function ProgressBar({
           {
             backgroundColor: theme.colors.surfaceAlt,
             borderRadius: theme.radii.pill,
+            height,
           },
         ]}
       >

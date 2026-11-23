@@ -34,6 +34,15 @@ export function LearnScreen() {
     {},
   );
 
+  const currentLessonId =
+    units
+      .flatMap((unit) => unit.lessons)
+      .find((lesson) => lesson.status === 'in_progress')?.id ??
+    units
+      .flatMap((unit) => unit.lessons)
+      .find((lesson) => lesson.status === 'available')?.id ??
+    null;
+
   const unitOffset = (targetId: string): number => {
     let y = 0;
 
@@ -96,6 +105,7 @@ export function LearnScreen() {
             <PathNode
               lesson={lesson}
               index={index}
+              isCurrent={lesson.id === currentLessonId}
               onPress={() => router.push(`/lesson/${lesson.id}`)}
             />
             {(index + 1) % 4 === 0 ? (

@@ -21,7 +21,7 @@ import { Icon } from './Icon';
 export interface ButtonProps {
   label: string;
   onPress(): void;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'contrast';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
@@ -64,7 +64,9 @@ export function Button({
         ? theme.colors.secondary
         : variant === 'danger'
           ? theme.colors.danger
-          : 'transparent';
+          : variant === 'contrast'
+            ? theme.colors.surface
+            : 'transparent';
 
   const labelColor = showDisabled
     ? theme.colors.textMuted
@@ -74,7 +76,9 @@ export function Button({
         ? theme.colors.onSecondary
         : variant === 'danger'
           ? theme.colors.onDanger
-          : theme.colors.primary;
+          : variant === 'contrast'
+            ? theme.colors.text
+            : theme.colors.primary;
 
   const ledge = showDisabled
     ? theme.colors.border
@@ -84,7 +88,9 @@ export function Button({
         ? ledgeColors.lilac
         : variant === 'danger'
           ? ledgeColors.coral
-          : 'transparent';
+          : variant === 'contrast'
+            ? theme.colors.border
+            : 'transparent';
 
   const height = HEIGHTS[size];
 

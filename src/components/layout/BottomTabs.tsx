@@ -35,11 +35,18 @@ export function BottomTabs() {
             onPress={() => router.replace(tab.href)}
             style={styles.tab}
           >
-            <Icon
-              name={tab.icon}
-              size={24}
-              color={selected ? theme.colors.primary : theme.colors.textMuted}
-            />
+            <View
+              style={[
+                styles.iconWrap,
+                selected && { backgroundColor: theme.colors.surfaceAlt },
+              ]}
+            >
+              <Icon
+                name={tab.icon}
+                size={24}
+                color={selected ? theme.colors.primary : theme.colors.textMuted}
+              />
+            </View>
             <Text
               style={[
                 theme.typography.caption,
@@ -69,9 +76,16 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     minHeight: 56,
-    paddingVertical: 8,
+    paddingVertical: 6,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
+    gap: 2,
+  },
+  iconWrap: {
+    alignItems: 'center',
+    borderRadius: 14,
+    height: 34,
+    justifyContent: 'center',
+    width: 52,
   },
 });

@@ -78,11 +78,13 @@ export default function LessonIntroScreen() {
             >
               {lesson.estimatedMinutes} min
             </Text>
-            <Text
-              style={[theme.typography.caption, { color: theme.colors.text }]}
-            >
-              {lesson.xpReward} XP
-            </Text>
+            {lesson.xpReward > 0 ? (
+              <Text
+                style={[theme.typography.caption, { color: theme.colors.text }]}
+              >
+                {lesson.xpReward} XP
+              </Text>
+            ) : null}
           </View>
 
           <Button
@@ -123,8 +125,8 @@ const styles = StyleSheet.create({
   hero: {
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 180,
     overflow: 'hidden',
+    paddingVertical: 24,
   },
   meta: {
     flexDirection: 'row',
