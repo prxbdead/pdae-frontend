@@ -1,13 +1,7 @@
-import { useEffect } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Animated, StyleSheet, Text } from 'react-native';
 
 import { Icon } from '@/components/ui';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
 
 import { motion } from '@/theme/tokens';
 import { useReducedMotion } from '@/theme/useReducedMotion';
@@ -25,30 +19,35 @@ export interface XpBurstProps {
 export function XpBurst({ value, testID }: XpBurstProps) {
   const theme = useTheme();
   const reducedMotion = useReducedMotion();
-  const scale = useSharedValue(1);
+  const [scale] = useState(() => new Animated.Value(1));
 
   useEffect(() => {
     if (reducedMotion) {
-      scale.set(1);
+      scale.setValue(1);
 
       return;
     }
 
-    scale.set(0.8);
-    scale.set(
-      withSequence(
-        withTiming(1.08, { duration: motion.press }),
-        withTiming(1, { duration: motion.ui }),
-      ),
-    );
+    scale.setValue(0.8);
+    const animation = Animated.sequence([
+      Animated.timing(scale, {
+        toValue: 1.08,
+        duration: motion.press,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: motion.ui,
+        useNativeDriver: true,
+      }),
+    ]);
+    animation.start();
+
+    return () => animation.stop();
   }, [reducedMotion, scale, value]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
   return (
-    <Animated.View style={[styles.wrapper, animatedStyle]}>
+    <Animated.View style={[styles.wrapper, { transform: [{ scale }] }]}>
       <Icon name="bolt" size={44} />
       <Text
         testID={testID}

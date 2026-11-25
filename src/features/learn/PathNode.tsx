@@ -1,12 +1,5 @@
-import { useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated, {
-  cancelAnimation,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from 'react-native-reanimated';
+import { useEffect, useState } from 'react';
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { LessonSummary } from '@/api/contracts';
 import { Artwork } from '@/components/ui/Artwork';
@@ -43,21 +36,37 @@ export function PathNode({
   const completed = lesson.status === 'completed';
   const inProgress = lesson.status === 'in_progress';
   const badge = locked ? 'locked' : completed ? 'completed' : 'level';
-  const bob = useSharedValue(0);
+  const [bob] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     if (!isCurrent || reducedMotion) {
       return;
     }
 
-    bob.value = withRepeat(withTiming(-4, { duration: 850 }), -1, true);
+    // Bob up and back down forever, matching the old repeat-with-reverse.
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(bob, {
+          toValue: -4,
+          duration: 850,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bob, {
+          toValue: 0,
+          duration: 850,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    animation.start();
 
-    return () => cancelAnimation(bob);
+    return () => {
+      animation.stop();
+      bob.setValue(0);
+    };
   }, [bob, isCurrent, reducedMotion]);
 
-  const bubbleStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: bob.value }],
-  }));
+  const bubbleStyle = { transform: [{ translateY: bob }] };
 
   return (
     <View

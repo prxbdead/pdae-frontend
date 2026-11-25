@@ -35,6 +35,9 @@ jobs:
       - name: Build web
         run: npm run build:web
 
+      - name: Check initial web JS size
+        run: npm run check:bundle-size
+
       - name: Upload web build
         uses: actions/upload-artifact@v4
         with:

@@ -1,16 +1,12 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
 
 import { useApi } from '@/api/ApiProvider';
 import { ApiError } from '@/api/errors';
 import { useSessionStore } from '@/auth/sessionStore';
 import { AuthDivider, AuthError, AuthScreen } from '@/auth/AuthScreen';
-import {
-  loginFormSchema,
-  type LoginFormValues,
-} from '@/auth/validation';
+import { loginFormSchema } from '@/auth/validation';
+import { useSchemaForm } from '@/auth/useSchemaForm';
 import { Button, TextField } from '@/components/ui';
 
 export default function LoginScreen() {
@@ -21,22 +17,15 @@ export default function LoginScreen() {
   const [apiError, setApiError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginFormSchema),
-    mode: 'onChange',
-    defaultValues: { email: '', password: '' },
-  });
+  const { values, errors, isValid, setField, blurField, handleSubmit } =
+    useSchemaForm(loginFormSchema, { email: '', password: '' });
 
-  const onSubmit = handleSubmit(async (values) => {
+  const onSubmit = handleSubmit(async (submitted) => {
     setApiError(null);
     setSubmitting(true);
 
     try {
-      const user = await client.auth.login(values);
+      const user = await client.auth.login(submitted);
 
       await signIn(user);
       router.replace(consumeReturnTo() ?? '/(tabs)/learn');
@@ -59,42 +48,30 @@ export default function LoginScreen() {
     >
       {apiError ? <AuthError message={apiError} /> : null}
 
-      <Controller
-        control={control}
-        name="email"
-        render={({ field }) => (
-          <TextField
-            label="Email"
-            testID="login-email"
-            value={field.value}
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            error={errors.email?.message}
-            autoCapitalize="none"
-            autoComplete="email"
-            textContentType="emailAddress"
-            keyboardType="email-address"
-            inputMode="email"
-          />
-        )}
+      <TextField
+        label="Email"
+        testID="login-email"
+        value={values.email}
+        onChangeText={(text) => setField('email', text)}
+        onBlur={() => blurField('email')}
+        error={errors.email}
+        autoCapitalize="none"
+        autoComplete="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
+        inputMode="email"
       />
 
-      <Controller
-        control={control}
-        name="password"
-        render={({ field }) => (
-          <TextField
-            label="Password"
-            testID="login-password"
-            value={field.value}
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            error={errors.password?.message}
-            secureTextEntry
-            autoComplete="current-password"
-            textContentType="password"
-          />
-        )}
+      <TextField
+        label="Password"
+        testID="login-password"
+        value={values.password}
+        onChangeText={(text) => setField('password', text)}
+        onBlur={() => blurField('password')}
+        error={errors.password}
+        secureTextEntry
+        autoComplete="current-password"
+        textContentType="password"
       />
 
       <Button
@@ -115,8 +92,6 @@ export default function LoginScreen() {
         onPress={() => router.push('/register')}
         fullWidth
       />
-
-
     </AuthScreen>
   );
 }

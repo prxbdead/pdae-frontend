@@ -1,10 +1,12 @@
-import { z } from 'zod';
+// zod/mini is used instead of the full zod entry: the root bundle imports this
+// file, and mini's functional API tree-shakes to only what is referenced here.
+import * as z from './schema';
 
 /* ------------------------------------------------------------------ */
 /* Shared primitives                                                   */
 /* ------------------------------------------------------------------ */
 
-export const characterIdSchema = z.enum([
+export const characterIdSchema = z.enumOf([
   'hodlo',
   'chip',
   'tank',
@@ -12,20 +14,20 @@ export const characterIdSchema = z.enum([
   'vex',
 ]);
 
-export const experienceLevelSchema = z.enum([
+export const experienceLevelSchema = z.enumOf([
   'beginner',
   'intermediate',
   'advanced',
 ]);
 
-export const lessonStatusSchema = z.enum([
+export const lessonStatusSchema = z.enumOf([
   'locked',
   'available',
   'in_progress',
   'completed',
 ]);
 
-export const accentSchema = z.enum([
+export const accentSchema = z.enumOf([
   'purple',
   'mint',
   'coral',
@@ -38,11 +40,11 @@ export const accentSchema = z.enum([
 /* ------------------------------------------------------------------ */
 
 export const streakStateSchema = z.object({
-  current: z.number().int().nonnegative(),
-  longest: z.number().int().nonnegative(),
-  lastLessonDate: z.string().nullable(),
-  freezesEquipped: z.number().int().nonnegative(),
-  restDay: z.number().int().min(0).max(6).nullable(),
+  current: z.int().check(z.nonnegative()),
+  longest: z.int().check(z.nonnegative()),
+  lastLessonDate: z.nullable(z.string()),
+  freezesEquipped: z.int().check(z.nonnegative()),
+  restDay: z.nullable(z.int().check(z.gte(0), z.lte(6))),
 });
 
 export const userProfileSchema = z.object({
@@ -52,11 +54,11 @@ export const userProfileSchema = z.object({
   characterId: characterIdSchema,
   experienceLevel: experienceLevelSchema,
   interests: z.array(z.string()),
-  dailyGoalXp: z.number().int().positive(),
-  xp: z.number().int().nonnegative(),
-  gems: z.number().int().nonnegative(),
-  hearts: z.number().int().nonnegative(),
-  maxHearts: z.number().int().positive(),
+  dailyGoalXp: z.int().check(z.positive()),
+  xp: z.int().check(z.nonnegative()),
+  gems: z.int().check(z.nonnegative()),
+  hearts: z.int().check(z.nonnegative()),
+  maxHearts: z.int().check(z.positive()),
   timezone: z.string(),
   streak: streakStateSchema,
   onboardingCompleted: z.boolean(),
@@ -64,24 +66,24 @@ export const userProfileSchema = z.object({
 });
 
 export const updateProfileInputSchema = z.object({
-  displayName: z.string().min(1).max(40).optional(),
-  characterId: characterIdSchema.optional(),
-  experienceLevel: experienceLevelSchema.optional(),
-  interests: z.array(z.string()).optional(),
-  dailyGoalXp: z.number().int().positive().optional(),
-  timezone: z.string().optional(),
-  onboardingCompleted: z.boolean().optional(),
+  displayName: z.optional(z.string().check(z.minLength(1), z.maxLength(40))),
+  characterId: z.optional(characterIdSchema),
+  experienceLevel: z.optional(experienceLevelSchema),
+  interests: z.optional(z.array(z.string())),
+  dailyGoalXp: z.optional(z.int().check(z.positive())),
+  timezone: z.optional(z.string()),
+  onboardingCompleted: z.optional(z.boolean()),
 });
 
 export const registerInputSchema = z.object({
-  displayName: z.string().min(1).max(40),
-  email: z.string().email(),
-  password: z.string().min(8),
+  displayName: z.string().check(z.minLength(1), z.maxLength(40)),
+  email: z.string().check(z.email()),
+  password: z.string().check(z.minLength(8)),
 });
 
 export const loginInputSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
+  email: z.string().check(z.email()),
+  password: z.string().check(z.minLength(1)),
 });
 
 /* ------------------------------------------------------------------ */
@@ -93,11 +95,11 @@ export const learningModuleSchema = z.object({
   slug: z.string(),
   title: z.string(),
   description: z.string(),
-  order: z.number().int().nonnegative(),
-  unitNumber: z.number().int().positive(),
+  order: z.int().check(z.nonnegative()),
+  unitNumber: z.int().check(z.positive()),
   teacherCharacterId: characterIdSchema,
   accent: accentSchema,
-  lessonCount: z.number().int().nonnegative(),
+  lessonCount: z.int().check(z.nonnegative()),
 });
 
 export const lessonSummarySchema = z.object({
@@ -105,19 +107,19 @@ export const lessonSummarySchema = z.object({
   moduleId: z.string(),
   title: z.string(),
   description: z.string(),
-  order: z.number().int().nonnegative(),
-  kind: z.enum(['lesson', 'chest', 'character_intro']),
-  xpReward: z.number().int().nonnegative(),
-  estimatedMinutes: z.number().positive(),
+  order: z.int().check(z.nonnegative()),
+  kind: z.enumOf(['lesson', 'chest', 'character_intro']),
+  xpReward: z.int().check(z.nonnegative()),
+  estimatedMinutes: z.number().check(z.positive()),
   status: lessonStatusSchema,
-  bestScore: z.number().min(0).max(1).optional(),
+  bestScore: z.optional(z.number().check(z.gte(0), z.lte(1))),
 });
 
 export const lessonProgressSchema = z.object({
   lessonId: z.string(),
   status: lessonStatusSchema,
-  bestScore: z.number().min(0).max(1).optional(),
-  attempts: z.number().int().nonnegative(),
+  bestScore: z.optional(z.number().check(z.gte(0), z.lte(1))),
+  attempts: z.int().check(z.nonnegative()),
 });
 
 const optionSchema = z.object({
@@ -135,14 +137,14 @@ const candleSchema = z.object({
 const baseExerciseFields = {
   id: z.string(),
   prompt: z.string(),
-  explanation: z.string().optional(),
+  explanation: z.optional(z.string()),
 };
 
 export const exerciseSchema = z.discriminatedUnion('type', [
   z.object({
     ...baseExerciseFields,
     type: z.literal('multiple_choice'),
-    options: z.array(optionSchema).min(2),
+    options: z.array(optionSchema).check(z.minLength(2)),
   }),
   z.object({
     ...baseExerciseFields,
@@ -152,57 +154,57 @@ export const exerciseSchema = z.discriminatedUnion('type', [
   z.object({
     ...baseExerciseFields,
     type: z.literal('fill_blank'),
-    parts: z.array(z.string()).min(2),
-    blankCount: z.number().int().positive(),
+    parts: z.array(z.string()).check(z.minLength(2)),
+    blankCount: z.int().check(z.positive()),
   }),
   z.object({
     ...baseExerciseFields,
     type: z.literal('match_pairs'),
-    left: z.array(optionSchema).min(2),
-    right: z.array(optionSchema).min(2),
+    left: z.array(optionSchema).check(z.minLength(2)),
+    right: z.array(optionSchema).check(z.minLength(2)),
   }),
   z.object({
     ...baseExerciseFields,
     type: z.literal('order_steps'),
-    steps: z.array(optionSchema).min(2),
+    steps: z.array(optionSchema).check(z.minLength(2)),
   }),
   z.object({
     ...baseExerciseFields,
     type: z.literal('read_chart'),
-    candles: z.array(candleSchema).min(1),
-    options: z.array(optionSchema).min(2),
+    candles: z.array(candleSchema).check(z.minLength(1)),
+    options: z.array(optionSchema).check(z.minLength(2)),
   }),
   z.object({
     ...baseExerciseFields,
     type: z.literal('spot_scam'),
     artifact: z.object({
-      kind: z.enum(['dm', 'email', 'token_page']),
+      kind: z.enumOf(['dm', 'email', 'token_page']),
       title: z.string(),
       body: z.string(),
     }),
     hotspots: z
-      .array(optionSchema.extend({ label: z.string(), text: z.string() }))
-      .min(1),
+      .array(z.extend(optionSchema, { label: z.string(), text: z.string() }))
+      .check(z.minLength(1)),
   }),
   z.object({
     ...baseExerciseFields,
     type: z.literal('risk_calculator'),
-    balance: z.number().positive(),
-    riskPercent: z.number().positive(),
-    entry: z.number().positive(),
-    stop: z.number().positive(),
+    balance: z.number().check(z.positive()),
+    riskPercent: z.number().check(z.positive()),
+    entry: z.number().check(z.positive()),
+    stop: z.number().check(z.positive()),
   }),
   z.object({
     ...baseExerciseFields,
     type: z.literal('dca_timeline'),
-    prices: z.array(z.number().positive()).min(2),
-    options: z.array(z.enum(['buy', 'hold', 'sell'])).min(2),
+    prices: z.array(z.number().check(z.positive())).check(z.minLength(2)),
+    options: z.array(z.enumOf(['buy', 'hold', 'sell'])).check(z.minLength(2)),
   }),
   z.object({
     ...baseExerciseFields,
     type: z.literal('story_card'),
     body: z.string(),
-    options: z.array(optionSchema).min(2),
+    options: z.array(optionSchema).check(z.minLength(2)),
   }),
 ]);
 
@@ -233,18 +235,18 @@ export const answerSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('risk_calculator'), positionSize: z.number() }),
   z.object({
     type: z.literal('dca_timeline'),
-    action: z.enum(['buy', 'hold', 'sell']),
+    action: z.enumOf(['buy', 'hold', 'sell']),
   }),
   z.object({ type: z.literal('story_card'), optionId: z.string() }),
 ]);
 
 export const answerKeySchema = z.record(z.string(), answerSchema);
 
-export const lessonSchema = lessonSummarySchema.extend({
+export const lessonSchema = z.extend(lessonSummarySchema, {
   exercises: z.array(exerciseSchema),
 });
 
-export const offlineLessonSchema = lessonSchema.extend({
+export const offlineLessonSchema = z.extend(lessonSchema, {
   answerKey: answerKeySchema,
 });
 
@@ -270,15 +272,15 @@ export const submitAttemptInputSchema = z.object({
   startedAt: z.string(),
   completedAt: z.string(),
   answers: z.array(submittedAnswerSchema),
-  score: z.number().min(0).max(1),
+  score: z.number().check(z.gte(0), z.lte(1)),
   passed: z.boolean(),
-  xpEarned: z.number().int().nonnegative(),
-  heartsLost: z.number().int().nonnegative(),
+  xpEarned: z.int().check(z.nonnegative()),
+  heartsLost: z.int().check(z.nonnegative()),
   mistakes: z.array(z.string()),
 });
 
 export const levelUpSchema = z.object({
-  level: z.number().int().positive(),
+  level: z.int().check(z.positive()),
   title: z.string(),
 });
 
@@ -287,21 +289,21 @@ export const achievementSchema = z.object({
   title: z.string(),
   description: z.string(),
   icon: z.string(),
-  earnedAt: z.string().nullable(),
-  progress: z.number().nonnegative(),
-  target: z.number().positive(),
+  earnedAt: z.nullable(z.string()),
+  progress: z.number().check(z.nonnegative()),
+  target: z.number().check(z.positive()),
 });
 
 export const attemptResultSchema = z.object({
   attemptId: z.string(),
   clientAttemptId: z.string(),
   lessonId: z.string(),
-  score: z.number().min(0).max(1),
+  score: z.number().check(z.gte(0), z.lte(1)),
   passed: z.boolean(),
-  xpEarned: z.number().int().nonnegative(),
-  hearts: z.number().int().nonnegative(),
+  xpEarned: z.int().check(z.nonnegative()),
+  hearts: z.int().check(z.nonnegative()),
   streak: streakStateSchema,
-  levelUp: levelUpSchema.optional(),
+  levelUp: z.optional(levelUpSchema),
   newAchievements: z.array(achievementSchema),
 });
 
@@ -309,7 +311,7 @@ export const attemptResultSchema = z.object({
 /* Leaderboard                                                         */
 /* ------------------------------------------------------------------ */
 
-export const leaderboardTierSchema = z.enum([
+export const leaderboardTierSchema = z.enumOf([
   'bronze',
   'silver',
   'gold',
@@ -320,8 +322,8 @@ export const leaderboardTierSchema = z.enum([
 export const leaderboardEntrySchema = z.object({
   userId: z.string(),
   displayName: z.string(),
-  xp: z.number().int().nonnegative(),
-  rank: z.number().int().positive(),
+  xp: z.int().check(z.nonnegative()),
+  rank: z.int().check(z.positive()),
   tier: leaderboardTierSchema,
 });
 
@@ -329,8 +331,8 @@ export const leaderboardSchema = z.object({
   tier: leaderboardTierSchema,
   endsAt: z.string(),
   currentUserId: z.string(),
-  promotionZone: z.number().int().nonnegative(),
-  demotionZone: z.number().int().nonnegative(),
+  promotionZone: z.int().check(z.nonnegative()),
+  demotionZone: z.int().check(z.nonnegative()),
   entries: z.array(leaderboardEntrySchema),
 });
 
@@ -340,16 +342,16 @@ export const leaderboardSchema = z.object({
 
 export const holdingSchema = z.object({
   symbol: z.string(),
-  quantity: z.number().nonnegative(),
-  averageCost: z.number().nonnegative(),
-  currentPrice: z.number().nonnegative(),
-  value: z.number().nonnegative(),
+  quantity: z.number().check(z.gte(0)),
+  averageCost: z.number().check(z.gte(0)),
+  currentPrice: z.number().check(z.gte(0)),
+  value: z.number().check(z.gte(0)),
   pnl: z.number(),
 });
 
 export const portfolioSchema = z.object({
-  cash: z.number().nonnegative(),
-  totalValue: z.number().nonnegative(),
+  cash: z.number().check(z.gte(0)),
+  totalValue: z.number().check(z.gte(0)),
   totalPnl: z.number(),
   holdings: z.array(holdingSchema),
   updatedAt: z.string(),
@@ -357,7 +359,7 @@ export const portfolioSchema = z.object({
 
 export const quoteSchema = z.object({
   symbol: z.string(),
-  price: z.number().nonnegative(),
+  price: z.number().check(z.gte(0)),
   change24h: z.number(),
   updatedAt: z.string(),
 });
@@ -365,16 +367,16 @@ export const quoteSchema = z.object({
 export const tradeSchema = z.object({
   id: z.string(),
   symbol: z.string(),
-  side: z.enum(['buy', 'sell']),
-  quantity: z.number().positive(),
-  price: z.number().nonnegative(),
+  side: z.enumOf(['buy', 'sell']),
+  quantity: z.number().check(z.positive()),
+  price: z.number().check(z.gte(0)),
   executedAt: z.string(),
 });
 
 export const placeTradeInputSchema = z.object({
   symbol: z.string(),
-  side: z.enum(['buy', 'sell']),
-  quantity: z.number().positive(),
+  side: z.enumOf(['buy', 'sell']),
+  quantity: z.number().check(z.positive()),
 });
 
 /* ------------------------------------------------------------------ */
@@ -382,49 +384,49 @@ export const placeTradeInputSchema = z.object({
 /* ------------------------------------------------------------------ */
 
 export const problemDetailsSchema = z.object({
-  type: z.string().optional(),
+  type: z.optional(z.string()),
   title: z.string(),
-  status: z.number().int(),
-  detail: z.string().optional(),
-  code: z.string().optional(),
+  status: z.int(),
+  detail: z.optional(z.string()),
+  code: z.optional(z.string()),
 });
 
 /* ------------------------------------------------------------------ */
 /* Inferred types                                                      */
 /* ------------------------------------------------------------------ */
 
-export type CharacterId = z.infer<typeof characterIdSchema>;
-export type ExperienceLevel = z.infer<typeof experienceLevelSchema>;
-export type LessonStatus = z.infer<typeof lessonStatusSchema>;
-export type StreakState = z.infer<typeof streakStateSchema>;
-export type UserProfile = z.infer<typeof userProfileSchema>;
-export type UpdateProfileInput = z.infer<typeof updateProfileInputSchema>;
-export type RegisterInput = z.infer<typeof registerInputSchema>;
-export type LoginInput = z.infer<typeof loginInputSchema>;
-export type LearningModule = z.infer<typeof learningModuleSchema>;
-export type LessonSummary = z.infer<typeof lessonSummarySchema>;
-export type LessonProgress = z.infer<typeof lessonProgressSchema>;
-export type Exercise = z.infer<typeof exerciseSchema>;
+export type CharacterId = z.Infer<typeof characterIdSchema>;
+export type ExperienceLevel = z.Infer<typeof experienceLevelSchema>;
+export type LessonStatus = z.Infer<typeof lessonStatusSchema>;
+export type StreakState = z.Infer<typeof streakStateSchema>;
+export type UserProfile = z.Infer<typeof userProfileSchema>;
+export type UpdateProfileInput = z.Infer<typeof updateProfileInputSchema>;
+export type RegisterInput = z.Infer<typeof registerInputSchema>;
+export type LoginInput = z.Infer<typeof loginInputSchema>;
+export type LearningModule = z.Infer<typeof learningModuleSchema>;
+export type LessonSummary = z.Infer<typeof lessonSummarySchema>;
+export type LessonProgress = z.Infer<typeof lessonProgressSchema>;
+export type Exercise = z.Infer<typeof exerciseSchema>;
 export type ExerciseType = (typeof EXERCISE_TYPES)[number];
-export type Answer = z.infer<typeof answerSchema>;
-export type AnswerKey = z.infer<typeof answerKeySchema>;
-export type Lesson = z.infer<typeof lessonSchema>;
-export type OfflineLesson = z.infer<typeof offlineLessonSchema>;
-export type OfflinePack = z.infer<typeof offlinePackSchema>;
-export type SubmittedAnswer = z.infer<typeof submittedAnswerSchema>;
-export type SubmitAttemptInput = z.infer<typeof submitAttemptInputSchema>;
-export type LevelUp = z.infer<typeof levelUpSchema>;
-export type Achievement = z.infer<typeof achievementSchema>;
-export type AttemptResult = z.infer<typeof attemptResultSchema>;
-export type LeaderboardTier = z.infer<typeof leaderboardTierSchema>;
-export type LeaderboardEntry = z.infer<typeof leaderboardEntrySchema>;
-export type Leaderboard = z.infer<typeof leaderboardSchema>;
-export type Holding = z.infer<typeof holdingSchema>;
-export type Portfolio = z.infer<typeof portfolioSchema>;
-export type Quote = z.infer<typeof quoteSchema>;
-export type Trade = z.infer<typeof tradeSchema>;
-export type PlaceTradeInput = z.infer<typeof placeTradeInputSchema>;
-export type ProblemDetails = z.infer<typeof problemDetailsSchema>;
+export type Answer = z.Infer<typeof answerSchema>;
+export type AnswerKey = z.Infer<typeof answerKeySchema>;
+export type Lesson = z.Infer<typeof lessonSchema>;
+export type OfflineLesson = z.Infer<typeof offlineLessonSchema>;
+export type OfflinePack = z.Infer<typeof offlinePackSchema>;
+export type SubmittedAnswer = z.Infer<typeof submittedAnswerSchema>;
+export type SubmitAttemptInput = z.Infer<typeof submitAttemptInputSchema>;
+export type LevelUp = z.Infer<typeof levelUpSchema>;
+export type Achievement = z.Infer<typeof achievementSchema>;
+export type AttemptResult = z.Infer<typeof attemptResultSchema>;
+export type LeaderboardTier = z.Infer<typeof leaderboardTierSchema>;
+export type LeaderboardEntry = z.Infer<typeof leaderboardEntrySchema>;
+export type Leaderboard = z.Infer<typeof leaderboardSchema>;
+export type Holding = z.Infer<typeof holdingSchema>;
+export type Portfolio = z.Infer<typeof portfolioSchema>;
+export type Quote = z.Infer<typeof quoteSchema>;
+export type Trade = z.Infer<typeof tradeSchema>;
+export type PlaceTradeInput = z.Infer<typeof placeTradeInputSchema>;
+export type ProblemDetails = z.Infer<typeof problemDetailsSchema>;
 
 /* ------------------------------------------------------------------ */
 /* API surface                                                         */

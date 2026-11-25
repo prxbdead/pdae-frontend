@@ -1,15 +1,12 @@
+import { useState } from 'react';
 import {
   ActivityIndicator,
+  Animated,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
 
 import type { IconName } from '@/assets/icons';
 import { ledgeColors, motion } from '@/theme/tokens';
@@ -46,15 +43,11 @@ export function Button({
 }: ButtonProps) {
   const theme = useTheme();
   const reducedMotion = useReducedMotion();
-  const pressed = useSharedValue(0);
+  const [pressed] = useState(() => new Animated.Value(0));
   const isDisabled = disabled || loading;
   // A disabled button is neutral rather than a dimmed variant, so it can
   // never be mistaken for an available secondary action.
   const showDisabled = disabled && !loading;
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: pressed.value }],
-  }));
 
   const fill = showDisabled
     ? theme.colors.surfaceAlt
@@ -92,6 +85,14 @@ export function Button({
 
   const height = HEIGHTS[size];
 
+  function animatePress(toValue: number) {
+    Animated.timing(pressed, {
+      toValue,
+      duration: motion.press,
+      useNativeDriver: true,
+    }).start();
+  }
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -100,16 +101,12 @@ export function Button({
       onPress={onPress}
       onPressIn={() => {
         if (!reducedMotion) {
-          pressed.set(
-            withTiming(LEDGE_OFFSET, {
-              duration: motion.press,
-            }),
-          );
+          animatePress(LEDGE_OFFSET);
         }
       }}
       onPressOut={() => {
         if (!reducedMotion) {
-          pressed.set(withTiming(0, { duration: motion.press }));
+          animatePress(0);
         }
       }}
       testID={testID}
@@ -136,7 +133,7 @@ export function Button({
                 ? { borderColor: theme.colors.border, borderWidth: 2 }
                 : null),
             },
-            animatedStyle,
+            { transform: [{ translateY: pressed }] },
           ]}
         >
           {loading ? (

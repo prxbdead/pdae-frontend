@@ -48,10 +48,6 @@ jest.mock('@react-native-community/netinfo', () =>
   require('@react-native-community/netinfo/jest/netinfo-mock.js'),
 );
 
-jest.mock('react-native-reanimated', () =>
-  require('react-native-reanimated/mock'),
-);
-
 jest.mock('@react-native-async-storage/async-storage', () => {
   const mock = require('@react-native-async-storage/async-storage/jest/async-storage-mock');
 

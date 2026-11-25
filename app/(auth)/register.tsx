@@ -1,7 +1,5 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useApi } from '@/api/ApiProvider';
@@ -12,10 +10,8 @@ import {
   AuthError,
   AuthScreen,
 } from '@/auth/AuthScreen';
-import {
-  registerFormSchema,
-  type RegisterFormValues,
-} from '@/auth/validation';
+import { registerFormSchema } from '@/auth/validation';
+import { useSchemaForm } from '@/auth/useSchemaForm';
 import { ICONS } from '@/assets/icons';
 import { Button, TextField } from '@/components/ui';
 import { useTheme } from '@/theme/useTheme';
@@ -32,33 +28,26 @@ export default function RegisterScreen() {
   const [submitting, setSubmitting] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema),
-    mode: 'onChange',
-    defaultValues: {
+  const { values, errors, isValid, setField, blurField, handleSubmit } =
+    useSchemaForm(registerFormSchema, {
       displayName: '',
       email: '',
       password: '',
       confirmPassword: '',
       terms: false,
-    },
-  });
+    });
 
   const canSubmit = isValid && termsAccepted;
 
-  const onSubmit = handleSubmit(async (values) => {
+  const onSubmit = handleSubmit(async (submitted) => {
     setApiError(null);
     setSubmitting(true);
 
     try {
       const user = await client.auth.register({
-        displayName: values.displayName,
-        email: values.email,
-        password: values.password,
+        displayName: submitted.displayName,
+        email: submitted.email,
+        password: submitted.password,
       });
 
       await signIn(user);
@@ -83,78 +72,54 @@ export default function RegisterScreen() {
     >
       {apiError ? <AuthError message={apiError} /> : null}
 
-      <Controller
-        control={control}
-        name="displayName"
-        render={({ field }) => (
-          <TextField
-            label="Display name"
-            testID="register-display-name"
-            value={field.value}
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            error={errors.displayName?.message}
-            autoCapitalize="words"
-            autoComplete="name"
-            textContentType="name"
-          />
-        )}
+      <TextField
+        label="Display name"
+        testID="register-display-name"
+        value={values.displayName}
+        onChangeText={(text) => setField('displayName', text)}
+        onBlur={() => blurField('displayName')}
+        error={errors.displayName}
+        autoCapitalize="words"
+        autoComplete="name"
+        textContentType="name"
       />
 
-      <Controller
-        control={control}
-        name="email"
-        render={({ field }) => (
-          <TextField
-            label="Email"
-            testID="register-email"
-            value={field.value}
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            error={errors.email?.message}
-            autoCapitalize="none"
-            autoComplete="email"
-            textContentType="emailAddress"
-            keyboardType="email-address"
-            inputMode="email"
-          />
-        )}
+      <TextField
+        label="Email"
+        testID="register-email"
+        value={values.email}
+        onChangeText={(text) => setField('email', text)}
+        onBlur={() => blurField('email')}
+        error={errors.email}
+        autoCapitalize="none"
+        autoComplete="email"
+        textContentType="emailAddress"
+        keyboardType="email-address"
+        inputMode="email"
       />
 
-      <Controller
-        control={control}
-        name="password"
-        render={({ field }) => (
-          <TextField
-            label="Password"
-            testID="register-password"
-            value={field.value}
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            error={errors.password?.message}
-            secureTextEntry
-            autoComplete="new-password"
-            textContentType="newPassword"
-          />
-        )}
+      <TextField
+        label="Password"
+        testID="register-password"
+        value={values.password}
+        onChangeText={(text) => setField('password', text)}
+        onBlur={() => blurField('password')}
+        error={errors.password}
+        secureTextEntry
+        autoComplete="new-password"
+        textContentType="newPassword"
       />
 
-      <Controller
-        control={control}
-        name="confirmPassword"
-        render={({ field }) => (
-          <TextField
-            label="Confirm password"
-            testID="register-confirm"
-            value={field.value}
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            error={errors.confirmPassword?.message}
-            secureTextEntry
-            autoComplete="new-password"
-            textContentType="newPassword"
-          />
-        )}
+      <TextField
+        label="Confirm password"
+        testID="register-confirm"
+        value={values.confirmPassword}
+        onChangeText={(text) => setField('confirmPassword', text)}
+        onBlur={() => blurField('confirmPassword')}
+        error={errors.confirmPassword}
+        secureTextEntry
+        autoComplete="new-password"
+        textContentType="newPassword"
       />
 
       <Pressable
