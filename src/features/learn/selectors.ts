@@ -40,13 +40,24 @@ function mergeLesson(
   }
 
   if (lesson.kind !== 'lesson') {
-    return { lesson, completed: false };
+    return { lesson, completed: lesson.status === 'completed' };
+  }
+
+  // A lesson completed elsewhere must still read as completed; only the
+  // availability of an unstarted lesson depends on the previous one.
+  if (lesson.status === 'completed') {
+    return { lesson, completed: true };
   }
 
   return {
     lesson: {
       ...lesson,
-      status: previousCompleted ? 'available' : 'locked',
+      status:
+        lesson.status === 'in_progress'
+          ? 'in_progress'
+          : previousCompleted
+            ? 'available'
+            : 'locked',
     },
     completed: false,
   };

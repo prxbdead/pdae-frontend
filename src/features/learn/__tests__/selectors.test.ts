@@ -64,6 +64,23 @@ describe('selectLearnPath', () => {
     expect(lessons[1].status).toBe('locked');
   });
 
+  it('keeps a server-completed lesson completed without local progress', () => {
+    const pack: OfflinePack = {
+      ...mockPack,
+      lessons: mockPack.lessons.map((lesson) =>
+        lesson.id === 'foundations-1'
+          ? { ...lesson, status: 'completed' as const }
+          : lesson,
+      ),
+    };
+
+    const lessons = selectUnitLessons(pack, 'foundations', {});
+
+    expect(lessons[0].status).toBe('completed');
+    expect(lessons[1].status).toBe('available');
+    expect(selectNextLesson(pack, {})?.id).toBe('foundations-2');
+  });
+
   it('prefers local progress over the pack snapshot', () => {
     const path = selectLearnPath(mockPack, {
       'foundations-1': {
