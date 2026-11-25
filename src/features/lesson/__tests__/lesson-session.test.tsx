@@ -218,13 +218,22 @@ describe('FeedbackSheet', () => {
 });
 
 describe('HeartsOutModal', () => {
-  it('calls refill and leave', () => {
+  it('calls refill, spend gems, wait, and leave', () => {
     const onRefill = jest.fn();
+    const onSpendGems = jest.fn();
+    const onWait = jest.fn();
     const onLeave = jest.fn();
 
     render(
       <ThemeProvider>
-        <HeartsOutModal visible onRefill={onRefill} onLeave={onLeave} />
+        <HeartsOutModal
+          visible
+          gems={50}
+          onRefill={onRefill}
+          onSpendGems={onSpendGems}
+          onWait={onWait}
+          onLeave={onLeave}
+        />
       </ThemeProvider>,
     );
 
@@ -232,8 +241,34 @@ describe('HeartsOutModal', () => {
 
     expect(onRefill).toHaveBeenCalled();
 
+    fireEvent.press(screen.getByTestId('spend-gems-hearts'));
+
+    expect(onSpendGems).toHaveBeenCalled();
+
+    fireEvent.press(screen.getByTestId('wait-hearts'));
+
+    expect(onWait).toHaveBeenCalled();
+
     fireEvent.press(screen.getByTestId('leave-hearts-out'));
 
     expect(onLeave).toHaveBeenCalled();
+  });
+
+  it('disables the gem refill when the learner cannot afford it', () => {
+    render(
+      <ThemeProvider>
+        <HeartsOutModal
+          visible
+          gems={10}
+          onRefill={jest.fn()}
+          onSpendGems={jest.fn()}
+          onLeave={jest.fn()}
+        />
+      </ThemeProvider>,
+    );
+
+    expect(
+      screen.getByTestId('spend-gems-hearts').props.accessibilityState,
+    ).toMatchObject({ disabled: true });
   });
 });

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import type { Answer, Exercise } from '@/api/contracts';
+import { useSession } from '@/auth/useSession';
 import {
   Button,
   EmptyState,
@@ -17,7 +18,10 @@ import {
 import { describeAnswer } from '@/features/lesson/checkAnswer';
 import { ExerciseRenderer } from '@/features/lesson/components/ExerciseRenderer';
 import { FeedbackSheet } from '@/features/lesson/components/FeedbackSheet';
-import { HeartsOutModal } from '@/features/lesson/components/HeartsOutModal';
+import {
+  HEART_REFILL_GEM_COST,
+  HeartsOutModal,
+} from '@/features/lesson/components/HeartsOutModal';
 import { QuestionHeader } from '@/features/lesson/components/QuestionHeader';
 import { useLessonSession } from '@/features/lesson/useLessonSession';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -42,6 +46,7 @@ export default function LessonPlayScreen() {
   const router = useRouter();
   const theme = useTheme();
   const insets = useSafeInsets();
+  const { user, updateUser } = useSession();
   const {
     session,
     lesson,
@@ -59,6 +64,22 @@ export default function LessonPlayScreen() {
   } = useLessonSession(lessonId);
   const [leaveOpen, setLeaveOpen] = useState(false);
   const finishing = useRef(false);
+
+  const spendGems = () => {
+    if (!user || user.gems < HEART_REFILL_GEM_COST) {
+      return;
+    }
+
+    // The backend does not expose a heart-refill endpoint yet, so the purchase
+    // is applied to the cached profile immediately; the next server profile
+    // refresh remains authoritative.
+    updateUser({
+      ...user,
+      gems: user.gems - HEART_REFILL_GEM_COST,
+      hearts: user.maxHearts,
+    });
+    refill();
+  };
 
   useEffect(() => {
     if (
@@ -265,7 +286,10 @@ export default function LessonPlayScreen() {
 
       <HeartsOutModal
         visible={session.phase === 'hearts_out'}
+        gems={user?.gems ?? 0}
         onRefill={refill}
+        onSpendGems={spendGems}
+        onWait={() => router.dismissTo('/(tabs)/learn')}
         onLeave={() => router.dismissTo(`/lesson/${lessonId}`)}
       />
 
