@@ -7,6 +7,8 @@ import { ThemeProvider } from '@/theme/ThemeProvider';
 import { LeaguesScreen } from '../LeaguesScreen';
 import type { LeaderboardQuery } from '../useLeaderboard';
 
+jest.mock('expo-router', () => require('@/testing/expo-router-mock'));
+
 const leaderboard = {
   ...mockLeaderboard,
   endsAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),

@@ -12,8 +12,8 @@ import {
   View,
 } from 'react-native';
 
-import { EmptyState, OfflineBanner, PageHeader } from '@/components/ui';
-import { useSyncStatus } from '@/offline/useSyncStatus';
+import { EmptyState, PageHeader } from '@/components/ui';
+import { SyncBanner } from '@/offline/SyncBanner';
 import { useTheme } from '@/theme/useTheme';
 
 import { JumpToUnitSheet, scrollToUnit } from './JumpToUnitSheet';
@@ -27,7 +27,6 @@ import { useLearnPath } from './useLearnPath';
 export function LearnScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const sync = useSyncStatus();
   const { units, isLoading, error, refresh } = useLearnPath();
   const [sheetOpen, setSheetOpen] = useState(false);
   const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
@@ -127,9 +126,7 @@ export function LearnScreen() {
         right={<LearnHeaderStats />}
       />
 
-      {sync.state === 'offline' ? (
-        <OfflineBanner state="offline" testID="learn-offline-banner" />
-      ) : null}
+      <SyncBanner testID="learn-offline-banner" />
 
       {isLoading ? (
         <View style={styles.centered}>

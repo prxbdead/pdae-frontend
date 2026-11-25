@@ -15,9 +15,9 @@ import {
   Button,
   Card,
   EmptyState,
-  OfflineBanner,
   PageHeader,
 } from '@/components/ui';
+import { SyncBanner } from '@/offline/SyncBanner';
 import { useSyncStatus } from '@/offline/useSyncStatus';
 import { ledgeColors, textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
@@ -109,9 +109,7 @@ export function PortfolioScreen() {
         onBack={() => router.back()}
       />
 
-      {offline ? (
-        <OfflineBanner state="offline" testID="portfolio-offline-banner" />
-      ) : null}
+      <SyncBanner testID="portfolio-offline-banner" />
 
       {isLoading && !data ? (
         <View style={styles.centered}>

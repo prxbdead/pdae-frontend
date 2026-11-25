@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 
 import { screenContent } from '@/components/layout/screen';
-import { EmptyState, OfflineBanner, PageHeader } from '@/components/ui';
-import { useSyncStatus } from '@/offline/useSyncStatus';
+import { EmptyState, PageHeader } from '@/components/ui';
+import { SyncBanner } from '@/offline/SyncBanner';
 import { useTheme } from '@/theme/useTheme';
 
 import { PracticeCard } from './PracticeCard';
@@ -18,7 +18,6 @@ import { usePracticeData } from './usePracticeData';
 export function PracticeScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const sync = useSyncStatus();
   const { items, isLoading, error, refresh } = usePracticeData();
 
   return (
@@ -29,9 +28,7 @@ export function PracticeScreen() {
         tier="standard"
       />
 
-      {sync.state === 'offline' ? (
-        <OfflineBanner state="offline" testID="practice-offline-banner" />
-      ) : null}
+      <SyncBanner testID="practice-offline-banner" />
 
       {isLoading ? (
         <View style={styles.centered}>

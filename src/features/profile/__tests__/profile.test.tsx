@@ -13,6 +13,7 @@ import { ThemeProvider } from '@/theme/ThemeProvider';
 import { ProfileScreen } from '../ProfileScreen';
 
 jest.mock('@/api/ApiProvider', () => require('@/testing/api-mock'));
+jest.mock('expo-router', () => require('@/testing/expo-router-mock'));
 
 const today = new Date();
 const todayKey = toLocalDateKey(today);
