@@ -7,7 +7,6 @@ import { useTheme } from '@/theme/useTheme';
 import { BottomTabs } from './BottomTabs';
 import { ContentColumn } from './ContentColumn';
 import { IconRail } from './IconRail';
-import { RightRail } from './RightRail';
 import { Sidebar } from './Sidebar';
 
 export interface AppShellProps {
@@ -16,7 +15,7 @@ export interface AppShellProps {
 
 /**
  * One navigation frame for every viewport: bottom tabs on mobile, an icon
- * rail on tablet, and sidebar + content column + right rail on desktop.
+ * rail on tablet, and a single focused content area beside the desktop nav.
  */
 export function AppShell({ children }: AppShellProps) {
   const { isMobile, isTablet } = useBreakpoint();
@@ -47,8 +46,7 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <View style={[themedRoot, styles.row]}>
       <Sidebar />
-      <ContentColumn>{children}</ContentColumn>
-      <RightRail />
+      <ContentColumn maxWidth={760}>{children}</ContentColumn>
     </View>
   );
 }

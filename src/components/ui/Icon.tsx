@@ -4,8 +4,31 @@ import { Circle, Svg } from 'react-native-svg';
 import { ICONS, type IconName, type IconProps as BaseIconProps } from '@/assets/icons';
 import { palette } from '@/theme/tokens';
 
+import { Artwork, type ArtworkName } from './Artwork';
+
 export type IconProps = BaseIconProps & {
   name: IconName;
+};
+
+const ORIGINAL_ARTWORK: Partial<Record<IconName, ArtworkName>> = {
+  learn: 'book',
+  practice: 'practice',
+  leagues: 'level',
+  quests: 'chest',
+  profile: 'profile',
+  fire: 'fire',
+  bolt: 'bolt',
+  gem: 'diamond',
+  heart: 'heart',
+  shield: 'shield',
+  freeze: 'freeze',
+  lock: 'locked',
+  check: 'completed',
+  chest: 'chest',
+  star: 'level',
+  book: 'book',
+  shop: 'shop',
+  crown: 'perfect',
 };
 
 const warned = new Set<string>();
@@ -16,6 +39,12 @@ export function Icon({
   size = 24,
   testID,
 }: IconProps) {
+  const artwork = ORIGINAL_ARTWORK[name];
+
+  if (artwork) {
+    return <Artwork name={artwork} size={size} testID={testID} />;
+  }
+
   const Component = (
     ICONS as Record<string, ComponentType<BaseIconProps> | undefined>
   )[name];

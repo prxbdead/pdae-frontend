@@ -28,7 +28,7 @@ beforeEach(() => {
 });
 
 describe('AppShell', () => {
-  it('renders bottom tabs on mobile and no rail or sidebar', () => {
+  it('renders bottom tabs on mobile and no desktop navigation', () => {
     renderShell();
 
     expect(screen.getByTestId('bottom-tabs')).toBeOnTheScreen();
@@ -37,7 +37,7 @@ describe('AppShell', () => {
     expect(screen.queryByTestId('right-rail')).toBeNull();
   });
 
-  it('renders the icon rail on tablet without the desktop rails', () => {
+  it('renders the icon rail on tablet without desktop navigation', () => {
     MOCK_WIDTH.current = 900;
     renderShell();
 
@@ -47,13 +47,13 @@ describe('AppShell', () => {
     expect(screen.queryByTestId('right-rail')).toBeNull();
   });
 
-  it('renders sidebar, content column, and right rail on desktop', () => {
+  it('renders a focused content area beside the desktop sidebar', () => {
     MOCK_WIDTH.current = 1280;
     renderShell();
 
     expect(screen.getByTestId('sidebar')).toBeOnTheScreen();
     expect(screen.getByTestId('content-column')).toBeOnTheScreen();
-    expect(screen.getByTestId('right-rail')).toBeOnTheScreen();
+    expect(screen.queryByTestId('right-rail')).toBeNull();
     expect(screen.queryByTestId('bottom-tabs')).toBeNull();
     expect(screen.queryByTestId('icon-rail')).toBeNull();
   });

@@ -5,14 +5,24 @@ import { ICON_NAMES, type IconName } from '@/assets/icons';
 import { Icon } from '../Icon';
 
 describe('Icon', () => {
-  it.each(ICON_NAMES)('renders the "%s" icon', (name) => {
+  it.each(ICON_NAMES)('renders the "%s" icon', name => {
     render(<Icon name={name} testID="icon" />);
 
     expect(screen.getByTestId('icon')).toBeOnTheScreen();
   });
 
-  it('accepts a custom color and size', () => {
+  it('keeps original artwork at the requested size', () => {
     render(<Icon name="heart" color="#FF5A6E" size={32} testID="icon" />);
+
+    const icon = screen.getByTestId('icon');
+
+    expect(icon.props.style).toEqual(
+      expect.objectContaining({ width: 32, height: 32 }),
+    );
+  });
+
+  it('still applies semantic colors to the custom line icons', () => {
+    render(<Icon name="chart" color="#FF5A6E" size={32} testID="icon" />);
 
     const icon = screen.getByTestId('icon');
 
