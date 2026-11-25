@@ -27,7 +27,7 @@ export function MascotPlaceholder({ character, mood, onPress, size = 'md' }: Mas
     </View>
   );
 
-  if (!onPress) return <View accessibilityLabel={`${meta.name}, ${mood}`}>{body}</View>;
+  if (!onPress) return <View accessible accessibilityLabel={`${meta.name}, ${mood}`}>{body}</View>;
 
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={`${meta.name}, ${mood}`} onPress={onPress}>
