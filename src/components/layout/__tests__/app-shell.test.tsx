@@ -2,6 +2,9 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { Text } from 'react-native';
 
+import { mockUser } from '@/api/fixtures';
+import { useSessionStore } from '@/auth/sessionStore';
+import { useProgressStore } from '@/stores/progressStore';
 import { MOCK_WIDTH } from '@/testing/breakpoint-mock';
 import { routerMock, setPathname } from '@/testing/expo-router-mock';
 import { ThemeProvider } from '@/theme/ThemeProvider';
@@ -25,6 +28,18 @@ beforeEach(() => {
   MOCK_WIDTH.current = 375;
   setPathname('/learn');
   routerMock.replace.mockClear();
+  useSessionStore.setState({ status: 'authenticated', user: mockUser });
+  useProgressStore.setState({
+    xpToday: 20,
+    dailyGoalXp: 30,
+    streak: {
+      current: 4,
+      longest: 4,
+      lastLessonDate: '2026-11-24',
+      freezesEquipped: 0,
+      restDay: null,
+    },
+  });
 });
 
 describe('AppShell', () => {
@@ -47,15 +62,24 @@ describe('AppShell', () => {
     expect(screen.queryByTestId('right-rail')).toBeNull();
   });
 
-  it('renders a focused content area beside the desktop sidebar', () => {
+  it('renders the sidebar, content column, and right rail on desktop', () => {
     MOCK_WIDTH.current = 1280;
     renderShell();
 
     expect(screen.getByTestId('sidebar')).toBeOnTheScreen();
     expect(screen.getByTestId('content-column')).toBeOnTheScreen();
-    expect(screen.queryByTestId('right-rail')).toBeNull();
+    expect(screen.getByTestId('right-rail')).toBeOnTheScreen();
     expect(screen.queryByTestId('bottom-tabs')).toBeNull();
     expect(screen.queryByTestId('icon-rail')).toBeNull();
+  });
+
+  it('shows daily progress in the desktop right rail', () => {
+    MOCK_WIDTH.current = 1280;
+    renderShell();
+
+    expect(screen.getByTestId('right-rail-daily-goal')).toBeOnTheScreen();
+    expect(screen.getByText('20 / 30 XP')).toBeOnTheScreen();
+    expect(screen.getByText('4 days')).toBeOnTheScreen();
   });
 
   it('marks the active tab as selected', () => {
