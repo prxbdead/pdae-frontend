@@ -1,3 +1,5 @@
+import * as z from '@/api/schema';
+
 import {
   offlinePackSchema,
   type ApiClient,
@@ -53,7 +55,7 @@ export class ContentRepository {
     );
 
     if (cached) {
-      const parsed = offlinePackSchema.safeParse(cached);
+      const parsed = z.safeParse(offlinePackSchema, cached);
 
       if (parsed.success) {
         return parsed.data;
@@ -70,7 +72,8 @@ export class ContentRepository {
       return current;
     }
 
-    const next = offlinePackSchema.parse(
+    const next = z.parse(
+      offlinePackSchema,
       await this.api.getOfflinePack(current.version),
     );
 

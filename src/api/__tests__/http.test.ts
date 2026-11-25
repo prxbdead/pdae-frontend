@@ -1,4 +1,4 @@
-import { ZodError } from 'zod';
+import { SchemaError } from '../schema';
 
 import { ApiError } from '../errors';
 import { HttpApiClient } from '../http';
@@ -43,7 +43,7 @@ describe('HttpApiClient', () => {
   it('rejects a malformed success body with a validation error', async () => {
     fetchMock.mockResolvedValue(response({ nope: true }, 200));
 
-    await expect(client.auth.me()).rejects.toBeInstanceOf(ZodError);
+    await expect(client.auth.me()).rejects.toBeInstanceOf(SchemaError);
   });
 
   it('retries 5xx responses but never 4xx', () => {

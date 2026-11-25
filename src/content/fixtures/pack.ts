@@ -1,3 +1,5 @@
+import * as z from '@/api/schema';
+
 import type { OfflinePack } from '@/api/contracts';
 
 import rawPack from '../packs/hodlo-pack-v1.json';
@@ -10,4 +12,4 @@ import { offlinePackSchema } from '../schema';
  * Parsed at module load so a broken pack fails loudly instead of reaching a
  * learner mid-lesson.
  */
-export const mockPack: OfflinePack = offlinePackSchema.parse(rawPack);
+export const mockPack: OfflinePack = z.parse(offlinePackSchema, rawPack);

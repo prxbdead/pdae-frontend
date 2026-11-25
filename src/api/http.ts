@@ -1,4 +1,4 @@
-import { z, type ZodType } from 'zod';
+import * as z from '@/api/schema';
 
 import {
   achievementSchema,
@@ -47,7 +47,7 @@ export class HttpApiClient implements ApiClient {
 
   private async request<T>(
     path: string,
-    schema: ZodType<T>,
+    schema: z.Schema<T>,
     options: RequestOptions = {},
   ): Promise<T> {
     const controller = new AbortController();
@@ -91,7 +91,7 @@ export class HttpApiClient implements ApiClient {
 
       const payload = text ? this.parseJson(text, response.status) : undefined;
 
-      return schema.parse(payload);
+      return z.parse(schema, payload);
     } finally {
       clearTimeout(timeout);
     }
@@ -108,7 +108,8 @@ export class HttpApiClient implements ApiClient {
   }
 
   private toApiError(text: string, status: number): ApiError {
-    const parsed = problemDetailsSchema.safeParse(
+    const parsed = z.safeParse(
+      problemDetailsSchema,
       (() => {
         try {
           return JSON.parse(text);
@@ -155,11 +156,11 @@ export class HttpApiClient implements ApiClient {
 
   content = {
     listModules: () =>
-      this.request('/content/modules', learningModuleSchema.array()),
+      this.request('/content/modules', z.array(learningModuleSchema)),
     listLessons: (moduleId: string) =>
       this.request(
         `/content/modules/${encodeURIComponent(moduleId)}/lessons`,
-        lessonSummarySchema.array(),
+        z.array(lessonSummarySchema),
       ),
     getLesson: (lessonId: string) =>
       this.request(
@@ -177,7 +178,7 @@ export class HttpApiClient implements ApiClient {
 
   progress = {
     getProgress: () =>
-      this.request('/users/me/progress', lessonProgressSchema.array()),
+      this.request('/users/me/progress', z.array(lessonProgressSchema)),
   };
 
   attempts = {
@@ -194,7 +195,7 @@ export class HttpApiClient implements ApiClient {
   };
 
   achievements = {
-    list: () => this.request('/achievements', achievementSchema.array()),
+    list: () => this.request('/achievements', z.array(achievementSchema)),
   };
 
   trading = {
@@ -202,7 +203,7 @@ export class HttpApiClient implements ApiClient {
     getQuotes: (symbols: string[]) =>
       this.request(
         `/trading/quotes?symbols=${encodeURIComponent(symbols.join(','))}`,
-        quoteSchema.array(),
+        z.array(quoteSchema),
       ),
     placeTrade: (input: PlaceTradeInput, clientTradeId: string) =>
       this.request('/trading/trades', tradeSchema, {

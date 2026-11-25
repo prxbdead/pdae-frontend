@@ -1,29 +1,35 @@
-import { z } from 'zod';
+import * as z from '@/api/schema';
 
-const email = z.string().min(1, 'Enter a valid email').email('Enter a valid email');
+const EMAIL_HINT = 'Enter a valid email';
+
+const email = z
+  .string()
+  .check(z.minLength(1, EMAIL_HINT), z.email(EMAIL_HINT));
 
 export const loginFormSchema = z.object({
   email,
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().check(z.minLength(1, 'Password is required')),
 });
 
 export const registerFormSchema = z
   .object({
-    displayName: z
-      .string()
-      .min(1, 'Enter a display name')
-      .max(40, 'Use 40 characters or fewer'),
+    displayName: z.string().check(
+      z.minLength(1, 'Enter a display name'),
+      z.maxLength(40, 'Use 40 characters or fewer'),
+    ),
     email,
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters'),
-    confirmPassword: z.string().min(1, 'Confirm your password'),
-    terms: z.boolean().optional(),
+      .check(z.minLength(8, 'Password must be at least 8 characters')),
+    confirmPassword: z.string().check(z.minLength(1, 'Confirm your password')),
+    terms: z.optional(z.boolean()),
   })
-  .refine((values) => values.password === values.confirmPassword, {
-    path: ['confirmPassword'],
-    message: 'Passwords do not match',
-  });
+  .check(
+    z.refine<{ password: string; confirmPassword: string }>(
+      (values) => values.password === values.confirmPassword,
+      { path: ['confirmPassword'], message: 'Passwords do not match' },
+    ),
+  );
 
-export type LoginFormValues = z.infer<typeof loginFormSchema>;
-export type RegisterFormValues = z.infer<typeof registerFormSchema>;
+export type LoginFormValues = z.Infer<typeof loginFormSchema>;
+export type RegisterFormValues = z.Infer<typeof registerFormSchema>;

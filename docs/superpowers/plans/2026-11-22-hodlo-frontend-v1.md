@@ -4,7 +4,7 @@
 
 **Goal:** Ship a universal Hodlo client (Android + installable web/PWA) that completes onboarding, browses the Learn path, plays lessons fully offline, syncs results exactly once, and shows Practice, Leaderboard, and Profile against the .NET backend contract.
 
-**Architecture:** Keep the existing React Native 0.88 repo and make it universal with Expo SDK 58 + Expo Router. One component tree serves Android and web (React Native Web). A typed Zod contract plus an in-memory mock adapter lets the frontend proceed while the backend is built. Lessons are local-first: a bundled content pack with answer keys grades offline, a persisted outbox queues attempts, and the server re-scores and reconciles on sync. A custom `AppShell` provides bottom tabs, tablet rail, and desktop sidebar + right rail. The mascot is a platform-neutral slot with a static placeholder now and a 3D seam later.
+**Architecture:** Keep the existing React Native 0.88 repo and make it universal with Expo SDK 58 + Expo Router. One component tree serves Android and web (React Native Web). A typed Zod contract plus an in-memory mock adapter lets the frontend proceed while the backend is built. Lessons are local-first: a bundled content pack with answer keys grades offline, a persisted outbox queues attempts, and the server re-scores and reconciles on sync. A custom `AppShell` provides bottom tabs, tablet rail, and desktop sidebar. The mascot is a platform-neutral slot with a static placeholder now and a 3D seam later.
 
 **Tech Stack:** Expo SDK 58, React Native 0.88, React 19.3, Expo Router, TypeScript strict, Zustand, TanStack Query, AsyncStorage (native key-value store; `localStorage` on web), NetInfo, Zod, React Hook Form, react-native-svg, Reanimated, expo-font, expo-haptics, expo-crypto, expo-image, Jest + React Native Testing Library, Playwright, Maestro, Workbox, GitHub Actions.
 
@@ -138,7 +138,7 @@ src/
     ui/                           # Button, Card, ProgressBar, ProgressRing,
                                   # Badge, Chip, Icon, Sheet, EmptyState,
                                   # OfflineBanner, PageHeader, Skeleton
-    layout/                       # AppShell, Sidebar, BottomTabs, RightRail,
+    layout/                       # AppShell, Sidebar, BottomTabs,
                                   # ContentColumn
     mascot/                       # Mascot(.web/.native), MascotPlaceholder,
                                   # MascotBoundary, MascotSlot, types.ts
@@ -519,7 +519,7 @@ git commit -m "feat: add UI primitives, icon registry, and mascot slot"
 ## Task 5: Responsive app shell and navigation
 
 **Files:**
-- Create: `src/app/AppProviders.tsx`, `src/components/layout/AppShell.tsx`, `Sidebar.tsx`, `BottomTabs.tsx`, `RightRail.tsx`, `ContentColumn.tsx`, `src/navigation/tabs.ts`
+- Create: `src/app/AppProviders.tsx`, `src/components/layout/AppShell.tsx`, `Sidebar.tsx`, `BottomTabs.tsx`, `ContentColumn.tsx`, `src/navigation/tabs.ts`
 - Create: `app/(tabs)/_layout.tsx`, `app/(tabs)/learn.tsx`, `practice.tsx`, `leagues.tsx`, `profile.tsx`, `app/+not-found.tsx`
 - Modify: `app/_layout.tsx`, `app/index.tsx`
 - Create tests: `src/components/layout/__tests__/app-shell.test.tsx`, `src/navigation/__tests__/tabs.test.ts`
@@ -528,13 +528,13 @@ git commit -m "feat: add UI primitives, icon registry, and mascot slot"
 - Consumes: `useTheme`, `useBreakpoint`, `PageHeader`, `EmptyState`, `Icon`.
 - Produces:
   - `AppProviders` wrapping `GestureHandlerRootView` → `SafeAreaProvider` → `ThemeProvider` (later tasks add API/sync/auth providers inside).
-  - `AppShell({ children })` with bottom tabs at mobile, icon rail at tablet, sidebar + right rail at desktop.
+  - `AppShell({ children })` with bottom tabs at mobile, icon rail at tablet, sidebar at desktop.
   - `TABS: Array<{ key: 'learn' | 'practice' | 'leagues' | 'profile'; label: string; icon: IconName; href: string }>`.
   - Placeholder screens for `/learn`, `/practice`, `/leagues`, `/profile`.
 
 - [ ] **Step 1: Write failing responsive tests**
 
-`app-shell.test.tsx`: mock `useWindowDimensions` at widths 375, 900, 1280. Assert: 375 renders the bottom tabs and no sidebar; 900 renders the icon rail and no right rail; 1280 renders the sidebar, right rail, and no bottom tabs. Assert the active tab gets `accessibilityState={{ selected: true }}` and pressing a tab calls `router.replace` with its href. `tabs.test.ts`: every tab has a unique key/href and a valid icon name.
+`app-shell.test.tsx`: mock `useWindowDimensions` at widths 375, 900, 1280. Assert: 375 renders the bottom tabs and no sidebar; 900 renders the icon rail and no sidebar; 1280 renders the sidebar and no bottom tabs or icon rail. Assert the active tab gets `accessibilityState={{ selected: true }}` and pressing a tab calls `router.replace` with its href. `tabs.test.ts`: every tab has a unique key/href and a valid icon name.
 
 - [ ] **Step 2: Run tests to verify they fail**
 
@@ -546,9 +546,9 @@ git commit -m "feat: add UI primitives, icon registry, and mascot slot"
 
 - mobile: `<View flex=1>{children}</View><BottomTabs />`
 - tablet: `<IconRail /><View flex=1>{children}</View>`
-- desktop: `<Sidebar /><ContentColumn>{children}</ContentColumn><RightRail />`
+- desktop: `<Sidebar /><ContentColumn>{children}</ContentColumn>`
 
-`ContentColumn` caps width at 600 px and centers it with 24 px horizontal padding; add a `maxWidth` prop for lessons (720). `RightRail` renders placeholder cards for daily goal, streak, league position, and tip; Task 13/15 fill them.
+`ContentColumn` caps width at 600 px and centers it with 24 px horizontal padding; add a `maxWidth` prop for lessons (720). There is no right rail.
 
 `BottomTabs` uses `usePathname()` and `router.replace(tab.href)`. Each tab is a `Pressable` with `accessibilityRole="tab"`, `accessibilityState={{ selected }}`, and a 44×44 target. `Sidebar` uses the same `TABS` with labels. `IconRail` uses icons with tooltips/`accessibilityLabel`.
 
@@ -1581,7 +1581,7 @@ git commit -m "feat: add mascot seam, PWA shell, E2E flows, and deployment docs"
 | --- | --- |
 | Expo universal app, Android + web | 1 |
 | Design tokens, type, spacing, radii, ledges, light/dark | 3 |
-| Header tiers, bottom tabs, rail, sidebar, right rail | 4, 5 |
+| Header tiers, bottom tabs, rail, sidebar | 4, 5 |
 | Onboarding (splash, level, interests, goal, cast, placement, account, notification soft ask) | 9 |
 | Learn path, unit banners, nodes, locked/completed, jump to unit | 10 |
 | Lesson intro, 10 exercise types, feedback, hearts | 11, 12 |
