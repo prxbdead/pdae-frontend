@@ -20,25 +20,26 @@ const TITLE_OFFSET = 16;
 
 export function PageHeader({ title, tier = 'standard', onBack, right, artwork, testID }: PageHeaderProps) {
   const theme = useTheme();
+  const compact = tier === 'compact';
   return (
     <View testID={testID ?? 'page-header'} style={[styles.header, { height: TIER_HEIGHT[tier], backgroundColor: theme.colors.background, borderBottomColor: theme.colors.border }]}>
       {artwork ? <View style={StyleSheet.absoluteFill}>{artwork}</View> : null}
-      <View testID="page-header-title" style={styles.titleContainer}>
+      <View testID="page-header-title" style={[styles.titleContainer, { left: compact ? 56 : TITLE_OFFSET, right: right ? 176 : TITLE_OFFSET }]}>
         {onBack ? <Pressable accessibilityRole="button" accessibilityLabel="Go back" onPress={onBack} style={styles.backButton}><Icon name="arrow-left" color={theme.colors.text} size={22} /></Pressable> : null}
         <View style={styles.titleGroup}>
-          {tier !== 'compact' ? <Text style={[theme.typography.caption, styles.eyebrow, { color: theme.colors.primary }]}>{title === 'Hodlo' ? 'YOUR LEARNING JOURNEY' : 'HODLO LEARNING SPACE'}</Text> : null}
+          {!compact ? <Text style={[theme.typography.caption, styles.eyebrow, { color: theme.colors.primary }]}>{title === 'Hodlo' ? 'YOUR LEARNING JOURNEY' : 'HODLO LEARNING SPACE'}</Text> : null}
           <Text numberOfLines={1} style={[theme.typography.title, styles.title, { color: theme.colors.text }]}>{title}</Text>
         </View>
       </View>
       {right ? <View style={styles.right}>{right}</View> : null}
-      {tier === 'compact' ? <View pointerEvents="none" style={styles.brandMark}><Text style={styles.brandLetter}>H</Text></View> : null}
+      {compact ? <View pointerEvents="none" style={styles.brandMark}><Text style={styles.brandLetter}>H</Text></View> : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   header: { width: '100%', borderBottomWidth: 1, justifyContent: 'flex-end' },
-  titleContainer: { position: 'absolute', left: TITLE_OFFSET, right: TITLE_OFFSET, bottom: TITLE_OFFSET, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  titleContainer: { position: 'absolute', bottom: TITLE_OFFSET, flexDirection: 'row', alignItems: 'center', gap: 10 },
   backButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   titleGroup: { flexShrink: 1, gap: 0 },
   title: { flexShrink: 1 },
