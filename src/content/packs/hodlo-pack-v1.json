@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "generatedAt": "2026-11-22T00:00:00.000Z",
   "modules": [
     {
@@ -75,9 +75,18 @@
           "type": "multiple_choice",
           "prompt": "What is a blockchain, in plain terms?",
           "options": [
-            { "id": "a", "text": "A shared ledger that many computers keep in sync" },
-            { "id": "b", "text": "A bank account that pays interest" },
-            { "id": "c", "text": "A wallet that stores coins" }
+            {
+              "id": "a",
+              "text": "A shared ledger that many computers keep in sync"
+            },
+            {
+              "id": "b",
+              "text": "A bank account that pays interest"
+            },
+            {
+              "id": "c",
+              "text": "A wallet that stores coins"
+            }
           ],
           "explanation": "A blockchain is a ledger copied across many machines, so no single party can rewrite it quietly."
         },
@@ -92,7 +101,11 @@
           "id": "foundations-1-e3",
           "type": "fill_blank",
           "prompt": "Complete the sentence about ownership.",
-          "parts": ["A crypto asset sits in a ", ", and control of it comes from a ", "."],
+          "parts": [
+            "A crypto asset sits in a ",
+            ", and control of it comes from a ",
+            "."
+          ],
           "blankCount": 2,
           "explanation": "The wallet holds the address; the key proves you may move what is there."
         },
@@ -101,25 +114,148 @@
           "type": "match_pairs",
           "prompt": "Match each key with how it should be treated.",
           "left": [
-            { "id": "l1", "text": "Private key" },
-            { "id": "l2", "text": "Public address" }
+            {
+              "id": "l1",
+              "text": "Private key"
+            },
+            {
+              "id": "l2",
+              "text": "Public address"
+            }
           ],
           "right": [
-            { "id": "r1", "text": "Never share it" },
-            { "id": "r2", "text": "Safe to share for payment" }
+            {
+              "id": "r1",
+              "text": "Never share it"
+            },
+            {
+              "id": "r2",
+              "text": "Safe to share for payment"
+            }
           ],
           "explanation": "The public address receives funds. The private key moves them, so it stays secret."
+        },
+        {
+          "id": "foundations-1-e5",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "A confirmed transaction on a public blockchain can be reversed by a bank if you ask nicely.",
+          "explanation": "Confirmed transactions are final. Recovering a mistake needs the recipient to send the funds back."
+        },
+        {
+          "id": "foundations-1-e6",
+          "type": "multiple_choice",
+          "prompt": "Why does a blockchain keep many independent copies of the ledger?",
+          "options": [
+            {
+              "id": "a",
+              "text": "So no single copy can be changed without the others noticing"
+            },
+            {
+              "id": "b",
+              "text": "So transactions split into smaller pieces and run faster"
+            },
+            {
+              "id": "c",
+              "text": "So the owners of coins stay hidden"
+            }
+          ],
+          "explanation": "Copies that must agree make a silent edit easy to detect and reject."
+        },
+        {
+          "id": "foundations-1-e7",
+          "type": "fill_blank",
+          "prompt": "Complete the sentence about sending crypto.",
+          "parts": [
+            "Sending crypto creates a ",
+            " that the network checks and adds to the ",
+            "."
+          ],
+          "blankCount": 2,
+          "explanation": "A transaction is one signed transfer. The ledger is the shared record it is written into."
+        },
+        {
+          "id": "foundations-1-e8",
+          "type": "match_pairs",
+          "prompt": "Match each term to its meaning.",
+          "left": [
+            {
+              "id": "l1",
+              "text": "Node"
+            },
+            {
+              "id": "l2",
+              "text": "Block"
+            }
+          ],
+          "right": [
+            {
+              "id": "r1",
+              "text": "A computer that stores and checks the ledger"
+            },
+            {
+              "id": "r2",
+              "text": "A batch of transactions added to the chain together"
+            }
+          ],
+          "explanation": "Nodes keep the network honest. Blocks group transactions into the ledger in order."
         }
       ],
       "answerKey": {
-        "foundations-1-e1": { "type": "multiple_choice", "optionId": "a" },
-        "foundations-1-e2": { "type": "true_false", "value": false },
-        "foundations-1-e3": { "type": "fill_blank", "values": ["wallet", "key"] },
+        "foundations-1-e1": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "foundations-1-e2": {
+          "type": "true_false",
+          "value": false
+        },
+        "foundations-1-e3": {
+          "type": "fill_blank",
+          "values": [
+            "wallet",
+            "key"
+          ]
+        },
         "foundations-1-e4": {
           "type": "match_pairs",
           "pairs": [
-            { "left": "l1", "right": "r1" },
-            { "left": "l2", "right": "r2" }
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
+          ]
+        },
+        "foundations-1-e5": {
+          "type": "true_false",
+          "value": false
+        },
+        "foundations-1-e6": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "foundations-1-e7": {
+          "type": "fill_blank",
+          "values": [
+            "transaction",
+            "ledger"
+          ]
+        },
+        "foundations-1-e8": {
+          "type": "match_pairs",
+          "pairs": [
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
           ]
         }
       }
@@ -140,9 +276,18 @@
           "type": "multiple_choice",
           "prompt": "You lose your private key and have no backup. What happens?",
           "options": [
-            { "id": "a", "text": "You lose access to that wallet" },
-            { "id": "b", "text": "Support restores it for you" },
-            { "id": "c", "text": "Nothing, it regenerates" }
+            {
+              "id": "a",
+              "text": "You lose access to that wallet"
+            },
+            {
+              "id": "b",
+              "text": "Support restores it for you"
+            },
+            {
+              "id": "c",
+              "text": "Nothing, it regenerates"
+            }
           ],
           "explanation": "Self-custody means nobody can reset your key for you. The backup is the recovery plan."
         },
@@ -151,9 +296,18 @@
           "type": "order_steps",
           "prompt": "Put safe wallet setup in order.",
           "steps": [
-            { "id": "s1", "text": "Open a wallet app you trust" },
-            { "id": "s2", "text": "Write the seed phrase on paper, offline" },
-            { "id": "s3", "text": "Receive a small test amount" }
+            {
+              "id": "s1",
+              "text": "Open a wallet app you trust"
+            },
+            {
+              "id": "s2",
+              "text": "Write the seed phrase on paper, offline"
+            },
+            {
+              "id": "s3",
+              "text": "Receive a small test amount"
+            }
           ],
           "explanation": "Create, back up offline, then test with a small amount before trusting it with more."
         },
@@ -161,7 +315,11 @@
           "id": "foundations-2-e3",
           "type": "fill_blank",
           "prompt": "Complete the backup rule.",
-          "parts": ["Write your seed phrase on ", " and store it ", "."],
+          "parts": [
+            "Write your seed phrase on ",
+            " and store it ",
+            "."
+          ],
           "blankCount": 2,
           "explanation": "Paper or metal, offline. Photos and cloud notes are easy to steal."
         },
@@ -171,17 +329,144 @@
           "prompt": "What do you do next?",
           "body": "A 'wallet inspector' DMs you: 'Your wallet is at risk. Send your seed phrase so I can secure it.'",
           "options": [
-            { "id": "a", "text": "Send the phrase quickly" },
-            { "id": "b", "text": "Ignore and report the account" }
+            {
+              "id": "a",
+              "text": "Send the phrase quickly"
+            },
+            {
+              "id": "b",
+              "text": "Ignore and report the account"
+            }
           ],
           "explanation": "No legitimate service needs your seed phrase. Anyone who asks is attacking you."
+        },
+        {
+          "id": "foundations-2-e5",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "Keeping your seed phrase as a screenshot on your phone is as safe as paper.",
+          "explanation": "Phones sync screenshots to the cloud, and those copies can leak. Paper kept offline is safer."
+        },
+        {
+          "id": "foundations-2-e6",
+          "type": "multiple_choice",
+          "prompt": "A website asks you to enter your seed phrase to \"recover\" your funds. What is this most likely to be?",
+          "options": [
+            {
+              "id": "a",
+              "text": "A phishing attempt"
+            },
+            {
+              "id": "b",
+              "text": "Normal account recovery"
+            },
+            {
+              "id": "c",
+              "text": "A required security update"
+            }
+          ],
+          "explanation": "Real wallets never ask for the seed phrase on a website. Typing it there hands the funds to whoever runs the site."
+        },
+        {
+          "id": "foundations-2-e7",
+          "type": "match_pairs",
+          "prompt": "Match each wallet type with its trade-off.",
+          "left": [
+            {
+              "id": "l1",
+              "text": "Hardware wallet"
+            },
+            {
+              "id": "l2",
+              "text": "Hot wallet"
+            }
+          ],
+          "right": [
+            {
+              "id": "r1",
+              "text": "Keys stay on a dedicated device offline"
+            },
+            {
+              "id": "r2",
+              "text": "Connected to the internet, convenient for small amounts"
+            }
+          ],
+          "explanation": "Offline keys resist remote attacks. Connected wallets trade some safety for convenience."
+        },
+        {
+          "id": "foundations-2-e8",
+          "type": "order_steps",
+          "prompt": "Put these steps in order after losing a phone.",
+          "steps": [
+            {
+              "id": "s1",
+              "text": "Confirm the seed phrase backup exists"
+            },
+            {
+              "id": "s2",
+              "text": "Install the same wallet app on a new device"
+            },
+            {
+              "id": "s3",
+              "text": "Restore the wallet from the seed phrase"
+            }
+          ],
+          "explanation": "Check the backup first. Without it, the wallet cannot be restored."
         }
       ],
       "answerKey": {
-        "foundations-2-e1": { "type": "multiple_choice", "optionId": "a" },
-        "foundations-2-e2": { "type": "order_steps", "stepIds": ["s1", "s2", "s3"] },
-        "foundations-2-e3": { "type": "fill_blank", "values": ["paper", "offline"] },
-        "foundations-2-e4": { "type": "story_card", "optionId": "b" }
+        "foundations-2-e1": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "foundations-2-e2": {
+          "type": "order_steps",
+          "stepIds": [
+            "s1",
+            "s2",
+            "s3"
+          ]
+        },
+        "foundations-2-e3": {
+          "type": "fill_blank",
+          "values": [
+            "paper",
+            "offline"
+          ]
+        },
+        "foundations-2-e4": {
+          "type": "story_card",
+          "optionId": "b"
+        },
+        "foundations-2-e5": {
+          "type": "true_false",
+          "value": false
+        },
+        "foundations-2-e6": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "foundations-2-e7": {
+          "type": "match_pairs",
+          "pairs": [
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
+          ]
+        },
+        "foundations-2-e8": {
+          "type": "order_steps",
+          "stepIds": [
+            "s1",
+            "s2",
+            "s3"
+          ]
+        }
       }
     },
     {
@@ -200,14 +485,38 @@
           "type": "read_chart",
           "prompt": "Which candle closed weakest relative to its open?",
           "candles": [
-            { "open": 100, "high": 110, "low": 95, "close": 105 },
-            { "open": 105, "high": 106, "low": 90, "close": 92 },
-            { "open": 92, "high": 100, "low": 91, "close": 99 }
+            {
+              "open": 100,
+              "high": 110,
+              "low": 95,
+              "close": 105
+            },
+            {
+              "open": 105,
+              "high": 106,
+              "low": 90,
+              "close": 92
+            },
+            {
+              "open": 92,
+              "high": 100,
+              "low": 91,
+              "close": 99
+            }
           ],
           "options": [
-            { "id": "c1", "text": "Candle 1" },
-            { "id": "c2", "text": "Candle 2" },
-            { "id": "c3", "text": "Candle 3" }
+            {
+              "id": "c1",
+              "text": "Candle 1"
+            },
+            {
+              "id": "c2",
+              "text": "Candle 2"
+            },
+            {
+              "id": "c3",
+              "text": "Candle 3"
+            }
           ],
           "explanation": "Candle 2 opened at 105 and closed at 92, giving up the most ground."
         },
@@ -216,9 +525,18 @@
           "type": "multiple_choice",
           "prompt": "What do the thin wicks above and below a candle show?",
           "options": [
-            { "id": "a", "text": "The highest and lowest prices in that period" },
-            { "id": "b", "text": "The trading fee" },
-            { "id": "c", "text": "The number of buyers" }
+            {
+              "id": "a",
+              "text": "The highest and lowest prices in that period"
+            },
+            {
+              "id": "b",
+              "text": "The trading fee"
+            },
+            {
+              "id": "c",
+              "text": "The number of buyers"
+            }
           ],
           "explanation": "Wicks mark the extremes reached before the period closed."
         },
@@ -234,18 +552,143 @@
           "type": "order_steps",
           "prompt": "Put a simple candle read in order.",
           "steps": [
-            { "id": "s1", "text": "Note where it opened and closed" },
-            { "id": "s2", "text": "Note the high and low wicks" },
-            { "id": "s3", "text": "Compare it with the previous candle" }
+            {
+              "id": "s1",
+              "text": "Note where it opened and closed"
+            },
+            {
+              "id": "s2",
+              "text": "Note the high and low wicks"
+            },
+            {
+              "id": "s3",
+              "text": "Compare it with the previous candle"
+            }
           ],
           "explanation": "Body, wicks, then context. A candle alone is not a signal."
+        },
+        {
+          "id": "price-action-1-e5",
+          "type": "multiple_choice",
+          "prompt": "What does a long upper wick usually show?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Price was pushed up, then sellers pushed it back down"
+            },
+            {
+              "id": "b",
+              "text": "The market closed at its high"
+            },
+            {
+              "id": "c",
+              "text": "Nobody traded in that period"
+            }
+          ],
+          "explanation": "A long upper wick shows price reached a higher level and was rejected there."
+        },
+        {
+          "id": "price-action-1-e6",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "The close of a candle is the last traded price in its time period.",
+          "explanation": "Open and close are the first and last trades. High and low are the extremes reached in between."
+        },
+        {
+          "id": "price-action-1-e7",
+          "type": "read_chart",
+          "prompt": "Which candle had the largest body that closed above its open?",
+          "candles": [
+            {
+              "open": 50,
+              "high": 58,
+              "low": 49,
+              "close": 57
+            },
+            {
+              "open": 57,
+              "high": 72,
+              "low": 56,
+              "close": 71
+            },
+            {
+              "open": 71,
+              "high": 73,
+              "low": 60,
+              "close": 61
+            }
+          ],
+          "options": [
+            {
+              "id": "c1",
+              "text": "Candle 1"
+            },
+            {
+              "id": "c2",
+              "text": "Candle 2"
+            },
+            {
+              "id": "c3",
+              "text": "Candle 3"
+            }
+          ],
+          "explanation": "Candle 2 rose 14 points from open to close, the largest bullish body. Candle 3 closed lower."
+        },
+        {
+          "id": "price-action-1-e8",
+          "type": "story_card",
+          "prompt": "What is the most careful reading of this candle?",
+          "body": "A coin spikes to a new high and falls back within the same candle. The volume is thin.",
+          "options": [
+            {
+              "id": "a",
+              "text": "The spike proves a strong uptrend"
+            },
+            {
+              "id": "b",
+              "text": "The rejected spike is a weak signal, so wait for confirmation"
+            }
+          ],
+          "explanation": "A rejected spike on thin volume tells you little. The next candles confirm or deny the move."
         }
       ],
       "answerKey": {
-        "price-action-1-e1": { "type": "read_chart", "optionId": "c2" },
-        "price-action-1-e2": { "type": "multiple_choice", "optionId": "a" },
-        "price-action-1-e3": { "type": "true_false", "value": false },
-        "price-action-1-e4": { "type": "order_steps", "stepIds": ["s1", "s2", "s3"] }
+        "price-action-1-e1": {
+          "type": "read_chart",
+          "optionId": "c2"
+        },
+        "price-action-1-e2": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "price-action-1-e3": {
+          "type": "true_false",
+          "value": false
+        },
+        "price-action-1-e4": {
+          "type": "order_steps",
+          "stepIds": [
+            "s1",
+            "s2",
+            "s3"
+          ]
+        },
+        "price-action-1-e5": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "price-action-1-e6": {
+          "type": "true_false",
+          "value": true
+        },
+        "price-action-1-e7": {
+          "type": "read_chart",
+          "optionId": "c2"
+        },
+        "price-action-1-e8": {
+          "type": "story_card",
+          "optionId": "b"
+        }
       }
     },
     {
@@ -264,9 +707,18 @@
           "type": "multiple_choice",
           "prompt": "What is support?",
           "options": [
-            { "id": "a", "text": "A price area where buyers have repeatedly stepped in" },
-            { "id": "b", "text": "A guarantee that price cannot fall further" },
-            { "id": "c", "text": "The highest price of the year" }
+            {
+              "id": "a",
+              "text": "A price area where buyers have repeatedly stepped in"
+            },
+            {
+              "id": "b",
+              "text": "A guarantee that price cannot fall further"
+            },
+            {
+              "id": "c",
+              "text": "The highest price of the year"
+            }
           ],
           "explanation": "Support is a zone of past demand, not a floor that cannot break."
         },
@@ -275,12 +727,24 @@
           "type": "match_pairs",
           "prompt": "Match each level with its usual nickname.",
           "left": [
-            { "id": "l1", "text": "Support" },
-            { "id": "l2", "text": "Resistance" }
+            {
+              "id": "l1",
+              "text": "Support"
+            },
+            {
+              "id": "l2",
+              "text": "Resistance"
+            }
           ],
           "right": [
-            { "id": "r1", "text": "Floor" },
-            { "id": "r2", "text": "Ceiling" }
+            {
+              "id": "r1",
+              "text": "Floor"
+            },
+            {
+              "id": "r2",
+              "text": "Ceiling"
+            }
           ],
           "explanation": "Support sits below price, resistance above. Either can break."
         },
@@ -289,14 +753,38 @@
           "type": "read_chart",
           "prompt": "Price bounced near which level three times?",
           "candles": [
-            { "open": 120, "high": 122, "low": 101, "close": 104 },
-            { "open": 104, "high": 118, "low": 100, "close": 116 },
-            { "open": 116, "high": 119, "low": 101, "close": 112 }
+            {
+              "open": 120,
+              "high": 122,
+              "low": 101,
+              "close": 104
+            },
+            {
+              "open": 104,
+              "high": 118,
+              "low": 100,
+              "close": 116
+            },
+            {
+              "open": 116,
+              "high": 119,
+              "low": 101,
+              "close": 112
+            }
           ],
           "options": [
-            { "id": "a", "text": "100" },
-            { "id": "b", "text": "120" },
-            { "id": "c", "text": "80" }
+            {
+              "id": "a",
+              "text": "100"
+            },
+            {
+              "id": "b",
+              "text": "120"
+            },
+            {
+              "id": "c",
+              "text": "80"
+            }
           ],
           "explanation": "Each low lands near 100, which is the support zone being tested."
         },
@@ -306,23 +794,126 @@
           "prompt": "What is the calmer choice?",
           "body": "Price just closed below a support level you have watched for weeks. A friend says it is 'free money' to buy now.",
           "options": [
-            { "id": "a", "text": "Buy immediately" },
-            { "id": "b", "text": "Wait for confirmation before acting" }
+            {
+              "id": "a",
+              "text": "Buy immediately"
+            },
+            {
+              "id": "b",
+              "text": "Wait for confirmation before acting"
+            }
           ],
           "explanation": "Broken support often becomes resistance. Waiting for confirmation costs less than guessing."
+        },
+        {
+          "id": "price-action-2-e5",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "A support level that breaks often turns into resistance.",
+          "explanation": "After price falls through support, sellers often defend the old level when price climbs back to it."
+        },
+        {
+          "id": "price-action-2-e6",
+          "type": "multiple_choice",
+          "prompt": "Which situation best describes resistance?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Price repeatedly stalls under the same ceiling"
+            },
+            {
+              "id": "b",
+              "text": "Price has no history at any level"
+            },
+            {
+              "id": "c",
+              "text": "Price moves randomly with no reaction to any level"
+            }
+          ],
+          "explanation": "Resistance is a level where selling repeatedly stops the price from rising."
+        },
+        {
+          "id": "price-action-2-e7",
+          "type": "fill_blank",
+          "prompt": "Complete the sentence about price levels.",
+          "parts": [
+            "A level gets stronger the more often price ",
+            " from it, and a clean ",
+            " through it is a signal."
+          ],
+          "blankCount": 2,
+          "explanation": "Repeated reactions mark a level. A decisive break is the moment to reassess the trade."
+        },
+        {
+          "id": "price-action-2-e8",
+          "type": "order_steps",
+          "prompt": "Put a support-based plan in order.",
+          "steps": [
+            {
+              "id": "s1",
+              "text": "Mark the support level on the chart"
+            },
+            {
+              "id": "s2",
+              "text": "Wait for price to test the level and hold"
+            },
+            {
+              "id": "s3",
+              "text": "Set your stop just below the level"
+            }
+          ],
+          "explanation": "Identify the level, wait for confirmation, then define the loss you accept."
         }
       ],
       "answerKey": {
-        "price-action-2-e1": { "type": "multiple_choice", "optionId": "a" },
+        "price-action-2-e1": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
         "price-action-2-e2": {
           "type": "match_pairs",
           "pairs": [
-            { "left": "l1", "right": "r1" },
-            { "left": "l2", "right": "r2" }
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
           ]
         },
-        "price-action-2-e3": { "type": "read_chart", "optionId": "a" },
-        "price-action-2-e4": { "type": "story_card", "optionId": "b" }
+        "price-action-2-e3": {
+          "type": "read_chart",
+          "optionId": "a"
+        },
+        "price-action-2-e4": {
+          "type": "story_card",
+          "optionId": "b"
+        },
+        "price-action-2-e5": {
+          "type": "true_false",
+          "value": true
+        },
+        "price-action-2-e6": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "price-action-2-e7": {
+          "type": "fill_blank",
+          "values": [
+            "bounces",
+            "break"
+          ]
+        },
+        "price-action-2-e8": {
+          "type": "order_steps",
+          "stepIds": [
+            "s1",
+            "s2",
+            "s3"
+          ]
+        }
       }
     },
     {
@@ -340,8 +931,16 @@
           "id": "investing-1-e1",
           "type": "dca_timeline",
           "prompt": "You follow a fixed weekly plan. What is the right action at each price shown?",
-          "prices": [100, 80, 120],
-          "options": ["buy", "hold", "sell"],
+          "prices": [
+            100,
+            80,
+            120
+          ],
+          "options": [
+            "buy",
+            "hold",
+            "sell"
+          ],
           "explanation": "A fixed plan buys the same amount on schedule. Price swings do not change the rule."
         },
         {
@@ -349,9 +948,18 @@
           "type": "multiple_choice",
           "prompt": "What does dollar-cost averaging mean?",
           "options": [
-            { "id": "a", "text": "Buying a fixed amount on a fixed schedule" },
-            { "id": "b", "text": "Buying only after a big drop" },
-            { "id": "c", "text": "Selling everything at the high" }
+            {
+              "id": "a",
+              "text": "Buying a fixed amount on a fixed schedule"
+            },
+            {
+              "id": "b",
+              "text": "Buying only after a big drop"
+            },
+            {
+              "id": "c",
+              "text": "Selling everything at the high"
+            }
           ],
           "explanation": "DCA spreads purchases over time, so one entry price does not decide your outcome."
         },
@@ -371,13 +979,93 @@
           "prompt": "True or false?",
           "statement": "Dollar-cost averaging removes the risk of losing money.",
           "explanation": "It reduces timing risk only. The asset can still fall."
+        },
+        {
+          "id": "investing-1-e5",
+          "type": "multiple_choice",
+          "prompt": "Why does dollar-cost averaging reduce timing risk?",
+          "options": [
+            {
+              "id": "a",
+              "text": "It spreads purchases over time, so you do not buy everything at one peak"
+            },
+            {
+              "id": "b",
+              "text": "It guarantees a higher average return"
+            },
+            {
+              "id": "c",
+              "text": "It removes all losses"
+            }
+          ],
+          "explanation": "Spreading purchases lowers the chance that all your money goes in at the worst moment."
+        },
+        {
+          "id": "investing-1-e6",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "Pausing purchases whenever price drops is part of a good DCA plan.",
+          "explanation": "The plan buys on schedule regardless of price. Stopping on dips defeats its purpose."
+        },
+        {
+          "id": "investing-1-e7",
+          "type": "fill_blank",
+          "prompt": "Complete the sentence about the plan.",
+          "parts": [
+            "Set a fixed ",
+            " and a fixed ",
+            ", then keep to it."
+          ],
+          "blankCount": 2,
+          "explanation": "The rule, not the price on the day, decides each purchase."
+        },
+        {
+          "id": "investing-1-e8",
+          "type": "risk_calculator",
+          "prompt": "You risk 2% of a 5000 unit balance with entry at 50 and stop at 45. What position size should you take?",
+          "balance": 5000,
+          "riskPercent": 2,
+          "entry": 50,
+          "stop": 45,
+          "explanation": "Risk is 100. Each unit risks 5, so buy 20 units: a 1000 position."
         }
       ],
       "answerKey": {
-        "investing-1-e1": { "type": "dca_timeline", "action": "buy" },
-        "investing-1-e2": { "type": "multiple_choice", "optionId": "a" },
-        "investing-1-e3": { "type": "risk_calculator", "positionSize": 200 },
-        "investing-1-e4": { "type": "true_false", "value": false }
+        "investing-1-e1": {
+          "type": "dca_timeline",
+          "action": "buy"
+        },
+        "investing-1-e2": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "investing-1-e3": {
+          "type": "risk_calculator",
+          "positionSize": 200
+        },
+        "investing-1-e4": {
+          "type": "true_false",
+          "value": false
+        },
+        "investing-1-e5": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "investing-1-e6": {
+          "type": "true_false",
+          "value": false
+        },
+        "investing-1-e7": {
+          "type": "fill_blank",
+          "values": [
+            "amount",
+            "schedule"
+          ]
+        },
+        "investing-1-e8": {
+          "type": "risk_calculator",
+          "positionSize": 1000
+        }
       }
     },
     {
@@ -396,9 +1084,18 @@
           "type": "multiple_choice",
           "prompt": "Why does time in the market usually beat timing the market?",
           "options": [
-            { "id": "a", "text": "Missing the best days hurts long-run returns" },
-            { "id": "b", "text": "Fees disappear after a year" },
-            { "id": "c", "text": "Prices only rise over time" }
+            {
+              "id": "a",
+              "text": "Missing the best days hurts long-run returns"
+            },
+            {
+              "id": "b",
+              "text": "Fees disappear after a year"
+            },
+            {
+              "id": "c",
+              "text": "Prices only rise over time"
+            }
           ],
           "explanation": "A few strong days carry a lot of the long-run return, and they are impossible to predict."
         },
@@ -406,7 +1103,11 @@
           "id": "investing-2-e2",
           "type": "fill_blank",
           "prompt": "Complete the compounding sentence.",
-          "parts": ["Compounding rewards ", " and ", "."],
+          "parts": [
+            "Compounding rewards ",
+            " and ",
+            "."
+          ],
           "blankCount": 2,
           "explanation": "Returns earning returns needs time, and time needs patience."
         },
@@ -416,8 +1117,14 @@
           "prompt": "What do you do?",
           "body": "Your portfolio drops 20% in a week. A headline says the market is finished.",
           "options": [
-            { "id": "a", "text": "Sell everything today" },
-            { "id": "b", "text": "Re-read your plan and stick to it" }
+            {
+              "id": "a",
+              "text": "Sell everything today"
+            },
+            {
+              "id": "b",
+              "text": "Re-read your plan and stick to it"
+            }
           ],
           "explanation": "A written plan made before the drop is calmer than a headline made during it."
         },
@@ -426,25 +1133,157 @@
           "type": "match_pairs",
           "prompt": "Match each term with its meaning.",
           "left": [
-            { "id": "l1", "text": "Volatility" },
-            { "id": "l2", "text": "Drawdown" }
+            {
+              "id": "l1",
+              "text": "Volatility"
+            },
+            {
+              "id": "l2",
+              "text": "Drawdown"
+            }
           ],
           "right": [
-            { "id": "r1", "text": "Short-term price swings" },
-            { "id": "r2", "text": "Drop from a peak" }
+            {
+              "id": "r1",
+              "text": "Short-term price swings"
+            },
+            {
+              "id": "r2",
+              "text": "Drop from a peak"
+            }
           ],
           "explanation": "Volatility is movement. Drawdown measures how far you are from a high."
+        },
+        {
+          "id": "investing-2-e5",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "Compounding works mainly because returns earn returns over time.",
+          "explanation": "Gains that stay invested produce their own gains, so the effect grows with time."
+        },
+        {
+          "id": "investing-2-e6",
+          "type": "multiple_choice",
+          "prompt": "A coin drops 30% in a week. Which response fits a long-term plan?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Sell everything to stop the pain"
+            },
+            {
+              "id": "b",
+              "text": "Check the plan and keep buying on schedule if the reason you own it still holds"
+            },
+            {
+              "id": "c",
+              "text": "Double the position to win back losses quickly"
+            }
+          ],
+          "explanation": "A plan is judged against its reasons, not against the latest price move."
+        },
+        {
+          "id": "investing-2-e7",
+          "type": "order_steps",
+          "prompt": "Put a patient review routine in order.",
+          "steps": [
+            {
+              "id": "s1",
+              "text": "Write down why you own the asset"
+            },
+            {
+              "id": "s2",
+              "text": "Check the plan once a month, not every hour"
+            },
+            {
+              "id": "s3",
+              "text": "Adjust only if the reason has changed"
+            }
+          ],
+          "explanation": "Start from the reason. Frequent checks invite reactions; changes need a changed reason."
+        },
+        {
+          "id": "investing-2-e8",
+          "type": "match_pairs",
+          "prompt": "Match each idea with what it describes.",
+          "left": [
+            {
+              "id": "l1",
+              "text": "Compounding"
+            },
+            {
+              "id": "l2",
+              "text": "Market timing"
+            }
+          ],
+          "right": [
+            {
+              "id": "r1",
+              "text": "Growth that builds on earlier gains"
+            },
+            {
+              "id": "r2",
+              "text": "Trying to buy at the exact bottom"
+            }
+          ],
+          "explanation": "Compounding rewards staying invested. Timing requires predicting moves, which is hard to do reliably."
         }
       ],
       "answerKey": {
-        "investing-2-e1": { "type": "multiple_choice", "optionId": "a" },
-        "investing-2-e2": { "type": "fill_blank", "values": ["time", "patience"] },
-        "investing-2-e3": { "type": "story_card", "optionId": "b" },
+        "investing-2-e1": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "investing-2-e2": {
+          "type": "fill_blank",
+          "values": [
+            "time",
+            "patience"
+          ]
+        },
+        "investing-2-e3": {
+          "type": "story_card",
+          "optionId": "b"
+        },
         "investing-2-e4": {
           "type": "match_pairs",
           "pairs": [
-            { "left": "l1", "right": "r1" },
-            { "left": "l2", "right": "r2" }
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
+          ]
+        },
+        "investing-2-e5": {
+          "type": "true_false",
+          "value": true
+        },
+        "investing-2-e6": {
+          "type": "multiple_choice",
+          "optionId": "b"
+        },
+        "investing-2-e7": {
+          "type": "order_steps",
+          "stepIds": [
+            "s1",
+            "s2",
+            "s3"
+          ]
+        },
+        "investing-2-e8": {
+          "type": "match_pairs",
+          "pairs": [
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
           ]
         }
       }
@@ -475,9 +1314,18 @@
           "type": "multiple_choice",
           "prompt": "What is a common risk limit for a single beginner trade?",
           "options": [
-            { "id": "a", "text": "1-2% of the account" },
-            { "id": "b", "text": "25% of the account" },
-            { "id": "c", "text": "Whatever the chart looks like" }
+            {
+              "id": "a",
+              "text": "1-2% of the account"
+            },
+            {
+              "id": "b",
+              "text": "25% of the account"
+            },
+            {
+              "id": "c",
+              "text": "Whatever the chart looks like"
+            }
           ],
           "explanation": "Small fixed risk keeps a normal losing streak survivable."
         },
@@ -493,18 +1341,109 @@
           "type": "order_steps",
           "prompt": "Put the trade plan in order.",
           "steps": [
-            { "id": "s1", "text": "Define where the idea is wrong" },
-            { "id": "s2", "text": "Size the position from that stop" },
-            { "id": "s3", "text": "Place the order" }
+            {
+              "id": "s1",
+              "text": "Define where the idea is wrong"
+            },
+            {
+              "id": "s2",
+              "text": "Size the position from that stop"
+            },
+            {
+              "id": "s3",
+              "text": "Place the order"
+            }
           ],
           "explanation": "Invalidation first, size second, order last."
+        },
+        {
+          "id": "risk-1-e5",
+          "type": "multiple_choice",
+          "prompt": "What is the first step in position sizing?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Decide the most you can lose on one trade"
+            },
+            {
+              "id": "b",
+              "text": "Pick the asset with the highest potential gain"
+            },
+            {
+              "id": "c",
+              "text": "Choose the entry price from the latest post"
+            }
+          ],
+          "explanation": "The allowed loss sets the size. The size should never be set by the upside you hope for."
+        },
+        {
+          "id": "risk-1-e6",
+          "type": "risk_calculator",
+          "prompt": "You risk 0.5% of a 2000 unit balance with entry at 20 and stop at 18. What position size should you take?",
+          "balance": 2000,
+          "riskPercent": 0.5,
+          "entry": 20,
+          "stop": 18,
+          "explanation": "Risk is 10. Each unit risks 2, so buy 5 units: a 100 position."
+        },
+        {
+          "id": "risk-1-e7",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "Putting more of your balance into one trade reduces your risk when the setup looks strong.",
+          "explanation": "A bigger position raises the loss per trade. A strong-looking setup does not cancel that."
+        },
+        {
+          "id": "risk-1-e8",
+          "type": "fill_blank",
+          "prompt": "Complete the sentence about risk per unit.",
+          "parts": [
+            "Risk per unit is the gap between entry and ",
+            ". Divide the allowed loss by it."
+          ],
+          "blankCount": 1,
+          "explanation": "Position size = risk amount ÷ (entry − stop). The gap is what one unit can lose."
         }
       ],
       "answerKey": {
-        "risk-1-e1": { "type": "risk_calculator", "positionSize": 400 },
-        "risk-1-e2": { "type": "multiple_choice", "optionId": "a" },
-        "risk-1-e3": { "type": "true_false", "value": true },
-        "risk-1-e4": { "type": "order_steps", "stepIds": ["s1", "s2", "s3"] }
+        "risk-1-e1": {
+          "type": "risk_calculator",
+          "positionSize": 400
+        },
+        "risk-1-e2": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "risk-1-e3": {
+          "type": "true_false",
+          "value": true
+        },
+        "risk-1-e4": {
+          "type": "order_steps",
+          "stepIds": [
+            "s1",
+            "s2",
+            "s3"
+          ]
+        },
+        "risk-1-e5": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "risk-1-e6": {
+          "type": "risk_calculator",
+          "positionSize": 100
+        },
+        "risk-1-e7": {
+          "type": "true_false",
+          "value": false
+        },
+        "risk-1-e8": {
+          "type": "fill_blank",
+          "values": [
+            "stop"
+          ]
+        }
       }
     },
     {
@@ -523,9 +1462,18 @@
           "type": "multiple_choice",
           "prompt": "What is the purpose of a stop-loss?",
           "options": [
-            { "id": "a", "text": "To cap the loss on a losing trade" },
-            { "id": "b", "text": "To guarantee profit" },
-            { "id": "c", "text": "To predict the next candle" }
+            {
+              "id": "a",
+              "text": "To cap the loss on a losing trade"
+            },
+            {
+              "id": "b",
+              "text": "To guarantee profit"
+            },
+            {
+              "id": "c",
+              "text": "To predict the next candle"
+            }
           ],
           "explanation": "A stop defines the cost of being wrong, so one trade cannot sink the account."
         },
@@ -534,12 +1482,28 @@
           "type": "read_chart",
           "prompt": "You entered at 100 with a stop at 95. Which candle would trigger it?",
           "candles": [
-            { "open": 100, "high": 108, "low": 99, "close": 106 },
-            { "open": 106, "high": 107, "low": 94, "close": 96 }
+            {
+              "open": 100,
+              "high": 108,
+              "low": 99,
+              "close": 106
+            },
+            {
+              "open": 106,
+              "high": 107,
+              "low": 94,
+              "close": 96
+            }
           ],
           "options": [
-            { "id": "c1", "text": "Candle 1" },
-            { "id": "c2", "text": "Candle 2" }
+            {
+              "id": "c1",
+              "text": "Candle 1"
+            },
+            {
+              "id": "c2",
+              "text": "Candle 2"
+            }
           ],
           "explanation": "Candle 2 trades down to 94, below the 95 stop."
         },
@@ -547,7 +1511,10 @@
           "id": "risk-2-e3",
           "type": "fill_blank",
           "prompt": "Complete the stop rule.",
-          "parts": ["A stop-loss caps your ", " per trade."],
+          "parts": [
+            "A stop-loss caps your ",
+            " per trade."
+          ],
           "blankCount": 1,
           "explanation": "The stop converts an unknown loss into a known one."
         },
@@ -557,17 +1524,155 @@
           "prompt": "What is the disciplined choice?",
           "body": "Price is approaching your stop. You move the stop lower so you do not have to take the loss.",
           "options": [
-            { "id": "a", "text": "Keep moving the stop" },
-            { "id": "b", "text": "Accept the stop you planned" }
+            {
+              "id": "a",
+              "text": "Keep moving the stop"
+            },
+            {
+              "id": "b",
+              "text": "Accept the stop you planned"
+            }
           ],
           "explanation": "Moving a stop turns a planned loss into an unplanned one."
+        },
+        {
+          "id": "risk-2-e5",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "A stop-loss order guarantees your exit price in every market.",
+          "explanation": "Prices can gap past a stop, so the fill may be worse. A stop limits the loss but does not fix the price."
+        },
+        {
+          "id": "risk-2-e6",
+          "type": "match_pairs",
+          "prompt": "Match each order with what it does.",
+          "left": [
+            {
+              "id": "l1",
+              "text": "Stop-loss"
+            },
+            {
+              "id": "l2",
+              "text": "Take-profit"
+            }
+          ],
+          "right": [
+            {
+              "id": "r1",
+              "text": "Exits at a set loss level"
+            },
+            {
+              "id": "r2",
+              "text": "Exits at a set gain level"
+            }
+          ],
+          "explanation": "One order caps the loss and the other locks in a target gain."
+        },
+        {
+          "id": "risk-2-e7",
+          "type": "read_chart",
+          "prompt": "Which candle traded down to a stop placed at 188?",
+          "candles": [
+            {
+              "open": 200,
+              "high": 204,
+              "low": 196,
+              "close": 198
+            },
+            {
+              "open": 198,
+              "high": 199,
+              "low": 186,
+              "close": 187
+            },
+            {
+              "open": 190,
+              "high": 192,
+              "low": 189,
+              "close": 191
+            }
+          ],
+          "options": [
+            {
+              "id": "c1",
+              "text": "Candle 1"
+            },
+            {
+              "id": "c2",
+              "text": "Candle 2"
+            },
+            {
+              "id": "c3",
+              "text": "Candle 3"
+            }
+          ],
+          "explanation": "Candle 2 traded down to 186, through the 188 stop. The other candles never reached that level."
+        },
+        {
+          "id": "risk-2-e8",
+          "type": "multiple_choice",
+          "prompt": "A trader moves a stop farther from entry after the trade goes against them. Why is this risky?",
+          "options": [
+            {
+              "id": "a",
+              "text": "It increases the loss they agreed to accept"
+            },
+            {
+              "id": "b",
+              "text": "It locks in a profit"
+            },
+            {
+              "id": "c",
+              "text": "It removes all risk"
+            }
+          ],
+          "explanation": "Moving the stop after entry changes the risk plan mid-trade, and the loss grows beyond the original limit."
         }
       ],
       "answerKey": {
-        "risk-2-e1": { "type": "multiple_choice", "optionId": "a" },
-        "risk-2-e2": { "type": "read_chart", "optionId": "c2" },
-        "risk-2-e3": { "type": "fill_blank", "values": ["loss"] },
-        "risk-2-e4": { "type": "story_card", "optionId": "b" }
+        "risk-2-e1": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "risk-2-e2": {
+          "type": "read_chart",
+          "optionId": "c2"
+        },
+        "risk-2-e3": {
+          "type": "fill_blank",
+          "values": [
+            "loss"
+          ]
+        },
+        "risk-2-e4": {
+          "type": "story_card",
+          "optionId": "b"
+        },
+        "risk-2-e5": {
+          "type": "true_false",
+          "value": false
+        },
+        "risk-2-e6": {
+          "type": "match_pairs",
+          "pairs": [
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
+          ]
+        },
+        "risk-2-e7": {
+          "type": "read_chart",
+          "optionId": "c2"
+        },
+        "risk-2-e8": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        }
       }
     },
     {
@@ -591,9 +1696,21 @@
             "body": "Hey! Your wallet is flagged. I can double your BTC in 30 minutes, guaranteed. Send 0.1 BTC to bc1q-example-address before your account closes."
           },
           "hotspots": [
-            { "id": "h1", "label": "Urgency", "text": "before your account closes" },
-            { "id": "h2", "label": "Guaranteed returns", "text": "double your BTC ... guaranteed" },
-            { "id": "h3", "label": "Send crypto", "text": "Send 0.1 BTC" }
+            {
+              "id": "h1",
+              "label": "Urgency",
+              "text": "before your account closes"
+            },
+            {
+              "id": "h2",
+              "label": "Guaranteed returns",
+              "text": "double your BTC ... guaranteed"
+            },
+            {
+              "id": "h3",
+              "label": "Send crypto",
+              "text": "Send 0.1 BTC"
+            }
           ],
           "explanation": "Urgency, guaranteed profit, and a request to send crypto are the three classic markers."
         },
@@ -602,9 +1719,18 @@
           "type": "multiple_choice",
           "prompt": "Which offer is the clearest red flag?",
           "options": [
-            { "id": "a", "text": "A guaranteed 10x in a week" },
-            { "id": "b", "text": "A fee schedule on a public exchange" },
-            { "id": "c", "text": "A risk disclosure document" }
+            {
+              "id": "a",
+              "text": "A guaranteed 10x in a week"
+            },
+            {
+              "id": "b",
+              "text": "A fee schedule on a public exchange"
+            },
+            {
+              "id": "c",
+              "text": "A risk disclosure document"
+            }
           ],
           "explanation": "Nobody can guarantee returns. A guarantee is the tell."
         },
@@ -620,25 +1746,149 @@
           "type": "match_pairs",
           "prompt": "Match each tactic with what it is really doing.",
           "left": [
-            { "id": "l1", "text": "Urgency" },
-            { "id": "l2", "text": "Guaranteed profit" }
+            {
+              "id": "l1",
+              "text": "Urgency"
+            },
+            {
+              "id": "l2",
+              "text": "Guaranteed profit"
+            }
           ],
           "right": [
-            { "id": "r1", "text": "Pressure to act before thinking" },
-            { "id": "r2", "text": "An impossible promise" }
+            {
+              "id": "r1",
+              "text": "Pressure to act before thinking"
+            },
+            {
+              "id": "r2",
+              "text": "An impossible promise"
+            }
           ],
           "explanation": "Both shortcuts skip the verification a real opportunity would survive."
+        },
+        {
+          "id": "safety-1-e5",
+          "type": "spot_scam",
+          "prompt": "Tap every red flag in this message.",
+          "artifact": {
+            "kind": "dm",
+            "title": "Message from @exchange_support",
+            "body": "Your account is locked. Verify now by entering your login and 2FA code on this link, or the account is closed today."
+          },
+          "hotspots": [
+            {
+              "id": "h1",
+              "label": "Urgency",
+              "text": "the account is closed today"
+            },
+            {
+              "id": "h2",
+              "label": "Credential request",
+              "text": "entering your login and 2FA code"
+            }
+          ],
+          "explanation": "Urgency and a request for login codes are classic phishing markers. Real support never asks for them."
+        },
+        {
+          "id": "safety-1-e6",
+          "type": "multiple_choice",
+          "prompt": "A stranger from a dating app sends you a trading app they set up for you. What do you do?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Refuse and do not install it"
+            },
+            {
+              "id": "b",
+              "text": "Install it and deposit a small test amount"
+            },
+            {
+              "id": "c",
+              "text": "Share your password so they can help"
+            }
+          ],
+          "explanation": "Apps set up by strangers are a common way to steal deposits. Any test amount is already a loss."
+        },
+        {
+          "id": "safety-1-e7",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "A celebrity endorsing a coin proves the coin is legitimate.",
+          "explanation": "Endorsements can be bought or faked. Check the project through independent sources."
+        },
+        {
+          "id": "safety-1-e8",
+          "type": "order_steps",
+          "prompt": "Put these steps in order when you suspect a scam.",
+          "steps": [
+            {
+              "id": "s1",
+              "text": "Stop replying and do not click any links"
+            },
+            {
+              "id": "s2",
+              "text": "Check the official site or app directly"
+            },
+            {
+              "id": "s3",
+              "text": "Report the account to the platform"
+            }
+          ],
+          "explanation": "End contact first, verify through a channel you already trust, then report."
         }
       ],
       "answerKey": {
-        "safety-1-e1": { "type": "spot_scam", "hotspotIds": ["h1", "h2", "h3"] },
-        "safety-1-e2": { "type": "multiple_choice", "optionId": "a" },
-        "safety-1-e3": { "type": "true_false", "value": false },
+        "safety-1-e1": {
+          "type": "spot_scam",
+          "hotspotIds": [
+            "h1",
+            "h2",
+            "h3"
+          ]
+        },
+        "safety-1-e2": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "safety-1-e3": {
+          "type": "true_false",
+          "value": false
+        },
         "safety-1-e4": {
           "type": "match_pairs",
           "pairs": [
-            { "left": "l1", "right": "r1" },
-            { "left": "l2", "right": "r2" }
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
+          ]
+        },
+        "safety-1-e5": {
+          "type": "spot_scam",
+          "hotspotIds": [
+            "h1",
+            "h2"
+          ]
+        },
+        "safety-1-e6": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "safety-1-e7": {
+          "type": "true_false",
+          "value": false
+        },
+        "safety-1-e8": {
+          "type": "order_steps",
+          "stepIds": [
+            "s1",
+            "s2",
+            "s3"
           ]
         }
       }
@@ -664,9 +1914,21 @@
             "body": "We detected unusual activity. Reply with your 12-word recovery phrase within 24 hours or your funds will be frozen. Do not contact support through the app."
           },
           "hotspots": [
-            { "id": "h1", "label": "Asking for the phrase", "text": "Reply with your 12-word recovery phrase" },
-            { "id": "h2", "label": "Deadline", "text": "within 24 hours" },
-            { "id": "h3", "label": "Blocking official channels", "text": "Do not contact support through the app" }
+            {
+              "id": "h1",
+              "label": "Asking for the phrase",
+              "text": "Reply with your 12-word recovery phrase"
+            },
+            {
+              "id": "h2",
+              "label": "Deadline",
+              "text": "within 24 hours"
+            },
+            {
+              "id": "h3",
+              "label": "Blocking official channels",
+              "text": "Do not contact support through the app"
+            }
           ],
           "explanation": "Requests for the phrase, a tight deadline, and steering you away from official support all point to phishing."
         },
@@ -675,9 +1937,18 @@
           "type": "multiple_choice",
           "prompt": "Where should a seed phrase be stored?",
           "options": [
-            { "id": "a", "text": "Offline, in a place only you control" },
-            { "id": "b", "text": "In a cloud note so you never lose it" },
-            { "id": "c", "text": "In a DM with a friend" }
+            {
+              "id": "a",
+              "text": "Offline, in a place only you control"
+            },
+            {
+              "id": "b",
+              "text": "In a cloud note so you never lose it"
+            },
+            {
+              "id": "c",
+              "text": "In a DM with a friend"
+            }
           ],
           "explanation": "Offline and private. Cloud notes and messages are one breach away from theft."
         },
@@ -686,9 +1957,18 @@
           "type": "order_steps",
           "prompt": "Put a safe recovery in order.",
           "steps": [
-            { "id": "s1", "text": "Get your offline backup" },
-            { "id": "s2", "text": "Open the wallet app you already use" },
-            { "id": "s3", "text": "Enter the phrase inside the app" }
+            {
+              "id": "s1",
+              "text": "Get your offline backup"
+            },
+            {
+              "id": "s2",
+              "text": "Open the wallet app you already use"
+            },
+            {
+              "id": "s3",
+              "text": "Enter the phrase inside the app"
+            }
           ],
           "explanation": "The phrase goes into the wallet app, never into a website or a chat."
         },
@@ -696,16 +1976,132 @@
           "id": "safety-2-e4",
           "type": "fill_blank",
           "prompt": "Complete the rule.",
-          "parts": ["Never type your seed phrase into a ", "."],
+          "parts": [
+            "Never type your seed phrase into a ",
+            "."
+          ],
           "blankCount": 1,
           "explanation": "A website asking for your seed phrase is stealing it."
+        },
+        {
+          "id": "safety-2-e5",
+          "type": "true_false",
+          "prompt": "True or false?",
+          "statement": "A support agent may ask for your seed phrase to verify your identity.",
+          "explanation": "Legitimate support never needs your seed phrase. Anyone who asks is trying to take your funds."
+        },
+        {
+          "id": "safety-2-e6",
+          "type": "multiple_choice",
+          "prompt": "Where is the safest place to keep a seed phrase?",
+          "options": [
+            {
+              "id": "a",
+              "text": "A photo in your cloud drive"
+            },
+            {
+              "id": "b",
+              "text": "Written on paper and kept in a secure location"
+            },
+            {
+              "id": "c",
+              "text": "In a message to a trusted friend"
+            }
+          ],
+          "explanation": "Paper kept offline is not reachable by hackers over the internet."
+        },
+        {
+          "id": "safety-2-e7",
+          "type": "match_pairs",
+          "prompt": "Match each secret with what it protects.",
+          "left": [
+            {
+              "id": "l1",
+              "text": "Seed phrase"
+            },
+            {
+              "id": "l2",
+              "text": "Account password"
+            }
+          ],
+          "right": [
+            {
+              "id": "r1",
+              "text": "Full access to the funds, with no reset option"
+            },
+            {
+              "id": "r2",
+              "text": "One online account, which can usually be reset"
+            }
+          ],
+          "explanation": "Anyone with the seed phrase can move the funds. A password can usually be reset through the service."
+        },
+        {
+          "id": "safety-2-e8",
+          "type": "fill_blank",
+          "prompt": "Complete the sentence about requests for your seed phrase.",
+          "parts": [
+            "If someone asks for your seed phrase, treat them as a ",
+            " until proven otherwise."
+          ],
+          "blankCount": 1,
+          "explanation": "Assume bad intent and walk away. No real service needs the phrase."
         }
       ],
       "answerKey": {
-        "safety-2-e1": { "type": "spot_scam", "hotspotIds": ["h1", "h2", "h3"] },
-        "safety-2-e2": { "type": "multiple_choice", "optionId": "a" },
-        "safety-2-e3": { "type": "order_steps", "stepIds": ["s1", "s2", "s3"] },
-        "safety-2-e4": { "type": "fill_blank", "values": ["website"] }
+        "safety-2-e1": {
+          "type": "spot_scam",
+          "hotspotIds": [
+            "h1",
+            "h2",
+            "h3"
+          ]
+        },
+        "safety-2-e2": {
+          "type": "multiple_choice",
+          "optionId": "a"
+        },
+        "safety-2-e3": {
+          "type": "order_steps",
+          "stepIds": [
+            "s1",
+            "s2",
+            "s3"
+          ]
+        },
+        "safety-2-e4": {
+          "type": "fill_blank",
+          "values": [
+            "website"
+          ]
+        },
+        "safety-2-e5": {
+          "type": "true_false",
+          "value": false
+        },
+        "safety-2-e6": {
+          "type": "multiple_choice",
+          "optionId": "b"
+        },
+        "safety-2-e7": {
+          "type": "match_pairs",
+          "pairs": [
+            {
+              "left": "l1",
+              "right": "r1"
+            },
+            {
+              "left": "l2",
+              "right": "r2"
+            }
+          ]
+        },
+        "safety-2-e8": {
+          "type": "fill_blank",
+          "values": [
+            "scammer"
+          ]
+        }
       }
     }
   ]
