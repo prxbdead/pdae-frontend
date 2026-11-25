@@ -63,8 +63,9 @@ export function ResultScreen({ lessonId, attemptId }: ResultScreenProps) {
 
   const result =
     lastResult &&
+    attemptId !== undefined &&
     lastResult.lessonId === lessonId &&
-    (!attemptId || lastResult.clientAttemptId === attemptId)
+    lastResult.clientAttemptId === attemptId
       ? lastResult
       : null;
 

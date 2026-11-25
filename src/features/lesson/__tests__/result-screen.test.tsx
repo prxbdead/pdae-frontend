@@ -170,4 +170,14 @@ describe('ResultScreen', () => {
 
     expect(screen.getByText('Result unavailable')).toBeOnTheScreen();
   });
+
+  it('refuses to render a result when the route has no attempt id', () => {
+    render(
+      <ThemeProvider>
+        <ResultScreen lessonId="foundations-1" />
+      </ThemeProvider>,
+    );
+
+    expect(screen.getByText('Result unavailable')).toBeOnTheScreen();
+  });
 });
