@@ -75,3 +75,23 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 7
+
+  android-eas-build:
+    name: Android EAS build (manual)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start EAS build
+        run: npx --yes eas-cli@latest build --platform android --profile preview --non-interactive --no-wait
