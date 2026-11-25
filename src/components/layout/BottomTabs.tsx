@@ -11,55 +11,15 @@ export function BottomTabs() {
   const pathname = usePathname();
 
   return (
-    <View
-      testID="bottom-tabs"
-      accessibilityRole="tablist"
-      style={[
-        styles.bar,
-        {
-          backgroundColor: theme.colors.surface,
-          borderTopColor: theme.colors.border,
-        },
-      ]}
-    >
+    <View testID="bottom-tabs" accessibilityRole="tablist" style={[styles.bar, { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.border }]}>
       {TABS.map((tab) => {
         const selected = isActiveTab(pathname, tab.href);
-
         return (
-          <Pressable
-            key={tab.key}
-            testID={`tab-${tab.key}`}
-            accessibilityRole="tab"
-            accessibilityLabel={tab.label}
-            accessibilityState={{ selected }}
-            onPress={() => router.replace(tab.href)}
-            style={styles.tab}
-          >
-            <View
-              style={[
-                styles.iconWrap,
-                selected && { backgroundColor: theme.colors.surfaceAlt },
-              ]}
-            >
-              <Icon
-                name={tab.icon}
-                size={24}
-                color={selected ? theme.colors.primary : theme.colors.textMuted}
-              />
+          <Pressable key={tab.key} testID={`tab-${tab.key}`} accessibilityRole="tab" accessibilityLabel={tab.label} accessibilityState={{ selected }} onPress={() => router.replace(tab.href)} style={styles.tab}>
+            <View style={[styles.iconWrap, selected && { backgroundColor: theme.colors.primary, borderBottomColor: '#4B32C4', borderBottomWidth: 3 }]}>
+              <Icon name={tab.icon} size={23} color={selected ? '#FFFFFF' : theme.colors.textMuted} />
             </View>
-            <Text
-              style={[
-                theme.typography.caption,
-                {
-                  color: selected
-                    ? theme.colors.primary
-                    : theme.colors.textMuted,
-                  fontWeight: selected ? '700' : '400',
-                },
-              ]}
-            >
-              {tab.label}
-            </Text>
+            <Text style={[theme.typography.caption, { color: selected ? theme.colors.primary : theme.colors.textMuted, fontWeight: selected ? '900' : '700' }]}>{tab.label}</Text>
           </Pressable>
         );
       })}
@@ -68,24 +28,7 @@ export function BottomTabs() {
 }
 
 const styles = StyleSheet.create({
-  bar: {
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    paddingBottom: 8,
-  },
-  tab: {
-    flex: 1,
-    minHeight: 56,
-    paddingVertical: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 2,
-  },
-  iconWrap: {
-    alignItems: 'center',
-    borderRadius: 14,
-    height: 34,
-    justifyContent: 'center',
-    width: 52,
-  },
+  bar: { flexDirection: 'row', borderTopWidth: 1, paddingTop: 6, paddingBottom: 8 },
+  tab: { flex: 1, minHeight: 56, paddingVertical: 4, alignItems: 'center', justifyContent: 'center', gap: 4 },
+  iconWrap: { alignItems: 'center', justifyContent: 'center', borderRadius: 14, height: 36, width: 54 },
 });
