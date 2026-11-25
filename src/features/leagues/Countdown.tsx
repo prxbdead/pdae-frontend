@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { Text } from 'react-native';
 
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 const MINUTE_MS = 60_000;
@@ -50,19 +51,9 @@ export function Countdown({ endsAt, color, now }: CountdownProps) {
   return (
     <Text
       testID="league-countdown"
-      style={[
-        theme.typography.caption,
-        styles.text,
-        { color: color ?? theme.colors.text },
-      ]}
+      style={[textVariants.label, { color: color ?? theme.colors.text }]}
     >
       {remaining(endsAt, now ?? current)}
     </Text>
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    fontWeight: '800',
-  },
-});

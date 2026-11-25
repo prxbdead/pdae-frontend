@@ -8,6 +8,7 @@ import {
   nodesHeight,
   nodeCenterY,
   nodeOffsetX,
+  PATH_PAD_TOP,
 } from './pathGeometry';
 
 export interface PathCurveProps {
@@ -65,8 +66,8 @@ export function PathCurve({ count }: PathCurveProps) {
           <Path
             d={d}
             stroke={theme.colors.border}
-            strokeWidth={3}
-            strokeDasharray="6 8"
+            strokeWidth={5}
+            strokeDasharray="1 12"
             strokeLinecap="round"
             fill="none"
           />
@@ -81,6 +82,6 @@ const styles = StyleSheet.create({
     left: 0,
     position: 'absolute',
     right: 0,
-    top: 0,
+    top: PATH_PAD_TOP,
   },
 });

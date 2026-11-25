@@ -12,7 +12,7 @@ import type { LessonSummary } from '@/api/contracts';
 import { Artwork } from '@/components/ui/Artwork';
 import { ProgressRing } from '@/components/ui';
 import { useReducedMotion } from '@/theme/useReducedMotion';
-import { palette } from '@/theme/tokens';
+import { ledgeColors, textVariants } from '@/theme/tokens';
 
 import { nodeOffsetX } from './pathGeometry';
 import { useTheme } from '@/theme/useTheme';
@@ -67,16 +67,36 @@ export function PathNode({
       ]}
     >
       {isCurrent ? (
-        <Animated.View style={[styles.startBubble, bubbleStyle]}>
-          <Text
+        <Animated.View
+          pointerEvents="none"
+          style={[styles.startWrap, bubbleStyle]}
+        >
+          <View
             style={[
-              theme.typography.caption,
-              styles.startText,
-              { color: theme.colors.primary },
+              styles.startBubble,
+              {
+                backgroundColor: theme.colors.surface,
+                borderColor: ledgeColors.lilac,
+                borderRadius: theme.radii.md,
+              },
             ]}
           >
-            START HERE
-          </Text>
+            <Text
+              numberOfLines={1}
+              style={[textVariants.overline, { color: theme.colors.focus }]}
+            >
+              Start here
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.startPointer,
+              {
+                backgroundColor: theme.colors.surface,
+                borderColor: ledgeColors.lilac,
+              },
+            ]}
+          />
         </Animated.View>
       ) : null}
 
@@ -120,7 +140,9 @@ export function ChestTile({ testID }: { testID?: string }) {
       testID={testID}
       style={styles.chestRow}
     >
-      <Artwork name="chest" size={64} />
+      <View style={styles.chestDim}>
+        <Artwork name="chest" size={64} />
+      </View>
     </View>
   );
 }
@@ -147,20 +169,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  startBubble: {
+  startWrap: {
+    alignItems: 'center',
+    bottom: 96,
+    left: -36,
     position: 'absolute',
-    top: 0,
-    paddingHorizontal: 13,
-    paddingVertical: 5,
-    borderRadius: 999,
-    backgroundColor: palette.white,
-    borderColor: palette.lilac,
-    borderWidth: 2,
+    width: 160,
     zIndex: 2,
   },
-  startText: {
-    fontWeight: '900',
-    letterSpacing: 0.9,
+  startBubble: {
+    borderWidth: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  },
+  startPointer: {
+    borderBottomWidth: 2,
+    borderRightWidth: 2,
+    height: 12,
+    marginTop: -7,
+    transform: [{ rotate: '45deg' }],
+    width: 12,
+  },
+  chestDim: {
+    opacity: 0.55,
   },
   chestRow: {
     alignItems: 'center',

@@ -15,7 +15,7 @@ export interface AppShellProps {
 
 /**
  * One navigation frame for every viewport: bottom tabs on mobile, an icon
- * rail on tablet, and a single focused content area beside the desktop nav.
+ * rail on tablet, and a single focused content column beside the desktop nav.
  */
 export function AppShell({ children }: AppShellProps) {
   const { isMobile, isTablet } = useBreakpoint();
@@ -34,19 +34,10 @@ export function AppShell({ children }: AppShellProps) {
     );
   }
 
-  if (isTablet) {
-    return (
-      <View style={[themedRoot, styles.row]}>
-        <IconRail />
-        <View style={styles.fill}>{children}</View>
-      </View>
-    );
-  }
-
   return (
     <View style={[themedRoot, styles.row]}>
-      <Sidebar />
-      <ContentColumn maxWidth={760}>{children}</ContentColumn>
+      {isTablet ? <IconRail /> : <Sidebar />}
+      <ContentColumn>{children}</ContentColumn>
     </View>
   );
 }

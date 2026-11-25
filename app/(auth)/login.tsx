@@ -111,7 +111,7 @@ export default function LoginScreen() {
       <Button
         label="Create account"
         testID="create-account"
-        variant="secondary"
+        variant="contrast"
         onPress={() => router.push('/register')}
         fullWidth
       />

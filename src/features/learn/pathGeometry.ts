@@ -21,3 +21,6 @@ export function nodeCenterY(index: number): number {
 export function nodesHeight(count: number): number {
   return count * NODE_ROW_HEIGHT + Math.floor(count / 4) * CHEST_HEIGHT;
 }
+
+/** Space above the first node; leaves room for the "Start here" bubble. */
+export const PATH_PAD_TOP = 40;

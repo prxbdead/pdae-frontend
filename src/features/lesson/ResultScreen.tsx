@@ -2,10 +2,20 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { Badge, Button, EmptyState, PageHeader } from '@/components/ui';
-import { Mascot } from '@/components/mascot/Mascot';
+import { ContentColumn } from '@/components/layout/ContentColumn';
+import { CharacterArtwork } from '@/components/mascot/CharacterArtwork';
+import { CHARACTERS } from '@/components/mascot/types';
+import {
+  Artwork,
+  Badge,
+  Button,
+  Card,
+  EmptyState,
+  PageHeader,
+} from '@/components/ui';
 import { useSyncStatus } from '@/offline/useSyncStatus';
 import { useProgressStore } from '@/stores/progressStore';
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 import { DailyGoalRing } from './components/DailyGoalRing';
@@ -67,14 +77,16 @@ export function ResultScreen({ lessonId, attemptId }: ResultScreenProps) {
   if (!result) {
     return (
       <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
-        <PageHeader title="Lesson result" tier="compact" />
-        <EmptyState
-          icon="book"
-          title="Result unavailable"
-          message="This attempt is not on this device. Your progress is still saved."
-          actionLabel="Back to Learn"
-          onAction={() => router.dismissTo('/(tabs)/learn')}
-        />
+        <ContentColumn>
+          <PageHeader title="Lesson result" tier="compact" />
+          <EmptyState
+            icon="book"
+            title="Result unavailable"
+            message="This attempt is not on this device. Your progress is still saved."
+            actionLabel="Back to Learn"
+            onAction={() => router.dismissTo('/(tabs)/learn')}
+          />
+        </ContentColumn>
       </View>
     );
   }
@@ -83,115 +95,130 @@ export function ResultScreen({ lessonId, attemptId }: ResultScreenProps) {
   const passed = applied?.passed ?? result.passed;
   const xp = applied?.xpEarned ?? result.xpEarned;
   const showXp = (lesson?.xpReward ?? 1) > 0;
+  const teacher = module?.teacherCharacterId ?? 'hodlo';
   const achievements = applied?.newAchievements ?? [];
   const levelUp = applied?.levelUp ?? null;
 
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
-      <PageHeader
-        title={passed ? 'Lesson complete' : 'Keep practicing'}
-        tier="compact"
-      />
+      <ContentColumn>
+        <PageHeader
+          title={passed ? 'Lesson complete' : 'Keep practicing'}
+          tier="compact"
+        />
 
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.hero}>
-          <Mascot
-            character={module?.teacherCharacterId ?? 'hodlo'}
-            mood={passed ? 'celebrate' : 'sad'}
-            size="md"
-          />
-        </View>
-
-        <Text style={[theme.typography.title, { color: theme.colors.text }]}>
-          {passed ? 'Nice work!' : 'Good effort.'}
-        </Text>
-
-        {showXp ? <XpBurst value={xp} testID="result-xp" /> : null}
-
-        <View style={styles.stats}>
-          <ResultStat
-            label="Accuracy"
-            value={`${Math.round(score * 100)}%`}
-            testID="result-accuracy"
-          />
-          <ResultStat
-            label="Time"
-            value={formatDuration(result.startedAt, result.completedAt)}
-            testID="result-time"
-          />
-          <ResultStat
-            label="Streak"
-            value={`${streak.current} day${streak.current === 1 ? '' : 's'}`}
-            testID="result-streak"
-          />
-        </View>
-
-        <DailyGoalRing xpToday={xpToday} goal={dailyGoalXp} />
-
-        {applied ? (
-          <Text
-            testID="result-synced"
-            accessibilityLiveRegion="polite"
-            style={[theme.typography.caption, { color: theme.colors.success }]}
-          >
-            Synced
-          </Text>
-        ) : (
-          <Text
-            testID="result-pending"
-            accessibilityLiveRegion="polite"
-            style={[theme.typography.caption, { color: theme.colors.textMuted }]}
-          >
-            {sync.state === 'syncing'
-              ? 'Syncing your result…'
-              : "Saved offline — XP and streak will sync when you're back online."}
-          </Text>
-        )}
-
-        {achievements.length > 0 ? (
-          <View style={styles.achievements}>
-            <Text
-              style={[theme.typography.heading, { color: theme.colors.text }]}
+        <ScrollView contentContainerStyle={styles.content}>
+          <View style={styles.hero}>
+            <View
+              accessible
+              accessibilityLabel={`${CHARACTERS[teacher].name}, ${passed ? 'celebrate' : 'sad'}`}
             >
-              New achievements
-            </Text>
-            <View style={styles.badges}>
-              {achievements.map((achievement) => (
-                <Badge
-                  key={achievement.id}
-                  label={achievement.title}
-                  tone="yellow"
-                  testID={`achievement-${achievement.id}`}
-                />
-              ))}
+              <CharacterArtwork character={teacher} size={144} />
             </View>
+            <Text
+              accessibilityRole="header"
+              style={[theme.typography.title, { color: theme.colors.text }]}
+            >
+              {passed ? 'Nice work!' : 'Good effort.'}
+            </Text>
           </View>
-        ) : null}
 
-        <View style={styles.actions}>
-          <Button
-            label="Continue"
-            onPress={() => router.dismissTo('/(tabs)/learn')}
-            size="lg"
-            fullWidth
-            testID="result-continue"
-          />
-          <Button
-            label="Practice mistakes"
-            onPress={() => router.push('/practice/mistakes')}
-            variant="secondary"
-            fullWidth
-            testID="result-practice"
-          />
-          <Button
-            label="Retry lesson"
-            onPress={() => router.replace(`/lesson/${lessonId}`)}
-            variant="ghost"
-            fullWidth
-            testID="result-retry"
-          />
-        </View>
-      </ScrollView>
+          {showXp ? <XpBurst value={xp} testID="result-xp" /> : null}
+
+          <View style={styles.stats}>
+            <ResultStat
+              label="Accuracy"
+              tone="mint"
+              value={`${Math.round(score * 100)}%`}
+              testID="result-accuracy"
+            />
+            <ResultStat
+              label="Time"
+              tone="lilac"
+              value={formatDuration(result.startedAt, result.completedAt)}
+              testID="result-time"
+            />
+            <ResultStat
+              label="Streak"
+              tone="coral"
+              icon="fire"
+              value={`${streak.current} day${streak.current === 1 ? '' : 's'}`}
+              testID="result-streak"
+            />
+          </View>
+
+          <DailyGoalRing xpToday={xpToday} goal={dailyGoalXp} />
+
+          {applied ? (
+            <View style={styles.syncRow}>
+              <Artwork name="correct" size={20} />
+              <Text
+                testID="result-synced"
+                accessibilityLiveRegion="polite"
+                style={[textVariants.label, { color: theme.colors.text }]}
+              >
+                Synced
+              </Text>
+            </View>
+          ) : (
+            <Card tone="accent">
+              <Text
+                testID="result-pending"
+                accessibilityLiveRegion="polite"
+                style={[textVariants.label, { color: theme.colors.text }]}
+              >
+                {sync.state === 'syncing'
+                  ? 'Syncing your result…'
+                  : "Saved offline — XP and streak will sync when you're back online."}
+              </Text>
+            </Card>
+          )}
+
+          {achievements.length > 0 ? (
+            <View style={styles.achievements}>
+              <Text
+                style={[theme.typography.heading, { color: theme.colors.text }]}
+              >
+                New achievements
+              </Text>
+              <View style={styles.badges}>
+                {achievements.map((achievement) => (
+                  <Badge
+                    key={achievement.id}
+                    label={achievement.title}
+                    tone="yellow"
+                    testID={`achievement-${achievement.id}`}
+                  />
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          <View style={styles.actions}>
+            <Button
+              label="Continue"
+              onPress={() => router.dismissTo('/(tabs)/learn')}
+              size="lg"
+              fullWidth
+              testID="result-continue"
+            />
+            <Button
+              label="Practice mistakes"
+              onPress={() => router.push('/practice/mistakes')}
+              variant="contrast"
+              fullWidth
+              testID="result-practice"
+            />
+            <Button
+              label="Retry lesson"
+              onPress={() => router.replace(`/lesson/${lessonId}`)}
+              variant="ghost"
+              fullWidth
+              testID="result-retry"
+            />
+          </View>
+        </ScrollView>
+      </ContentColumn>
 
       <LevelUpModal
         levelUp={levelUp}
@@ -207,20 +234,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    alignSelf: 'center',
-    gap: 20,
-    maxWidth: 600,
-    padding: 24,
+    gap: 16,
+    padding: 16,
     paddingBottom: 48,
-    width: '100%',
   },
   hero: {
     alignItems: 'center',
+    gap: 8,
   },
   stats: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 24,
+    gap: 8,
+  },
+  syncRow: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
   achievements: {
     gap: 8,

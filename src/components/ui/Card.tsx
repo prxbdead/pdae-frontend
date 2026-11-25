@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
+
 import { ledgeColors } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
@@ -8,74 +9,91 @@ export interface CardProps {
   onPress?(): void;
   padded?: boolean;
   tone?: 'default' | 'accent' | 'danger';
+  disabled?: boolean;
+  /** Highlights the card as the chosen option in a single-choice group. */
+  selected?: boolean;
+  accessibilityRole?: 'button' | 'radio' | 'checkbox';
+  accessibilityLabel?: string;
+  style?: ViewStyle;
   testID?: string;
 }
 
-/** Rounded, tactile card with the same 4px ledge language as primary actions. */
+const BORDER = 2;
+const LEDGE = 4;
+
+/**
+ * The one surface used for grouped content. A 2 px outline with a 4 px bottom
+ * ledge gives the tactile Hodlo look without blur shadows. Pressable cards
+ * drop onto their ledge instead of fading.
+ */
 export function Card({
   children,
   onPress,
   padded = true,
   tone = 'default',
+  disabled = false,
+  selected,
+  accessibilityRole = 'button',
+  accessibilityLabel,
+  style,
   testID,
 }: CardProps) {
   const theme = useTheme();
-  const backgroundColor =
-    tone === 'accent'
-      ? theme.colors.secondary
-      : tone === 'danger'
-        ? theme.colors.danger
-        : theme.colors.surface;
-  const ledgeColor =
-    tone === 'accent' ? ledgeColors.lilac
-    : tone === 'danger' ? ledgeColors.coral
-    : theme.colors.border;
+  const { colors, radii, spacing } = theme;
 
-  const content = (
-    <View
-      style={[
-        styles.surface,
-        padded && styles.padded,
-        {
-          backgroundColor,
-          borderColor: theme.colors.border,
-          borderRadius: theme.radii.lg,
-        },
-      ]}
-    >
-      {children}
-    </View>
-  );
+  const backgroundColor =
+    selected || tone === 'accent'
+      ? colors.primarySoft
+      : tone === 'danger'
+        ? colors.dangerSoft
+        : colors.surface;
+  const borderColor = selected
+    ? colors.focus
+    : tone === 'accent'
+      ? ledgeColors.lilac
+      : tone === 'danger'
+        ? ledgeColors.coral
+        : colors.border;
+
+  const surface = (pressed: boolean): ViewStyle => ({
+    backgroundColor,
+    borderColor,
+    borderRadius: radii.md,
+    borderWidth: BORDER,
+    borderBottomWidth: pressed ? BORDER : LEDGE,
+    marginTop: pressed ? LEDGE - BORDER : 0,
+    padding: padded ? spacing.md : 0,
+  });
 
   if (!onPress) {
     return (
-      <View testID={testID} style={[styles.ledge, { backgroundColor: ledgeColor, borderRadius: theme.radii.lg }]}>
-        {content}
+      <View testID={testID} style={[styles.base, surface(false), style]}>
+        {children}
       </View>
     );
   }
 
   return (
     <Pressable
-      accessibilityRole="button"
+      accessibilityRole={accessibilityRole}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityState={{ disabled, selected }}
+      disabled={disabled}
       onPress={onPress}
       testID={testID}
-      style={styles.pressable}
+      style={({ pressed }) => [
+        styles.base,
+        surface(pressed && !disabled),
+        disabled && !selected && styles.disabled,
+        style,
+      ]}
     >
-      {({ pressed }) => (
-        <View style={[styles.ledge, { backgroundColor: ledgeColor, borderRadius: theme.radii.lg }]}>
-          <View style={{ transform: [{ translateY: pressed ? 4 : 0 }] }}>
-            {content}
-          </View>
-        </View>
-      )}
+      {children}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  pressable: { width: '100%' },
-  ledge: { paddingBottom: 4 },
-  surface: { borderWidth: 1, overflow: 'hidden' },
-  padded: { padding: 16 },
+  base: { overflow: 'hidden' },
+  disabled: { opacity: 0.6 },
 });

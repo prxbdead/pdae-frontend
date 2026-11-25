@@ -9,6 +9,10 @@ export interface ContentColumnProps {
   testID?: string;
 }
 
+/**
+ * Centers one reading column. Screens own their own horizontal gutters so
+ * headers, banners, and lists share the same left edge.
+ */
 export function ContentColumn({
   children,
   maxWidth = breakpoints.contentWidth,
@@ -34,6 +38,5 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
     width: '100%',
-    paddingHorizontal: 24,
   },
 });

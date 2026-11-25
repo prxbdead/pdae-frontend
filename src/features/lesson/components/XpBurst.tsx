@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { StyleSheet, Text } from 'react-native';
+
+import { Icon } from '@/components/ui';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -47,6 +49,7 @@ export function XpBurst({ value, testID }: XpBurstProps) {
 
   return (
     <Animated.View style={[styles.wrapper, animatedStyle]}>
+      <Icon name="bolt" size={44} />
       <Text
         testID={testID}
         style={[theme.typography.display, { color: theme.colors.primary }]}
@@ -59,6 +62,9 @@ export function XpBurst({ value, testID }: XpBurstProps) {
 
 const styles = StyleSheet.create({
   wrapper: {
-    alignSelf: 'flex-start',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    gap: 8,
   },
 });

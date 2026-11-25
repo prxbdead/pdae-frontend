@@ -1,21 +1,15 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import type { Achievement } from '@/api/contracts';
-import type { IconName } from '@/assets/icons';
-import { Button, Icon, ProgressBar, Sheet } from '@/components/ui';
+import { Artwork, Button, Card, ProgressBar, Sheet } from '@/components/ui';
+import { ledgeColors, textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
+
+import { achievementArtwork } from './achievementArt';
 
 export interface BadgeGridProps {
   achievements: Achievement[];
-}
-
-function badgeIcon(icon: string): IconName {
-  if (icon === 'fire' || icon === 'check' || icon === 'bolt') {
-    return icon;
-  }
-
-  return 'star';
 }
 
 export function BadgeGrid({ achievements }: BadgeGridProps) {
@@ -30,9 +24,8 @@ export function BadgeGrid({ achievements }: BadgeGridProps) {
           const progress = Math.min(achievement.progress, achievement.target);
 
           return (
-            <Pressable
+            <Card
               key={achievement.id}
-              accessibilityRole="button"
               accessibilityLabel={`${achievement.title}, ${
                 earned
                   ? 'earned'
@@ -40,32 +33,23 @@ export function BadgeGrid({ achievements }: BadgeGridProps) {
               }`}
               onPress={() => setSelected(achievement)}
               testID={`badge-${achievement.id}`}
-              style={[
-                styles.badge,
-                {
-                  backgroundColor: earned
-                    ? theme.colors.warning
-                    : theme.colors.surfaceAlt,
-                  borderColor: earned
-                    ? theme.colors.warning
-                    : theme.colors.border,
-                  borderRadius: theme.radii.md,
-                },
-              ]}
+              style={{
+                ...styles.badge,
+                backgroundColor: earned
+                  ? theme.colors.warningSoft
+                  : theme.colors.surface,
+                borderColor: earned ? ledgeColors.yellow : theme.colors.border,
+              }}
             >
-              <Icon
-                name={badgeIcon(achievement.icon)}
-                color={
-                  earned ? theme.colors.onWarning : theme.colors.textMuted
-                }
-                size={26}
-              />
+              <View style={earned ? undefined : styles.locked}>
+                <Artwork name={achievementArtwork(achievement)} size={56} />
+              </View>
               <Text
                 numberOfLines={2}
                 style={[
-                  theme.typography.caption,
+                  textVariants.label,
                   styles.title,
-                  { color: earned ? theme.colors.onWarning : theme.colors.text },
+                  { color: theme.colors.text },
                 ]}
               >
                 {achievement.title}
@@ -73,8 +57,7 @@ export function BadgeGrid({ achievements }: BadgeGridProps) {
               <Text
                 style={[
                   theme.typography.caption,
-                  styles.progressText,
-                  { color: earned ? theme.colors.onWarning : theme.colors.textMuted },
+                  { color: theme.colors.textMuted },
                 ]}
               >
                 {earned ? 'Earned' : `${progress} / ${achievement.target}`}
@@ -87,11 +70,11 @@ export function BadgeGrid({ achievements }: BadgeGridProps) {
                         ? progress / achievement.target
                         : 0
                     }
-                    height={6}
+                    height={8}
                   />
                 </View>
               ) : null}
-            </Pressable>
+            </Card>
           );
         })}
       </View>
@@ -103,6 +86,9 @@ export function BadgeGrid({ achievements }: BadgeGridProps) {
       >
         {selected ? (
           <View testID="badge-detail" style={styles.detail}>
+            <View style={styles.detailArt}>
+              <Artwork name={achievementArtwork(selected)} size={96} />
+            </View>
             <Text
               style={[theme.typography.body, { color: theme.colors.textMuted }]}
             >
@@ -132,29 +118,31 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 12,
   },
   badge: {
     alignItems: 'center',
-    borderWidth: 1,
     flexBasis: '30%',
     flexGrow: 1,
     gap: 4,
-    minHeight: 116,
+    minHeight: 136,
     minWidth: 104,
     padding: 12,
   },
+  locked: {
+    opacity: 0.35,
+  },
   title: {
-    fontWeight: '800',
     textAlign: 'center',
   },
-  progressText: {
-    fontWeight: '700',
-  },
   progressBar: {
-    width: '100%',
+    alignSelf: 'stretch',
+    marginTop: 4,
   },
   detail: {
     gap: 12,
+  },
+  detailArt: {
+    alignItems: 'center',
   },
 });

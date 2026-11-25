@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
+import { ContentColumn } from '@/components/layout/ContentColumn';
 import { EmptyState, PageHeader } from '@/components/ui';
 import { useContent } from '@/content/ContentProvider';
 import {
@@ -59,6 +60,7 @@ export default function MistakesRoute() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
+      <ContentColumn>
       <PageHeader
         title="Mistakes review"
         tier="compact"
@@ -82,6 +84,7 @@ export default function MistakesRoute() {
         />
       ) : (
         <EmptyState
+          character="hodlo"
           icon="practice"
           title="No mistakes to review"
           message="Miss a question in a lesson and it will wait for you here."
@@ -89,6 +92,7 @@ export default function MistakesRoute() {
           onAction={() => router.dismissTo('/(tabs)/practice')}
         />
       )}
+      </ContentColumn>
     </View>
   );
 }

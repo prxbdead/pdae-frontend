@@ -5,7 +5,8 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { useApi } from '@/api/ApiProvider';
 import type { Holding, Trade } from '@/api/contracts';
-import { Button, Sheet, TextField } from '@/components/ui';
+import { Button, Chip, Sheet, TextField } from '@/components/ui';
+import { ledgeColors, textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 import { formatMoney, formatQuantity } from './formatMoney';
@@ -115,40 +116,15 @@ export function TradeSheet({
       </Text>
 
       <View style={styles.symbols}>
-        {TRADE_SYMBOLS.map((entry) => {
-          const selected = entry === symbol;
-
-          return (
-            <Pressable
-              key={entry}
-              accessibilityRole="button"
-              accessibilityState={{ selected }}
-              onPress={() => selectSymbol(entry)}
-              testID={`trade-symbol-${entry}`}
-              style={[
-                styles.symbol,
-                {
-                  backgroundColor: selected
-                    ? theme.colors.secondary
-                    : theme.colors.surfaceAlt,
-                  borderColor: selected
-                    ? theme.colors.primary
-                    : theme.colors.border,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  theme.typography.caption,
-                  styles.symbolText,
-                  { color: theme.colors.text },
-                ]}
-              >
-                {entry}
-              </Text>
-            </Pressable>
-          );
-        })}
+        {TRADE_SYMBOLS.map((entry) => (
+          <Chip
+            key={entry}
+            label={entry}
+            selected={entry === symbol}
+            onPress={() => selectSymbol(entry)}
+            testID={`trade-symbol-${entry}`}
+          />
+        ))}
       </View>
 
       <View
@@ -184,11 +160,12 @@ export function TradeSheet({
             >
               <Text
                 style={[
-                  theme.typography.caption,
-                  styles.segmentText,
+                  textVariants.overline,
                   {
                     color: selected
-                      ? theme.colors.onSuccess
+                      ? entry === 'buy'
+                        ? theme.colors.onSuccess
+                        : theme.colors.onDanger
                       : theme.colors.textMuted,
                   },
                 ]}
@@ -205,7 +182,7 @@ export function TradeSheet({
           {symbol} price
         </Text>
         <Text
-          style={[theme.typography.body, styles.strong, { color: theme.colors.text }]}
+          style={[textVariants.bodyStrong, { color: theme.colors.text }]}
         >
           {quote ? formatMoney(quote.price) : quotesLoading ? '…' : '—'}
         </Text>
@@ -231,7 +208,7 @@ export function TradeSheet({
             Available cash
           </Text>
           <Text
-            style={[theme.typography.caption, styles.strong, { color: theme.colors.text }]}
+            style={[textVariants.label, { color: theme.colors.text }]}
           >
             {formatMoney(cash)}
           </Text>
@@ -243,7 +220,7 @@ export function TradeSheet({
             {side === 'buy' ? 'Estimated cost' : 'You own'}
           </Text>
           <Text
-            style={[theme.typography.caption, styles.strong, { color: theme.colors.text }]}
+            style={[textVariants.label, { color: theme.colors.text }]}
             testID="trade-estimate"
           >
             {side === 'buy'
@@ -254,13 +231,24 @@ export function TradeSheet({
       </View>
 
       {error ? (
-        <Text
-          accessibilityRole="alert"
-          testID="trade-error"
-          style={[theme.typography.caption, { color: theme.colors.danger }]}
+        <View
+          style={[
+            styles.error,
+            {
+              backgroundColor: theme.colors.dangerSoft,
+              borderColor: ledgeColors.coral,
+              borderRadius: theme.radii.md,
+            },
+          ]}
         >
-          {error}
-        </Text>
+          <Text
+            accessibilityRole="alert"
+            testID="trade-error"
+            style={[textVariants.label, { color: theme.colors.text }]}
+          >
+            {error}
+          </Text>
+        </View>
       ) : null}
 
       <Button
@@ -279,18 +267,8 @@ export function TradeSheet({
 const styles = StyleSheet.create({
   symbols: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
-  },
-  symbol: {
-    alignItems: 'center',
-    borderRadius: 999,
-    borderWidth: 2,
-    minWidth: 64,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  symbolText: {
-    fontWeight: '800',
   },
   segment: {
     flexDirection: 'row',
@@ -300,22 +278,19 @@ const styles = StyleSheet.create({
   segmentButton: {
     alignItems: 'center',
     flex: 1,
-    minHeight: 40,
+    minHeight: 44,
     justifyContent: 'center',
-  },
-  segmentText: {
-    fontWeight: '800',
-    textTransform: 'uppercase',
   },
   quoteRow: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  strong: {
-    fontWeight: '800',
-  },
   summary: {
     gap: 6,
+  },
+  error: {
+    borderWidth: 2,
+    padding: 12,
   },
 });

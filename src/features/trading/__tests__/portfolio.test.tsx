@@ -76,7 +76,7 @@ describe('PortfolioScreen', () => {
     const positive = renderScreen();
 
     expect(await screen.findByTestId('portfolio-total-pnl')).toHaveStyle({
-      color: palette.mint,
+      backgroundColor: palette.mint,
     });
 
     positive.unmount();
@@ -93,7 +93,7 @@ describe('PortfolioScreen', () => {
     renderScreen();
 
     expect(await screen.findByTestId('portfolio-total-pnl')).toHaveStyle({
-      color: palette.coral,
+      backgroundColor: palette.coral,
     });
   });
 

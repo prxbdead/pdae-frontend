@@ -76,9 +76,7 @@ export function Button({
         ? theme.colors.onSecondary
         : variant === 'danger'
           ? theme.colors.onDanger
-          : variant === 'contrast'
-            ? theme.colors.text
-            : theme.colors.primary;
+          : theme.colors.focus;
 
   const ledge = showDisabled
     ? theme.colors.border
@@ -134,6 +132,9 @@ export function Button({
               height,
               borderRadius: theme.radii.md,
               backgroundColor: fill,
+              ...(variant === 'contrast' && !showDisabled
+                ? { borderColor: theme.colors.border, borderWidth: 2 }
+                : null),
             },
             animatedStyle,
           ]}
@@ -176,6 +177,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
   },
 });

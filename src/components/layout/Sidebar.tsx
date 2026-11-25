@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'expo-router';
 import { CharacterArtwork } from '@/components/mascot/CharacterArtwork';
 import { Icon } from '@/components/ui/Icon';
 import { isActiveTab, TABS } from '@/navigation/tabs';
-import { palette } from '@/theme/tokens';
+import { ledgeColors } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 export function Sidebar() {
@@ -21,17 +21,26 @@ export function Sidebar() {
         {
           backgroundColor: theme.colors.surface,
           borderRightColor: theme.colors.border,
+          padding: theme.spacing.md,
         },
       ]}
     >
-      <View style={styles.brand}>
+      <View
+        style={[
+          styles.brand,
+          { gap: theme.spacing.xs, marginBottom: theme.spacing.lg },
+        ]}
+      >
         <CharacterArtwork character="hodlo" size={44} />
-        <Text style={[theme.typography.title, { color: theme.colors.text }]}>
+        <Text
+          accessibilityRole="header"
+          style={[theme.typography.title, { color: theme.colors.primary }]}
+        >
           Hodlo
         </Text>
       </View>
 
-      <View style={styles.navigation}>
+      <View style={[styles.navigation, { gap: theme.spacing.xxs }]}>
         {TABS.map((tab) => {
           const selected = isActiveTab(pathname, tab.href);
 
@@ -43,24 +52,29 @@ export function Sidebar() {
               accessibilityLabel={tab.label}
               accessibilityState={{ selected }}
               onPress={() => router.replace(tab.href)}
-              style={[
+              style={({ pressed }) => [
                 styles.item,
                 {
                   backgroundColor: selected
-                    ? theme.colors.primary
-                    : 'transparent',
-                  borderRadius: theme.radii.lg,
+                    ? theme.colors.primarySoft
+                    : pressed
+                      ? theme.colors.surfaceAlt
+                      : 'transparent',
+                  borderColor: selected ? ledgeColors.lilac : 'transparent',
+                  borderRadius: theme.radii.md,
+                  gap: theme.spacing.sm,
+                  paddingHorizontal: theme.spacing.sm,
                 },
               ]}
             >
-              <Icon name={tab.icon} size={28} />
+              <Icon name={tab.icon} size={32} />
               <Text
                 style={[
-                  theme.typography.body,
-                  styles.itemText,
+                  theme.typography.button,
                   {
-                    color: selected ? palette.white : theme.colors.textMuted,
-                    fontWeight: selected ? '800' : '600',
+                    color: selected
+                      ? theme.colors.focus
+                      : theme.colors.textMuted,
                   },
                 ]}
               >
@@ -70,34 +84,33 @@ export function Sidebar() {
           );
         })}
       </View>
+
+      <View style={styles.spacer} />
+      <Text style={[theme.typography.caption, { color: theme.colors.textMuted }]}>
+        Educational only. Not financial advice.
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   sidebar: {
-    width: 248,
-    padding: 18,
-    borderRightWidth: 1,
+    width: 256,
+    borderRightWidth: 2,
   },
   brand: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 32,
     paddingHorizontal: 4,
   },
-  navigation: {
-    gap: 8,
-  },
+  navigation: {},
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    minHeight: 54,
-    paddingHorizontal: 12,
+    borderWidth: 2,
+    minHeight: 56,
   },
-  itemText: {
+  spacer: {
     flex: 1,
   },
 });

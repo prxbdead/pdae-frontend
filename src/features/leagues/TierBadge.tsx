@@ -1,9 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import type { LeaderboardTier } from '@/api/contracts';
-import { Icon } from '@/components/ui';
-import { palette } from '@/theme/tokens';
-import { useTheme } from '@/theme/useTheme';
+import { Artwork, type ArtworkName } from '@/components/ui';
 
 /**
  * League-only colors. Everything else stays on the core palette.
@@ -29,50 +27,15 @@ export interface TierBadgeProps {
   size?: number;
 }
 
-/** A rounded shield tile with the tier color and a crown. */
-export function TierBadge({ tier, size = 52 }: TierBadgeProps) {
-  const theme = useTheme();
-
+/** The illustrated shield for a league tier. */
+export function TierBadge({ tier, size = 56 }: TierBadgeProps) {
   return (
     <View
       accessible
       accessibilityLabel={`${TIER_LABELS[tier]} league badge`}
       testID={`tier-badge-${tier}`}
-      style={[
-        styles.badge,
-        {
-          width: size,
-          height: size + 4,
-          backgroundColor: TIER_COLORS[tier],
-          borderBottomLeftRadius: size * 0.46,
-          borderBottomRightRadius: size * 0.46,
-          borderTopLeftRadius: size * 0.28,
-          borderTopRightRadius: size * 0.28,
-        },
-      ]}
     >
-      <Icon name="crown" color={palette.plum} size={size * 0.5} />
-      <Text
-        style={[
-          theme.typography.caption,
-          styles.label,
-          { color: palette.plum, fontSize: Math.max(10, size * 0.19) },
-        ]}
-      >
-        {TIER_LABELS[tier]}
-      </Text>
+      <Artwork name={`tier-${tier}` as ArtworkName} size={size} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  badge: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 1,
-  },
-  label: {
-    fontWeight: '800',
-    letterSpacing: 0.2,
-  },
-});

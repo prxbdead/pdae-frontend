@@ -30,9 +30,9 @@ export function Chip({
         styles.chip,
         {
           borderRadius: theme.radii.pill,
-          borderColor: selected ? theme.colors.primary : theme.colors.border,
+          borderColor: selected ? theme.colors.focus : theme.colors.border,
           backgroundColor: selected
-            ? theme.colors.secondary
+            ? theme.colors.primarySoft
             : theme.colors.surface,
         },
         disabled && styles.disabled,
@@ -41,7 +41,8 @@ export function Chip({
       <Text
         style={[
           theme.typography.body,
-          { color: selected ? theme.colors.onSecondary : theme.colors.text },
+          styles.label,
+          { color: selected ? theme.colors.focus : theme.colors.text },
         ]}
       >
         {label}
@@ -57,6 +58,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderWidth: 2,
     justifyContent: 'center',
+  },
+  label: {
+    fontFamily: 'Nunito_700Bold',
+    fontWeight: '700',
   },
   disabled: {
     opacity: 0.5,

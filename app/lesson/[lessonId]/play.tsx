@@ -21,6 +21,7 @@ import { HeartsOutModal } from '@/features/lesson/components/HeartsOutModal';
 import { QuestionHeader } from '@/features/lesson/components/QuestionHeader';
 import { useLessonSession } from '@/features/lesson/useLessonSession';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { useSafeInsets } from '@/theme/useSafeInsets';
 import { useTheme } from '@/theme/useTheme';
 
 function optionAnswer(exercise: Exercise, optionId: string): Answer | null {
@@ -40,6 +41,7 @@ export default function LessonPlayScreen() {
   const { lessonId } = useLocalSearchParams<{ lessonId: string }>();
   const router = useRouter();
   const theme = useTheme();
+  const insets = useSafeInsets();
   const {
     session,
     lesson,
@@ -190,7 +192,13 @@ export default function LessonPlayScreen() {
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
       <View
-        style={[styles.content, { maxWidth: theme.breakpoints.lessonWidth }]}
+        style={[
+          styles.content,
+          {
+            maxWidth: theme.breakpoints.lessonWidth,
+            paddingTop: theme.spacing.md + insets.top,
+          },
+        ]}
       >
         <QuestionHeader
           progress={progress}
@@ -203,6 +211,7 @@ export default function LessonPlayScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <Text
+            accessibilityRole="header"
             style={[theme.typography.heading, { color: theme.colors.text }]}
           >
             {currentExercise.prompt}
@@ -228,7 +237,12 @@ export default function LessonPlayScreen() {
         </ScrollView>
 
         {session.phase === 'question' ? (
-          <View style={styles.footer}>
+          <View
+            style={[
+              styles.footer,
+              { paddingBottom: insets.bottom },
+            ]}
+          >
             <Button
               label="Check"
               onPress={() => check()}
@@ -267,20 +281,20 @@ export default function LessonPlayScreen() {
           off.
         </Text>
         <Button
+          label="Stay"
+          onPress={() => setLeaveOpen(false)}
+          fullWidth
+          testID="stay-lesson"
+        />
+        <Button
           label="Leave"
           onPress={() => {
             setLeaveOpen(false);
             router.dismissTo(`/lesson/${lessonId}`);
           }}
+          variant="contrast"
           fullWidth
           testID="leave-lesson"
-        />
-        <Button
-          label="Stay"
-          onPress={() => setLeaveOpen(false)}
-          variant="secondary"
-          fullWidth
-          testID="stay-lesson"
         />
       </Sheet>
     </View>

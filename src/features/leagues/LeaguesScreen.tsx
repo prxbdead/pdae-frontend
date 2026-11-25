@@ -7,24 +7,25 @@ import {
 } from 'react-native';
 
 import type { LeaderboardEntry } from '@/api/contracts';
+import { screenContent } from '@/components/layout/screen';
 import {
+  Avatar,
+  Card,
   EmptyState,
   OfflineBanner,
   PageHeader,
 } from '@/components/ui';
 import { useSyncStatus } from '@/offline/useSyncStatus';
-import {
-  avatarColor,
-  avatarInitials,
-  avatarTextColor,
-} from '@/features/profile/avatar';
-import { palette } from '@/theme/tokens';
+import { ledgeColors, textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 import { Countdown } from './Countdown';
 import { LeaderboardRow } from './LeaderboardRow';
 import { TierBadge, TIER_LABELS, TIER_COLORS } from './TierBadge';
 import { useLeaderboard } from './useLeaderboard';
+
+const PODIUM_ORDER = [2, 1, 3] as const;
+const PODIUM_HEIGHT = { 1: 176, 2: 152, 3: 144 } as const;
 
 function PodiumCard({
   entry,
@@ -34,7 +35,6 @@ function PodiumCard({
   place: 1 | 2 | 3;
 }) {
   const theme = useTheme();
-  const minHeight = place === 1 ? 152 : place === 2 ? 136 : 128;
   const medal =
     place === 1
       ? TIER_COLORS.gold
@@ -43,52 +43,38 @@ function PodiumCard({
         : TIER_COLORS.bronze;
 
   return (
-    <View
-      testID={`leaderboard-podium-${place}`}
-      style={[
-        styles.podiumCard,
-        {
-          backgroundColor: theme.colors.surface,
-          borderColor: medal,
-          borderTopLeftRadius: theme.radii.md,
-          borderTopRightRadius: theme.radii.md,
-          minHeight,
-        },
-      ]}
-    >
-      <Text style={[theme.typography.caption, styles.medal, { color: medal }]}>
-        {place}
-      </Text>
-      <View
-        style={[
-          styles.podiumAvatar,
-          {
-            backgroundColor: avatarColor(entry.userId),
-            borderRadius: theme.radii.pill,
-          },
-        ]}
+    <View testID={`leaderboard-podium-${place}`} style={styles.podiumCell}>
+      <Card
+        padded={false}
+        style={{
+          ...styles.podiumCard,
+          borderTopColor: medal,
+          borderTopWidth: 6,
+          minHeight: PODIUM_HEIGHT[place],
+          padding: theme.spacing.sm,
+        }}
       >
-        <Text
+        <View
           style={[
-            theme.typography.caption,
-            styles.podiumInitials,
-            { color: avatarTextColor(entry.userId) },
+            styles.medal,
+            { backgroundColor: medal, borderRadius: theme.radii.pill },
           ]}
         >
-          {avatarInitials(entry.displayName)}
+          <Text style={[textVariants.label, { color: theme.colors.onWarning }]}>
+            {place}
+          </Text>
+        </View>
+        <Avatar id={entry.userId} name={entry.displayName} size={48} />
+        <Text
+          numberOfLines={1}
+          style={[textVariants.bodyStrong, { color: theme.colors.text }]}
+        >
+          {entry.displayName}
         </Text>
-      </View>
-      <Text
-        numberOfLines={1}
-        style={[theme.typography.caption, styles.strong, { color: theme.colors.text }]}
-      >
-        {entry.displayName}
-      </Text>
-      <Text
-        style={[theme.typography.caption, { color: theme.colors.textMuted }]}
-      >
-        {entry.xp} XP
-      </Text>
+        <Text style={[textVariants.label, { color: theme.colors.textMuted }]}>
+          {entry.xp} XP
+        </Text>
+      </Card>
     </View>
   );
 }
@@ -103,18 +89,24 @@ function ZoneLabel({
   testID: string;
 }) {
   const theme = useTheme();
-  const color =
-    tone === 'mint' ? theme.colors.success : theme.colors.danger;
+  const line = tone === 'mint' ? ledgeColors.mint : ledgeColors.coral;
+  const background =
+    tone === 'mint' ? theme.colors.successSoft : theme.colors.dangerSoft;
 
   return (
     <View testID={testID} style={styles.zone}>
-      <View style={[styles.zoneLine, { backgroundColor: color }]} />
-      <Text
-        style={[theme.typography.caption, styles.zoneText, { color }]}
+      <View style={[styles.zoneLine, { backgroundColor: line }]} />
+      <View
+        style={[
+          styles.zonePill,
+          { backgroundColor: background, borderRadius: theme.radii.pill },
+        ]}
       >
-        {label}
-      </Text>
-      <View style={[styles.zoneLine, { backgroundColor: color }]} />
+        <Text style={[textVariants.overline, { color: theme.colors.text }]}>
+          {label}
+        </Text>
+      </View>
+      <View style={[styles.zoneLine, { backgroundColor: line }]} />
     </View>
   );
 }
@@ -135,7 +127,7 @@ export function LeaguesScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
-      <PageHeader title="Leagues" tier="standard" />
+      <PageHeader title="Leagues" subtitle="Weekly standings" tier="standard" />
 
       {offline ? (
         <OfflineBanner state="offline" testID="leaderboard-offline-banner" />
@@ -154,40 +146,38 @@ export function LeaguesScreen() {
           onAction={refresh}
         />
       ) : (
-        <ScrollView contentContainerStyle={styles.content}>
-          <View
-            style={[
-              styles.hero,
-              {
-                backgroundColor: theme.colors.primary,
-                borderRadius: theme.radii.lg,
-              },
-            ]}
-          >
-            <TierBadge tier={data.tier} size={58} />
-            <View style={styles.heroText}>
-              <Text
-                style={[
-                  theme.typography.caption,
-                  styles.kicker,
-                  { color: theme.colors.onPrimary },
-                ]}
-              >
-                WEEKLY LEAGUE
-              </Text>
-              <Text
-                style={[
-                  theme.typography.heading,
-                  { color: theme.colors.onPrimary },
-                ]}
-              >
-                {TIER_LABELS[data.tier]} league
-              </Text>
+        <ScrollView contentContainerStyle={screenContent}>
+          <Card>
+            <View style={[styles.hero, { gap: theme.spacing.md }]}>
+              <TierBadge tier={data.tier} size={72} />
+              <View style={styles.heroText}>
+                <Text
+                  style={[
+                    textVariants.overline,
+                    { color: theme.colors.textMuted },
+                  ]}
+                >
+                  Weekly league
+                </Text>
+                <Text
+                  style={[theme.typography.heading, { color: theme.colors.text }]}
+                >
+                  {TIER_LABELS[data.tier]} league
+                </Text>
+                <View
+                  style={[
+                    styles.countdown,
+                    {
+                      backgroundColor: theme.colors.primarySoft,
+                      borderRadius: theme.radii.pill,
+                    },
+                  ]}
+                >
+                  <Countdown endsAt={data.endsAt} />
+                </View>
+              </View>
             </View>
-            <View style={styles.countdown}>
-              <Countdown endsAt={data.endsAt} color={palette.plum} />
-            </View>
-          </View>
+          </Card>
 
           {isStale ? (
             <Text
@@ -204,28 +194,18 @@ export function LeaguesScreen() {
           ) : null}
 
           <View style={styles.podium}>
-            {podium.map((entry) => (
-              <PodiumCard
-                key={entry.userId}
-                entry={entry}
-                place={entry.rank as 1 | 2 | 3}
-              />
-            ))}
+            {PODIUM_ORDER.map((place) => {
+              const entry = podium.find((candidate) => candidate.rank === place);
+
+              return entry ? (
+                <PodiumCard key={entry.userId} entry={entry} place={place} />
+              ) : null;
+            })}
           </View>
 
-          <View
-            style={[
-              styles.list,
-              {
-                backgroundColor: theme.colors.surface,
-                borderColor: theme.colors.border,
-                borderRadius: theme.radii.lg,
-              },
-            ]}
-          >
+          <Card padded={false}>
             {rows.map((entry) => {
-              const beforeDemotion =
-                entry.rank === demotionStart;
+              const beforeDemotion = entry.rank === demotionStart;
 
               return (
                 <View key={entry.userId}>
@@ -250,7 +230,7 @@ export function LeaguesScreen() {
                 </View>
               );
             })}
-          </View>
+          </Card>
 
           <Text
             style={[
@@ -277,85 +257,53 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  content: {
-    alignSelf: 'center',
-    gap: 16,
-    maxWidth: 720,
-    padding: 20,
-    paddingBottom: 48,
-    width: '100%',
-  },
   hero: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 14,
-    padding: 18,
   },
   heroText: {
     flex: 1,
     gap: 2,
   },
-  kicker: {
-    fontWeight: '800',
-    letterSpacing: 1,
-    opacity: 0.8,
-  },
   countdown: {
-    backgroundColor: 'rgba(255,255,255,0.16)',
-    borderRadius: 999,
+    alignSelf: 'flex-start',
+    marginTop: 4,
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 4,
   },
   podium: {
     alignItems: 'flex-end',
     flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'center',
+    gap: 12,
+  },
+  podiumCell: {
+    flex: 1,
   },
   podiumCard: {
     alignItems: 'center',
-    borderTopWidth: 4,
-    flex: 1,
     gap: 4,
     justifyContent: 'center',
-    maxWidth: 180,
-    padding: 10,
   },
   medal: {
-    fontWeight: '900',
-  },
-  podiumAvatar: {
     alignItems: 'center',
-    height: 38,
+    height: 24,
     justifyContent: 'center',
-    width: 38,
-  },
-  podiumInitials: {
-    fontWeight: '900',
-  },
-  strong: {
-    fontWeight: '800',
-  },
-  list: {
-    borderWidth: 1,
-    overflow: 'hidden',
+    width: 24,
   },
   zone: {
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.02)',
     flexDirection: 'row',
     gap: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   zoneLine: {
     flex: 1,
-    height: 1,
+    height: 2,
   },
-  zoneText: {
-    fontWeight: '800',
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
+  zonePill: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
   },
   footer: {
     textAlign: 'center',

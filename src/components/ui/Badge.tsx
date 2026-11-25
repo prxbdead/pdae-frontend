@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 export interface BadgeProps {
@@ -25,14 +26,15 @@ export function Badge({ label, tone = 'purple', testID }: BadgeProps) {
       testID={testID}
       style={[
         styles.badge,
-        { backgroundColor: background, borderRadius: theme.radii.pill },
+        {
+          backgroundColor: background,
+          borderRadius: theme.radii.pill,
+          paddingHorizontal: theme.spacing.sm,
+          paddingVertical: theme.spacing.xxs,
+        },
       ]}
     >
-      <Text
-        style={[theme.typography.caption, styles.label, { color: foreground }]}
-      >
-        {label}
-      </Text>
+      <Text style={[textVariants.label, { color: foreground }]}>{label}</Text>
     </View>
   );
 }
@@ -40,10 +42,5 @@ export function Badge({ label, tone = 'purple', testID }: BadgeProps) {
 const styles = StyleSheet.create({
   badge: {
     alignSelf: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  label: {
-    fontWeight: '700',
   },
 });

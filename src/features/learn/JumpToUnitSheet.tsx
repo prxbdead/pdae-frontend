@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { Sheet } from '@/components/ui';
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 import type { UnitSection } from './selectors';
@@ -43,7 +44,7 @@ export function JumpToUnitSheet({
         >
           <Text
             style={[
-              theme.typography.body,
+              textVariants.bodyStrong,
               styles.title,
               { color: theme.colors.text },
             ]}
@@ -64,7 +65,7 @@ export function JumpToUnitSheet({
 const styles = StyleSheet.create({
   row: {
     alignItems: 'center',
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     flexDirection: 'row',
     gap: 12,
     justifyContent: 'space-between',

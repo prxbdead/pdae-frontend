@@ -2,11 +2,11 @@ import { Image } from 'expo-image';
 import type { CharacterId } from './types';
 
 const SOURCES: Record<CharacterId, number> = {
-  hodlo: require('../../../assets/characters/hodlo.png'),
-  chip: require('../../../assets/characters/chip.png'),
-  tank: require('../../../assets/characters/tank.png'),
-  grizz: require('../../../assets/characters/grizz.png'),
-  vex: require('../../../assets/characters/vex.png'),
+  hodlo: require('../../../assets/characters/hodlo.svg'),
+  chip: require('../../../assets/characters/chip.svg'),
+  tank: require('../../../assets/characters/tank.svg'),
+  grizz: require('../../../assets/characters/grizz.svg'),
+  vex: require('../../../assets/characters/vex.svg'),
 };
 
 export interface CharacterArtworkProps {

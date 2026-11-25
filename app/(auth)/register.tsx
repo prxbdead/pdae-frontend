@@ -16,8 +16,11 @@ import {
   registerFormSchema,
   type RegisterFormValues,
 } from '@/auth/validation';
-import { Button, Icon, TextField } from '@/components/ui';
+import { ICONS } from '@/assets/icons';
+import { Button, TextField } from '@/components/ui';
 import { useTheme } from '@/theme/useTheme';
+
+const CheckMark = ICONS.check;
 
 export default function RegisterScreen() {
   const theme = useTheme();
@@ -177,7 +180,7 @@ export default function RegisterScreen() {
           ]}
         >
           {termsAccepted ? (
-            <Icon name="check" color={theme.colors.onPrimary} size={16} />
+            <CheckMark color={theme.colors.onPrimary} size={16} />
           ) : null}
         </View>
         <Text
@@ -204,7 +207,7 @@ export default function RegisterScreen() {
       <Button
         label="Log in"
         testID="register-login-link"
-        variant="secondary"
+        variant="contrast"
         onPress={() => router.replace('/login')}
         fullWidth
       />
@@ -216,13 +219,14 @@ const styles = StyleSheet.create({
   termsRow: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
+    gap: 12,
+    minHeight: 44,
   },
   checkbox: {
     alignItems: 'center',
-    borderWidth: 1,
-    height: 22,
+    borderWidth: 2,
+    height: 24,
     justifyContent: 'center',
-    width: 22,
+    width: 24,
   },
 });

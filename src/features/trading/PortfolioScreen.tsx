@@ -9,17 +9,21 @@ import {
 } from 'react-native';
 
 import type { Holding, Trade } from '@/api/contracts';
+import { ContentColumn } from '@/components/layout/ContentColumn';
 import {
+  Artwork,
   Button,
+  Card,
   EmptyState,
   OfflineBanner,
   PageHeader,
 } from '@/components/ui';
 import { useSyncStatus } from '@/offline/useSyncStatus';
-import { ledgeColors } from '@/theme/tokens';
+import { ledgeColors, textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
-import { formatMoney, formatQuantity, formatSignedMoney } from './formatMoney';
+import { formatMoney, formatQuantity } from './formatMoney';
+import { PnlPill } from './PnlPill';
 import { TradeSheet } from './TradeSheet';
 import { usePortfolio, useQuotes } from './usePortfolio';
 
@@ -40,29 +44,31 @@ function formatTimestamp(iso: string): string {
 
 function HoldingRow({ holding }: { holding: Holding }) {
   const theme = useTheme();
-  const positive = holding.pnl >= 0;
 
   return (
     <View
       testID={`holding-${holding.symbol}`}
-      style={[styles.holding, { borderBottomColor: theme.colors.border }]}
+      style={[
+        styles.holding,
+        { borderBottomColor: theme.colors.border, gap: theme.spacing.sm },
+      ]}
     >
       <View
         style={[
           styles.symbolTile,
           {
-            backgroundColor: theme.colors.surfaceAlt,
+            backgroundColor: theme.colors.primarySoft,
             borderRadius: theme.radii.sm,
           },
         ]}
       >
-        <Text style={[theme.typography.heading, { color: theme.colors.primary }]}>
+        <Text style={[textVariants.bodyStrong, { color: theme.colors.focus }]}>
           {holding.symbol.slice(0, 1)}
         </Text>
       </View>
 
       <View style={styles.holdingText}>
-        <Text style={[theme.typography.heading, { color: theme.colors.text }]}>
+        <Text style={[textVariants.bodyStrong, { color: theme.colors.text }]}>
           {holding.symbol}
         </Text>
         <Text
@@ -73,23 +79,10 @@ function HoldingRow({ holding }: { holding: Holding }) {
       </View>
 
       <View style={styles.holdingValue}>
-        <Text style={[theme.typography.body, { color: theme.colors.text }]}>
+        <Text style={[textVariants.bodyStrong, { color: theme.colors.text }]}>
           {formatMoney(holding.value)}
         </Text>
-        <Text
-          testID={`holding-pnl-${holding.symbol}`}
-          style={[
-            theme.typography.caption,
-            styles.strong,
-            {
-              color: positive
-                ? theme.colors.success
-                : theme.colors.danger,
-            },
-          ]}
-        >
-          {formatSignedMoney(holding.pnl)}
-        </Text>
+        <PnlPill value={holding.pnl} testID={`holding-pnl-${holding.symbol}`} />
       </View>
     </View>
   );
@@ -109,6 +102,7 @@ export function PortfolioScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
+      <ContentColumn>
       <PageHeader
         title="Paper trading"
         tier="compact"
@@ -135,76 +129,65 @@ export function PortfolioScreen() {
         <ScrollView contentContainerStyle={styles.content}>
           <View
             style={[
-              styles.walletLedge,
+              styles.wallet,
               {
-                backgroundColor: ledgeColors.purple,
+                backgroundColor: theme.colors.primary,
+                borderBottomColor: ledgeColors.purple,
                 borderRadius: theme.radii.lg,
+                gap: theme.spacing.xxs,
+                padding: theme.spacing.lg,
               },
             ]}
           >
-            <View
-              style={[
-                styles.wallet,
-                {
-                  backgroundColor: theme.colors.primary,
-                  borderRadius: theme.radii.lg,
-                },
-              ]}
-            >
-              <Text
+            <View style={styles.walletTop}>
+              <View style={styles.walletCash}>
+                <Text
+                  style={[textVariants.overline, { color: theme.colors.onPrimary }]}
+                >
+                  Virtual cash
+                </Text>
+                <Text
+                  style={[
+                    theme.typography.display,
+                    { color: theme.colors.onPrimary },
+                  ]}
+                >
+                  {formatMoney(data.cash)}
+                </Text>
+              </View>
+              <View
                 style={[
-                  theme.typography.caption,
-                  styles.kicker,
-                  { color: theme.colors.onPrimary },
+                  styles.walletArt,
+                  {
+                    backgroundColor: theme.colors.surface,
+                    borderRadius: theme.radii.md,
+                  },
                 ]}
               >
-                VIRTUAL CASH
-              </Text>
-              <Text
-                style={[theme.typography.display, { color: theme.colors.onPrimary }]}
-              >
-                {formatMoney(data.cash)}
-              </Text>
-
-              <View style={styles.walletBottom}>
-                <View>
-                  <Text
-                    style={[
-                      theme.typography.caption,
-                      styles.mutedOnPrimary,
-                      { color: theme.colors.onPrimary },
-                    ]}
-                  >
-                    Total value
-                  </Text>
-                  <Text
-                    style={[
-                      theme.typography.heading,
-                      { color: theme.colors.onPrimary },
-                    ]}
-                  >
-                    {formatMoney(data.totalValue)}
-                  </Text>
-                </View>
-
-                <View style={styles.pnlPill}>
-                  <Text
-                    testID="portfolio-total-pnl"
-                    style={[
-                      theme.typography.caption,
-                      styles.strong,
-                      {
-                        color:
-                          data.totalPnl >= 0
-                            ? theme.colors.success
-                            : theme.colors.danger,
-                      },
-                    ]}
-                  >
-                    {formatSignedMoney(data.totalPnl)}
-                  </Text>
-                </View>
+                <Artwork name="wallet" size={56} />
               </View>
+            </View>
+
+            <View style={styles.walletBottom}>
+              <View>
+                <Text
+                  style={[
+                    theme.typography.caption,
+                    { color: theme.colors.onPrimary },
+                  ]}
+                >
+                  Total value
+                </Text>
+                <Text
+                  style={[
+                    theme.typography.heading,
+                    { color: theme.colors.onPrimary },
+                  ]}
+                >
+                  {formatMoney(data.totalValue)}
+                </Text>
+              </View>
+              <PnlPill value={data.totalPnl} testID="portfolio-total-pnl" />
             </View>
           </View>
 
@@ -214,13 +197,13 @@ export function PortfolioScreen() {
               style={[
                 styles.notice,
                 {
-                  backgroundColor: theme.colors.surface,
-                  borderColor: theme.colors.success,
+                  backgroundColor: theme.colors.successSoft,
+                  borderColor: ledgeColors.mint,
                   borderRadius: theme.radii.md,
                 },
               ]}
             >
-              <Text style={[theme.typography.body, { color: theme.colors.text }]}>
+              <Text style={[textVariants.bodyStrong, { color: theme.colors.text }]}>
                 {notice}
               </Text>
             </View>
@@ -256,20 +239,11 @@ export function PortfolioScreen() {
               No holdings yet. Start with a small virtual buy.
             </Text>
           ) : (
-            <View
-              style={[
-                styles.holdings,
-                {
-                  backgroundColor: theme.colors.surface,
-                  borderColor: theme.colors.border,
-                  borderRadius: theme.radii.lg,
-                },
-              ]}
-            >
+            <Card padded={false}>
               {data.holdings.map((holding) => (
                 <HoldingRow key={holding.symbol} holding={holding} />
               ))}
-            </View>
+            </Card>
           )}
 
           <Button
@@ -303,6 +277,8 @@ export function PortfolioScreen() {
         </ScrollView>
       )}
 
+      </ContentColumn>
+
       {data && tradeOpen && !offline ? (
         <TradeSheet
           visible
@@ -330,42 +306,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content: {
-    alignSelf: 'center',
     gap: 16,
-    maxWidth: 720,
-    padding: 20,
+    padding: 16,
     paddingBottom: 48,
-    width: '100%',
-  },
-  walletLedge: {
-    paddingBottom: 6,
   },
   wallet: {
-    gap: 4,
-    padding: 20,
+    borderBottomWidth: 6,
   },
-  kicker: {
-    fontWeight: '800',
-    letterSpacing: 1,
-    opacity: 0.8,
+  walletTop: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  walletArt: {
+    alignItems: 'center',
+    height: 72,
+    justifyContent: 'center',
+    width: 72,
+  },
+  walletCash: {
+    flexShrink: 1,
   },
   walletBottom: {
     alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 4,
-  },
-  mutedOnPrimary: {
-    opacity: 0.75,
-  },
-  pnlPill: {
-    backgroundColor: 'rgba(255,255,255,0.16)',
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  strong: {
-    fontWeight: '800',
+    marginTop: 8,
   },
   notice: {
     borderWidth: 2,
@@ -377,16 +343,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 4,
   },
-  holdings: {
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
   holding: {
     alignItems: 'center',
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: 12,
-    padding: 14,
+    padding: 16,
   },
   symbolTile: {
     alignItems: 'center',
@@ -400,7 +361,7 @@ const styles = StyleSheet.create({
   },
   holdingValue: {
     alignItems: 'flex-end',
-    gap: 2,
+    gap: 4,
   },
   disclaimer: {
     textAlign: 'center',

@@ -13,7 +13,7 @@ export type IconProps = BaseIconProps & {
 const ORIGINAL_ARTWORK: Partial<Record<IconName, ArtworkName>> = {
   learn: 'book',
   practice: 'practice',
-  leagues: 'level',
+  leagues: 'leagues',
   quests: 'chest',
   profile: 'profile',
   fire: 'fire',
@@ -29,6 +29,11 @@ const ORIGINAL_ARTWORK: Partial<Record<IconName, ArtworkName>> = {
   book: 'book',
   shop: 'shop',
   crown: 'perfect',
+  settings: 'settings',
+  chart: 'chart',
+  wallet: 'wallet',
+  key: 'key',
+  search: 'search',
 };
 
 const warned = new Set<string>();

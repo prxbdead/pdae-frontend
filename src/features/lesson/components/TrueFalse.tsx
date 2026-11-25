@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import type { Answer, Exercise } from '@/api/contracts';
+import { Card } from '@/components/ui';
 import { useTheme } from '@/theme/useTheme';
 
 export type TrueFalseExercise = Extract<Exercise, { type: 'true_false' }>;
@@ -36,36 +37,25 @@ export function TrueFalse({
         const isSelected = selected === choice.value;
 
         return (
-          <Pressable
-            key={choice.label}
-            accessibilityRole="radio"
-            accessibilityLabel={choice.label}
-            accessibilityState={{ selected: isSelected, disabled }}
-            disabled={disabled}
-            onPress={() => onChange({ type: 'true_false', value: choice.value })}
-            testID={`true-false-${exercise.id}-${choice.label.toLowerCase()}`}
-            style={[
-              styles.choice,
-              {
-                backgroundColor: isSelected
-                  ? theme.colors.secondary
-                  : theme.colors.surface,
-                borderColor: isSelected
-                  ? theme.colors.primary
-                  : theme.colors.border,
-                borderRadius: theme.radii.md,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                theme.typography.heading,
-                { color: theme.colors.text },
-              ]}
+          <View key={choice.label} style={styles.choiceCell}>
+            <Card
+              accessibilityRole="radio"
+              accessibilityLabel={choice.label}
+              selected={isSelected}
+              disabled={disabled}
+              onPress={() =>
+                onChange({ type: 'true_false', value: choice.value })
+              }
+              testID={`true-false-${exercise.id}-${choice.label.toLowerCase()}`}
+              style={styles.choice}
             >
-              {choice.label}
-            </Text>
-          </Pressable>
+              <Text
+                style={[theme.typography.heading, { color: theme.colors.text }]}
+              >
+                {choice.label}
+              </Text>
+            </Card>
+          </View>
         );
       })}
     </View>
@@ -81,12 +71,12 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.7,
   },
+  choiceCell: {
+    flex: 1,
+  },
   choice: {
     alignItems: 'center',
-    borderWidth: 2,
-    flex: 1,
     justifyContent: 'center',
     minHeight: 88,
-    padding: 16,
   },
 });

@@ -59,11 +59,14 @@ export function ProgressBar({
             styles.fill,
             {
               width: `${percent}%`,
+              minWidth: percent > 0 ? 12 : 0,
               backgroundColor: fill,
               borderRadius: theme.radii.pill,
             },
           ]}
-        />
+        >
+          {percent > 0 ? <View style={styles.highlight} /> : null}
+        </View>
       </View>
     </View>
   );
@@ -80,5 +83,12 @@ const styles = StyleSheet.create({
   },
   fill: {
     height: '100%',
+    paddingTop: 3,
+  },
+  highlight: {
+    backgroundColor: 'rgba(255,255,255,0.35)',
+    borderRadius: 999,
+    height: 3,
+    marginHorizontal: 6,
   },
 });

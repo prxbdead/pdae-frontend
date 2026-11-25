@@ -20,6 +20,7 @@ import { JumpToUnitSheet, scrollToUnit } from './JumpToUnitSheet';
 import { LearnHeaderStats } from './LearnHeaderStats';
 import { ChestTile, PathNode } from './PathNode';
 import { PathCurve } from './PathCurve';
+import { PATH_PAD_TOP } from './pathGeometry';
 import { UnitBanner } from './UnitBanner';
 import { useLearnPath } from './useLearnPath';
 
@@ -97,6 +98,7 @@ export function LearnScreen() {
             nodes: event.nativeEvent.layout.height,
           };
         }}
+        style={styles.nodes}
       >
         <PathCurve count={unit.lessons.length} />
 
@@ -186,9 +188,13 @@ const styles = StyleSheet.create({
   },
   content: {
     alignSelf: 'center',
-    maxWidth: 720,
+    maxWidth: 600,
     paddingBottom: 48,
     width: '100%',
+  },
+  nodes: {
+    paddingBottom: 16,
+    paddingTop: PATH_PAD_TOP,
   },
   item: {
     alignItems: 'center',

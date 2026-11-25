@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Button, Sheet } from '@/components/ui';
+import { Artwork, Button, Sheet } from '@/components/ui';
 import { useTheme } from '@/theme/useTheme';
 
 export interface HeartsOutModalProps {
@@ -23,8 +23,13 @@ export function HeartsOutModal({
       onClose={onLeave}
     >
       <View style={styles.body}>
+        <Artwork name="heart" size={72} />
         <Text
-          style={[theme.typography.body, { color: theme.colors.text }]}
+          style={[
+            theme.typography.body,
+            styles.copy,
+            { color: theme.colors.text },
+          ]}
         >
           You have used all five hearts in this lesson. Your progress is saved —
           practice to refill and keep going.
@@ -39,7 +44,7 @@ export function HeartsOutModal({
       <Button
         label="Leave lesson"
         onPress={onLeave}
-        variant="secondary"
+        variant="contrast"
         fullWidth
         testID="leave-hearts-out"
       />
@@ -48,7 +53,11 @@ export function HeartsOutModal({
 }
 
 const styles = StyleSheet.create({
+  copy: {
+    textAlign: 'center',
+  },
   body: {
+    alignItems: 'center',
     gap: 8,
   },
 });

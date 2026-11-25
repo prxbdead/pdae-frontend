@@ -1,12 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import type { LeaderboardEntry } from '@/api/contracts';
-import { Badge } from '@/components/ui';
-import {
-  avatarColor,
-  avatarInitials,
-  avatarTextColor,
-} from '@/features/profile/avatar';
+import { Avatar, Badge } from '@/components/ui';
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 export interface LeaderboardRowProps {
@@ -27,52 +23,31 @@ export function LeaderboardRow({ entry, currentUserId }: LeaderboardRowProps) {
         styles.row,
         {
           backgroundColor: isCurrent
-            ? theme.colors.secondary
+            ? theme.colors.primarySoft
             : theme.colors.surface,
           borderBottomColor: theme.colors.border,
+          gap: theme.spacing.sm,
+          paddingHorizontal: theme.spacing.md,
+          paddingVertical: theme.spacing.xs,
         },
       ]}
     >
       <Text
         style={[
-          theme.typography.caption,
+          textVariants.bodyStrong,
           styles.rank,
-          {
-            color: isCurrent ? theme.colors.onSecondary : theme.colors.textMuted,
-          },
+          { color: theme.colors.textMuted },
         ]}
       >
         {entry.rank}
       </Text>
 
-      <View
-        style={[
-          styles.avatar,
-          {
-            backgroundColor: avatarColor(entry.userId),
-            borderRadius: theme.radii.pill,
-          },
-        ]}
-      >
-        <Text
-          style={[
-            theme.typography.caption,
-            styles.initials,
-            { color: avatarTextColor(entry.userId) },
-          ]}
-        >
-          {avatarInitials(entry.displayName)}
-        </Text>
-      </View>
+      <Avatar id={entry.userId} name={entry.displayName} size={40} />
 
       <View style={styles.name}>
         <Text
           numberOfLines={1}
-          style={[
-            theme.typography.body,
-            styles.strong,
-            { color: theme.colors.text },
-          ]}
+          style={[textVariants.bodyStrong, { color: theme.colors.text }]}
         >
           {entry.displayName}
         </Text>
@@ -83,13 +58,7 @@ export function LeaderboardRow({ entry, currentUserId }: LeaderboardRowProps) {
         ) : null}
       </View>
 
-      <Text
-        style={[
-          theme.typography.caption,
-          styles.strong,
-          { color: theme.colors.text },
-        ]}
-      >
+      <Text style={[textVariants.label, { color: theme.colors.textMuted }]}>
         {entry.xp.toLocaleString()} XP
       </Text>
     </View>
@@ -101,30 +70,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: 12,
-    minHeight: 58,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    minHeight: 60,
   },
   rank: {
-    fontWeight: '800',
     textAlign: 'center',
-    width: 26,
-  },
-  avatar: {
-    alignItems: 'center',
-    height: 38,
-    justifyContent: 'center',
-    width: 38,
-  },
-  initials: {
-    fontWeight: '900',
+    width: 24,
   },
   name: {
     flex: 1,
     gap: 2,
-  },
-  strong: {
-    fontWeight: '800',
+    minWidth: 0,
   },
 });

@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Icon, ProgressBar } from '@/components/ui';
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 export interface QuestionHeaderProps {
@@ -18,7 +19,7 @@ export function QuestionHeader({
   const theme = useTheme();
 
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, { gap: theme.spacing.sm }]}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Close lesson"
@@ -26,14 +27,10 @@ export function QuestionHeader({
         testID="lesson-close"
         style={({ pressed }) => [
           styles.close,
-          {
-            backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.border,
-            opacity: pressed ? 0.75 : 1,
-          },
+          { backgroundColor: pressed ? theme.colors.surfaceAlt : 'transparent' },
         ]}
       >
-        <Icon name="close" color={theme.colors.textMuted} size={22} />
+        <Icon name="close" color={theme.colors.textMuted} size={24} />
       </Pressable>
 
       <View style={styles.progress}>
@@ -43,18 +40,10 @@ export function QuestionHeader({
       <View
         accessible
         accessibilityLabel={`${hearts} hearts remaining`}
-        style={[
-          styles.hearts,
-          {
-            backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.border,
-          },
-        ]}
+        style={styles.hearts}
       >
-        <Icon name="heart" color={theme.colors.danger} size={18} />
-        <Text
-          style={[theme.typography.caption, styles.count, { color: theme.colors.danger }]}
-        >
+        <Icon name="heart" size={28} />
+        <Text style={[textVariants.numeral, { color: theme.colors.text }]}>
           {hearts}
         </Text>
       </View>
@@ -66,32 +55,22 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 10,
     width: '100%',
   },
   close: {
     alignItems: 'center',
     borderRadius: 999,
-    borderWidth: 2,
-    height: 40,
+    height: 44,
     justifyContent: 'center',
-    width: 40,
+    width: 44,
   },
   progress: {
     flex: 1,
   },
   hearts: {
     alignItems: 'center',
-    borderRadius: 999,
-    borderWidth: 2,
     flexDirection: 'row',
     gap: 4,
-    height: 40,
-    justifyContent: 'center',
-    minWidth: 58,
-    paddingHorizontal: 10,
-  },
-  count: {
-    fontWeight: '800',
+    minWidth: 52,
   },
 });

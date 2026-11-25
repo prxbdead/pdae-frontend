@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { breakpoints } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 export interface SheetProps {
@@ -33,18 +34,25 @@ export function Sheet({ visible, onClose, title, children }: SheetProps) {
             styles.sheet,
             {
               backgroundColor: theme.colors.surface,
+              borderColor: theme.colors.border,
               borderTopLeftRadius: theme.radii.lg,
               borderTopRightRadius: theme.radii.lg,
+              gap: theme.spacing.md,
+              padding: theme.spacing.lg,
+              paddingTop: theme.spacing.sm,
             },
           ]}
         >
+          <View
+            style={[
+              styles.handle,
+              { backgroundColor: theme.colors.border },
+            ]}
+          />
           {title ? (
             <Text
-              style={[
-                theme.typography.heading,
-                styles.title,
-                { color: theme.colors.text },
-              ]}
+              accessibilityRole="header"
+              style={[theme.typography.heading, { color: theme.colors.text }]}
             >
               {title}
             </Text>
@@ -60,6 +68,7 @@ const styles = StyleSheet.create({
   backdropWrapper: {
     flex: 1,
     justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   backdrop: {
     position: 'absolute',
@@ -70,12 +79,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(15, 10, 31, 0.55)',
   },
   sheet: {
-    padding: 24,
-    paddingBottom: 32,
-    gap: 16,
+    borderTopWidth: 2,
+    borderLeftWidth: 2,
+    borderRightWidth: 2,
     maxHeight: '85%',
+    maxWidth: breakpoints.contentWidth,
+    paddingBottom: 32,
+    width: '100%',
   },
-  title: {
-    marginBottom: 4,
+  handle: {
+    alignSelf: 'center',
+    borderRadius: 999,
+    height: 4,
+    width: 40,
   },
 });

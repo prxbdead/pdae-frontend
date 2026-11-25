@@ -53,6 +53,14 @@ export interface ColorTokens {
   danger: string;
   onDanger: string;
   focus: string;
+  /**
+   * Quiet tints of the accent colors for icon tiles, stat cards, and tinted
+   * rows. Pair them with `text`/`textMuted`, never with white.
+   */
+  primarySoft: string;
+  successSoft: string;
+  warningSoft: string;
+  dangerSoft: string;
   /** Vex-only surface color. Never use it for general UI. */
   fox: string;
 }
@@ -75,6 +83,10 @@ export const lightColors: ColorTokens = {
   danger: palette.coral,
   onDanger: palette.plum,
   focus: palette.purple,
+  primarySoft: '#EEE9FF',
+  successSoft: '#E3FAEC',
+  warningSoft: '#FFF5CC',
+  dangerSoft: '#FFE6EA',
   fox: palette.fox,
 };
 
@@ -96,6 +108,10 @@ export const darkColors: ColorTokens = {
   danger: palette.coral,
   onDanger: palette.plum,
   focus: palette.lilac,
+  primarySoft: '#2E2354',
+  successSoft: '#1C3A3A',
+  warningSoft: '#3A3040',
+  dangerSoft: '#3D2347',
   fox: palette.fox,
 };
 
@@ -159,6 +175,52 @@ export const typography = {
     fontWeight: '800',
     letterSpacing: 0.8,
     textTransform: 'uppercase',
+  },
+} satisfies Record<string, TextStyle>;
+
+/** Registered Nunito family names, one per weight, so bold text never relies on synthesized weights. */
+export const fonts = {
+  regular: 'Nunito_400Regular',
+  semibold: 'Nunito_600SemiBold',
+  bold: 'Nunito_700Bold',
+  extrabold: 'Nunito_800ExtraBold',
+  black: 'Nunito_900Black',
+} as const;
+
+/**
+ * Emphasis variants of the fixed scale. They change weight, never size, so the
+ * display/title/heading/body/caption/button sizes stay the only ones in use.
+ */
+export const textVariants = {
+  /** Caption size, semibold. Labels, helper text, tab names. */
+  label: {
+    fontFamily: fonts.bold,
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: '700',
+  },
+  /** Caption size, uppercase overline for section and stat names. */
+  overline: {
+    fontFamily: fonts.extrabold,
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  /** Body size, bold. Row titles and names. */
+  bodyStrong: {
+    fontFamily: fonts.bold,
+    fontSize: 16,
+    lineHeight: 24,
+    fontWeight: '700',
+  },
+  /** Heading size, black. Big numbers in stat tiles. */
+  numeral: {
+    fontFamily: fonts.black,
+    fontSize: 22,
+    lineHeight: 28,
+    fontWeight: '900',
   },
 } satisfies Record<string, TextStyle>;
 

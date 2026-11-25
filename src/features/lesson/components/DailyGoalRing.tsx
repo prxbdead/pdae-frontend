@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { ProgressRing } from '@/components/ui';
+import { Card, ProgressRing } from '@/components/ui';
 import { dailyProgress } from '@/features/gamification/dailyGoal';
 import { useTheme } from '@/theme/useTheme';
 
@@ -14,6 +14,7 @@ export function DailyGoalRing({ xpToday, goal }: DailyGoalRingProps) {
   const progress = dailyProgress(xpToday, goal);
 
   return (
+    <Card>
     <View
       accessible
       accessibilityLabel={`Daily goal ${progress.current} of ${progress.goal} XP`}
@@ -36,6 +37,7 @@ export function DailyGoalRing({ xpToday, goal }: DailyGoalRingProps) {
         </Text>
       </View>
     </View>
+    </Card>
   );
 }
 

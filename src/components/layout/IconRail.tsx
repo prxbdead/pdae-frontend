@@ -1,8 +1,10 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { usePathname, useRouter } from 'expo-router';
 
+import { CharacterArtwork } from '@/components/mascot/CharacterArtwork';
 import { Icon } from '@/components/ui/Icon';
 import { isActiveTab, TABS } from '@/navigation/tabs';
+import { ledgeColors } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 export function IconRail() {
@@ -19,9 +21,14 @@ export function IconRail() {
         {
           backgroundColor: theme.colors.surface,
           borderRightColor: theme.colors.border,
+          gap: theme.spacing.xs,
+          paddingVertical: theme.spacing.md,
         },
       ]}
     >
+      <View style={{ marginBottom: theme.spacing.sm }}>
+        <CharacterArtwork character="hodlo" size={44} />
+      </View>
       {TABS.map((tab) => {
         const selected = isActiveTab(pathname, tab.href);
 
@@ -33,17 +40,20 @@ export function IconRail() {
             accessibilityLabel={tab.label}
             accessibilityState={{ selected }}
             onPress={() => router.replace(tab.href)}
-            style={[
+            style={({ pressed }) => [
               styles.item,
               {
                 backgroundColor: selected
-                  ? theme.colors.surfaceAlt
-                  : 'transparent',
+                  ? theme.colors.primarySoft
+                  : pressed
+                    ? theme.colors.surfaceAlt
+                    : 'transparent',
+                borderColor: selected ? ledgeColors.lilac : 'transparent',
                 borderRadius: theme.radii.md,
               },
             ]}
           >
-            <Icon name={tab.icon} size={30} />
+            <Icon name={tab.icon} size={32} />
           </Pressable>
         );
       })}
@@ -55,14 +65,13 @@ const styles = StyleSheet.create({
   rail: {
     width: 88,
     alignItems: 'center',
-    paddingVertical: 16,
-    gap: 10,
-    borderRightWidth: 1,
+    borderRightWidth: 2,
   },
   item: {
     width: 56,
     height: 56,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
   },
 });

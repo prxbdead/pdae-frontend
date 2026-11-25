@@ -14,6 +14,7 @@ import type { IconName } from '@/assets/icons';
 import {
   Badge,
   Button,
+  Card,
   Chip,
   EmptyState,
   Icon,
@@ -22,10 +23,12 @@ import {
   Sheet,
   TextField,
 } from '@/components/ui';
+import { screenContent } from '@/components/layout/screen';
 import { CHARACTERS } from '@/components/mascot/types';
 import { useSession } from '@/auth/useSession';
 import { useSyncStatus } from '@/offline/useSyncStatus';
 import { useProgressStore } from '@/stores/progressStore';
+import { textVariants } from '@/theme/tokens';
 import { useBreakpoint } from '@/theme/useBreakpoint';
 import { useTheme } from '@/theme/useTheme';
 
@@ -67,17 +70,19 @@ function ProfileLink({
       testID={testID}
       style={[styles.link, { borderBottomColor: theme.colors.border }]}
     >
-      <Icon name={icon} color={theme.colors.textMuted} size={22} />
+      <Icon name={icon} color={theme.colors.textMuted} size={28} />
       <Text
         style={[
-          theme.typography.body,
+          textVariants.bodyStrong,
           styles.linkText,
           { color: theme.colors.textMuted },
         ]}
       >
         {label}
       </Text>
-      <Badge label="Soon" tone="neutral" />
+      <View style={styles.soon}>
+        <Badge label="Soon" tone="neutral" />
+      </View>
     </View>
   );
 }
@@ -115,7 +120,11 @@ export function ProfileScreen() {
   if (!user) {
     return (
       <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
-        <PageHeader title="Profile" tier="standard" />
+        <PageHeader
+        title="Profile"
+        subtitle="Your progress and badges"
+        tier="standard"
+      />
         <EmptyState
           icon="profile"
           title="Sign in to see your profile"
@@ -165,74 +174,77 @@ export function ProfileScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
-      <PageHeader title="Profile" tier="standard" />
+      <PageHeader
+        title="Profile"
+        subtitle="Your progress and badges"
+        tier="standard"
+      />
 
       {offline ? (
         <OfflineBanner state="offline" testID="profile-offline-banner" />
       ) : null}
 
-      <ScrollView contentContainerStyle={styles.content}>
-        <View
-          style={[
-            styles.identity,
-            isMobile && styles.identityMobile,
-            {
-              backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.border,
-              borderRadius: theme.radii.lg,
-            },
-          ]}
-        >
-          <View style={styles.identityMain}>
-            <View
-              testID="profile-avatar"
-              style={[
-                styles.avatar,
-                {
-                  backgroundColor: avatarColor(user.id),
-                  borderRadius: theme.radii.pill,
-                },
-              ]}
-            >
-              <Text
+      <ScrollView contentContainerStyle={screenContent}>
+        <Card padded={false}>
+          <View
+            style={[
+              styles.identity,
+              isMobile && styles.identityMobile,
+              { padding: theme.spacing.md },
+            ]}
+          >
+            <View style={styles.identityMain}>
+              <View
+                testID="profile-avatar"
                 style={[
-                  theme.typography.title,
-                  styles.initials,
-                  { color: avatarTextColor(user.id) },
+                  styles.avatar,
+                  {
+                    backgroundColor: avatarColor(user.id),
+                    borderRadius: theme.radii.pill,
+                  },
                 ]}
               >
-                {avatarInitials(user.displayName)}
-              </Text>
+                <Text
+                  style={[
+                    theme.typography.title,
+                    { color: avatarTextColor(user.id) },
+                  ]}
+                >
+                  {avatarInitials(user.displayName)}
+                </Text>
+              </View>
+
+              <View style={styles.identityText}>
+                <Text
+                  numberOfLines={1}
+                  style={[theme.typography.title, { color: theme.colors.text }]}
+                >
+                  {user.displayName}
+                </Text>
+                <Text
+                  style={[
+                    theme.typography.caption,
+                    { color: theme.colors.textMuted },
+                  ]}
+                >
+                  {CHARACTERS[user.characterId].name} ·{' '}
+                  {CHARACTERS[user.characterId].catchphrase}
+                </Text>
+              </View>
+
             </View>
 
-            <View style={styles.identityText}>
-              <Text
-                style={[theme.typography.title, { color: theme.colors.text }]}
-              >
-                {user.displayName}
-              </Text>
-              <Text
-                style={[
-                  theme.typography.caption,
-                  { color: theme.colors.textMuted },
-                ]}
-              >
-                {CHARACTERS[user.characterId].name} ·{' '}
-                {CHARACTERS[user.characterId].catchphrase}
-              </Text>
-            </View>
+            <Button
+              label="Edit profile"
+              onPress={openEdit}
+              size="sm"
+              variant="contrast"
+              disabled={offline}
+              fullWidth={isMobile}
+              testID="profile-edit"
+            />
           </View>
-
-          <Button
-            label="Edit profile"
-            onPress={openEdit}
-            size="sm"
-            variant="secondary"
-            disabled={offline}
-            fullWidth={isMobile}
-            testID="profile-edit"
-          />
-        </View>
+        </Card>
 
         {offline ? (
           <Text
@@ -281,16 +293,7 @@ export function ProfileScreen() {
           <BadgeGrid achievements={achievements.data} />
         )}
 
-        <View
-          style={[
-            styles.links,
-            {
-              backgroundColor: theme.colors.surface,
-              borderColor: theme.colors.border,
-              borderRadius: theme.radii.lg,
-            },
-          ]}
-        >
+        <Card padded={false}>
           <ProfileLink
             icon="settings"
             label="Settings"
@@ -312,7 +315,7 @@ export function ProfileScreen() {
               Hodlo v{Constants.expoConfig?.version ?? '0.0.1'}
             </Text>
           </View>
-        </View>
+        </Card>
       </ScrollView>
 
       <Sheet
@@ -332,7 +335,7 @@ export function ProfileScreen() {
         />
 
         <Text
-          style={[theme.typography.caption, { color: theme.colors.textMuted }]}
+          style={[textVariants.label, { color: theme.colors.textMuted }]}
         >
           Pick your guide
         </Text>
@@ -383,20 +386,10 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
   },
-  content: {
-    alignSelf: 'center',
-    gap: 16,
-    maxWidth: 720,
-    padding: 20,
-    paddingBottom: 48,
-    width: '100%',
-  },
   identity: {
     alignItems: 'center',
-    borderWidth: 1,
     flexDirection: 'row',
     gap: 12,
-    padding: 16,
   },
   identityMobile: {
     alignItems: 'stretch',
@@ -406,34 +399,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    gap: 14,
+    gap: 12,
     minWidth: 0,
   },
   avatar: {
     alignItems: 'center',
-    height: 72,
+    height: 64,
     justifyContent: 'center',
-    width: 72,
-  },
-  initials: {
-    fontWeight: '900',
+    width: 64,
   },
   identityText: {
     flex: 1,
     gap: 2,
+    minWidth: 0,
   },
   sectionHeader: {
     alignItems: 'baseline',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  links: {
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
   link: {
     alignItems: 'center',
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     flexDirection: 'row',
     gap: 12,
     minHeight: 56,
@@ -441,6 +428,9 @@ const styles = StyleSheet.create({
   },
   linkText: {
     flex: 1,
+  },
+  soon: {
+    alignSelf: 'center',
   },
   version: {
     alignItems: 'center',

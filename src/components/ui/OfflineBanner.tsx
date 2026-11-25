@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
+import { ledgeColors, textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 import { Button } from './Button';
@@ -30,15 +31,11 @@ export function OfflineBanner({
           ? 'Sign in to sync your saved results.'
           : "You're offline. Downloaded lessons still work.";
 
-  const background =
-    state === 'error' || state === 'paused_auth'
-      ? theme.colors.surfaceAlt
-      : theme.colors.secondary;
-
-  const foreground =
-    state === 'error' || state === 'paused_auth'
-      ? theme.colors.text
-      : theme.colors.onSecondary;
+  const attention = state === 'error' || state === 'paused_auth';
+  const background = attention
+    ? theme.colors.dangerSoft
+    : theme.colors.primarySoft;
+  const borderColor = attention ? ledgeColors.coral : ledgeColors.lilac;
 
   return (
     <View
@@ -46,10 +43,20 @@ export function OfflineBanner({
       accessibilityLiveRegion="polite"
       style={[
         styles.banner,
-        { backgroundColor: background, borderRadius: theme.radii.md },
+        {
+          backgroundColor: background,
+          borderColor,
+          borderRadius: theme.radii.md,
+          marginHorizontal: theme.spacing.md,
+          marginVertical: theme.spacing.xs,
+          paddingHorizontal: theme.spacing.md,
+          paddingVertical: theme.spacing.xs,
+        },
       ]}
     >
-      <Text style={[theme.typography.caption, styles.message, { color: foreground }]}>
+      <Text
+        style={[textVariants.label, styles.message, { color: theme.colors.text }]}
+      >
         {message}
       </Text>
       {onRetry ? (
@@ -70,8 +77,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 12,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderWidth: 2,
   },
   message: {
     flexShrink: 1,

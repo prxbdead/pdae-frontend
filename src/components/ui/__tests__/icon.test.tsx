@@ -22,7 +22,7 @@ describe('Icon', () => {
   });
 
   it('still applies semantic colors to the custom line icons', () => {
-    render(<Icon name="chart" color="#FF5A6E" size={32} testID="icon" />);
+    render(<Icon name="close" color="#FF5A6E" size={32} testID="icon" />);
 
     const icon = screen.getByTestId('icon');
 

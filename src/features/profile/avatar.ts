@@ -7,7 +7,6 @@ const AVATAR_COLORS = [
   palette.coral,
   palette.yellow,
   palette.lilac,
-  palette.fox,
 ] as const;
 
 /** Up to two initials, e.g. "Robin" -> "R", "Ada Lovelace" -> "AL". */

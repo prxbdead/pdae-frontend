@@ -10,6 +10,7 @@ import {
   type TextStyle,
 } from 'react-native';
 
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 // React Native Web leaves the browser's default focus ring on the inner
@@ -48,11 +49,7 @@ export function TextField({
   return (
     <View style={styles.wrapper}>
       <Text
-        style={[
-          theme.typography.caption,
-          styles.label,
-          { color: theme.colors.textMuted },
-        ]}
+        style={[textVariants.label, { color: theme.colors.textMuted }]}
       >
         {label}
       </Text>
@@ -63,7 +60,7 @@ export function TextField({
           {
             backgroundColor: theme.colors.surface,
             borderColor,
-            borderRadius: theme.radii.sm,
+            borderRadius: theme.radii.md,
           },
         ]}
       >
@@ -98,9 +95,9 @@ export function TextField({
           >
             <Text
               style={[
-                theme.typography.caption,
+                textVariants.label,
                 styles.toggle,
-                { color: theme.colors.primary },
+                { color: theme.colors.focus },
               ]}
             >
               {hidden ? 'Show' : 'Hide'}
@@ -125,22 +122,18 @@ const styles = StyleSheet.create({
   wrapper: {
     gap: 6,
   },
-  label: {
-    fontWeight: '700',
-  },
   inputRow: {
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     flexDirection: 'row',
     minHeight: 52,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
   },
   input: {
     flex: 1,
     paddingVertical: 12,
   },
   toggle: {
-    fontWeight: '700',
     marginLeft: 8,
   },
 });

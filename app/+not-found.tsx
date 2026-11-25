@@ -12,6 +12,7 @@ export default function NotFoundScreen() {
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
       <EmptyState
         icon="search"
+        character="chip"
         title="That page doesn't exist"
         message="The link may be out of date."
         actionLabel="Go to Learn"

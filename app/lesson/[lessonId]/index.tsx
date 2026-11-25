@@ -1,11 +1,42 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { Button, EmptyState, PageHeader, Skeleton } from '@/components/ui';
+import { ContentColumn } from '@/components/layout/ContentColumn';
+import type { IconName } from '@/assets/icons';
+import {
+  Button,
+  Card,
+  EmptyState,
+  Icon,
+  PageHeader,
+  Skeleton,
+} from '@/components/ui';
 import { Mascot } from '@/components/mascot/Mascot';
 import { useLesson } from '@/features/lesson/useLesson';
 import { useProgressStore } from '@/stores/progressStore';
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
+
+function MetaTile({ icon, label }: { icon: IconName; label: string }) {
+  const theme = useTheme();
+
+  return (
+    <View style={styles.metaTile}>
+      <Card style={styles.metaCard}>
+        <Icon name={icon} size={32} />
+        <Text
+          style={[
+            textVariants.bodyStrong,
+            styles.metaLabel,
+            { color: theme.colors.text },
+          ]}
+        >
+          {label}
+        </Text>
+      </Card>
+    </View>
+  );
+}
 
 export default function LessonIntroScreen() {
   const { lessonId } = useLocalSearchParams<{ lessonId: string }>();
@@ -17,6 +48,7 @@ export default function LessonIntroScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
+      <ContentColumn>
       <PageHeader
         title="Lesson"
         tier="compact"
@@ -44,7 +76,7 @@ export default function LessonIntroScreen() {
             style={[
               styles.hero,
               {
-                backgroundColor: theme.colors.surfaceAlt,
+                backgroundColor: theme.colors.primarySoft,
                 borderRadius: theme.radii.lg,
               },
             ]}
@@ -56,34 +88,28 @@ export default function LessonIntroScreen() {
             />
           </View>
 
-          <Text
-            style={[theme.typography.title, { color: theme.colors.text }]}
-          >
-            {lesson.title}
-          </Text>
-          <Text
-            style={[theme.typography.body, { color: theme.colors.textMuted }]}
-          >
-            {lesson.description}
-          </Text>
+          <View style={styles.copy}>
+            <Text
+              accessibilityRole="header"
+              style={[theme.typography.title, { color: theme.colors.text }]}
+            >
+              {lesson.title}
+            </Text>
+            <Text
+              style={[theme.typography.body, { color: theme.colors.textMuted }]}
+            >
+              {lesson.description}
+            </Text>
+          </View>
 
           <View style={styles.meta}>
-            <Text
-              style={[theme.typography.caption, { color: theme.colors.text }]}
-            >
-              {lesson.exercises.length} questions
-            </Text>
-            <Text
-              style={[theme.typography.caption, { color: theme.colors.text }]}
-            >
-              {lesson.estimatedMinutes} min
-            </Text>
+            <MetaTile
+              icon="book"
+              label={`${lesson.exercises.length} questions`}
+            />
+            <MetaTile icon="practice" label={`${lesson.estimatedMinutes} min`} />
             {lesson.xpReward > 0 ? (
-              <Text
-                style={[theme.typography.caption, { color: theme.colors.text }]}
-              >
-                {lesson.xpReward} XP
-              </Text>
+              <MetaTile icon="bolt" label={`${lesson.xpReward} XP`} />
             ) : null}
           </View>
 
@@ -97,11 +123,12 @@ export default function LessonIntroScreen() {
           <Button
             label="Back to Learn"
             onPress={() => router.dismissTo('/(tabs)/learn')}
-            variant="secondary"
+            variant="contrast"
             fullWidth
           />
         </ScrollView>
       )}
+      </ContentColumn>
     </View>
   );
 }
@@ -112,15 +139,12 @@ const styles = StyleSheet.create({
   },
   loading: {
     gap: 16,
-    padding: 24,
+    padding: 16,
   },
   content: {
-    alignSelf: 'center',
     gap: 16,
-    maxWidth: 600,
-    padding: 24,
+    padding: 16,
     paddingBottom: 48,
-    width: '100%',
   },
   hero: {
     alignItems: 'center',
@@ -128,8 +152,24 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingVertical: 24,
   },
+  copy: {
+    gap: 4,
+  },
   meta: {
     flexDirection: 'row',
-    gap: 16,
+    gap: 12,
+  },
+  metaLabel: {
+    textAlign: 'center',
+  },
+  metaTile: {
+    flex: 1,
+  },
+  metaCard: {
+    alignItems: 'center',
+    flex: 1,
+    gap: 4,
+    justifyContent: 'center',
+    paddingHorizontal: 8,
   },
 });

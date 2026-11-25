@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { toLocalDateKey } from '@/features/gamification/streak';
+import { Card } from '@/components/ui';
+import { textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
 function parseLocalKey(key: string): Date | null {
@@ -67,17 +69,14 @@ export function StreakCalendar({
   const completed = completedDays(lastLessonDate, currentStreak);
   const todayKey = toLocalDateKey(today);
 
+  const rows: Date[][] = [];
+
+  for (let index = 0; index < days.length; index += 7) {
+    rows.push(days.slice(index, index + 7));
+  }
+
   return (
-    <View
-      style={[
-        styles.card,
-        {
-          backgroundColor: theme.colors.surface,
-          borderColor: theme.colors.border,
-          borderRadius: theme.radii.lg,
-        },
-      ]}
-    >
+    <Card style={{ gap: theme.spacing.md }}>
       <View style={styles.header}>
         <View style={styles.headerText}>
           <Text style={[theme.typography.heading, { color: theme.colors.text }]}>
@@ -89,69 +88,72 @@ export function StreakCalendar({
             Last 30 days
           </Text>
         </View>
-        <Text
-          style={[theme.typography.caption, styles.streak, { color: theme.colors.primary }]}
-        >
+        <Text style={[textVariants.bodyStrong, { color: theme.colors.focus }]}>
           {currentStreak} day{currentStreak === 1 ? '' : 's'}
         </Text>
       </View>
 
       <View style={styles.days}>
-        {days.map((day) => {
-          const key = toLocalDateKey(day);
-          const isToday = key === todayKey;
-          const isCompleted = completed.has(key);
-          const label = day.toLocaleDateString(undefined, {
-            month: 'short',
-            day: 'numeric',
-          });
+        {rows.map((row, rowIndex) => (
+          <View key={rowIndex} style={styles.week}>
+            {Array.from({ length: 7 }, (_, column) => {
+              const day = row[column];
 
-          return (
-            <View
-              key={key}
-              accessible
-              accessibilityLabel={`${label}${isCompleted ? ', lesson completed' : ''}${isToday ? ', today' : ''}`}
-              testID={`streak-day-${key}`}
-              style={[
-                styles.day,
-                {
-                  backgroundColor: isCompleted
-                    ? theme.colors.success
-                    : theme.colors.surfaceAlt,
-                  borderRadius: theme.radii.sm,
-                  borderColor: isToday
-                    ? theme.colors.primary
-                    : 'transparent',
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  theme.typography.caption,
-                  styles.dayText,
-                  {
-                    color: isCompleted
-                      ? theme.colors.onSuccess
-                      : theme.colors.textMuted,
-                  },
-                ]}
-              >
-                {day.getDate()}
-              </Text>
-            </View>
-          );
-        })}
+              if (!day) {
+                return <View key={`empty-${column}`} style={styles.day} />;
+              }
+
+              const key = toLocalDateKey(day);
+              const isToday = key === todayKey;
+              const isCompleted = completed.has(key);
+              const label = day.toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+              });
+
+              return (
+                <View
+                  key={key}
+                  accessible
+                  accessibilityLabel={`${label}${isCompleted ? ', lesson completed' : ''}${isToday ? ', today' : ''}`}
+                  testID={`streak-day-${key}`}
+                  style={[
+                    styles.day,
+                    styles.dayFilled,
+                    {
+                      backgroundColor: isCompleted
+                        ? theme.colors.success
+                        : theme.colors.surfaceAlt,
+                      borderRadius: theme.radii.sm,
+                      borderColor: isToday
+                        ? theme.colors.focus
+                        : 'transparent',
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      textVariants.label,
+                      {
+                        color: isCompleted
+                          ? theme.colors.onSuccess
+                          : theme.colors.textMuted,
+                      },
+                    ]}
+                  >
+                    {day.getDate()}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+        ))}
       </View>
-    </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    borderWidth: 1,
-    gap: 14,
-    padding: 16,
-  },
   header: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -160,22 +162,20 @@ const styles = StyleSheet.create({
   headerText: {
     gap: 2,
   },
-  streak: {
-    fontWeight: '800',
-  },
   days: {
+    gap: 6,
+  },
+  week: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: 6,
   },
   day: {
+    flex: 1,
+    height: 40,
+  },
+  dayFilled: {
     alignItems: 'center',
     borderWidth: 2,
-    height: 32,
     justifyContent: 'center',
-    width: 32,
-  },
-  dayText: {
-    fontWeight: '700',
   },
 });

@@ -3,12 +3,15 @@ import { usePathname, useRouter } from 'expo-router';
 
 import { Icon } from '@/components/ui/Icon';
 import { isActiveTab, TABS } from '@/navigation/tabs';
+import { ledgeColors, textVariants } from '@/theme/tokens';
+import { useSafeInsets } from '@/theme/useSafeInsets';
 import { useTheme } from '@/theme/useTheme';
 
 export function BottomTabs() {
   const theme = useTheme();
   const router = useRouter();
   const pathname = usePathname();
+  const { bottom } = useSafeInsets();
 
   return (
     <View
@@ -19,6 +22,9 @@ export function BottomTabs() {
         {
           backgroundColor: theme.colors.surface,
           borderTopColor: theme.colors.border,
+          paddingBottom: theme.spacing.xs + bottom,
+          paddingHorizontal: theme.spacing.xs,
+          paddingTop: theme.spacing.xs,
         },
       ]}
     >
@@ -38,10 +44,12 @@ export function BottomTabs() {
             <View
               style={[
                 styles.iconWrap,
-                selected && {
-                  backgroundColor: theme.colors.surfaceAlt,
-                  borderBottomColor: theme.colors.primary,
-                  borderBottomWidth: 3,
+                {
+                  backgroundColor: selected
+                    ? theme.colors.primarySoft
+                    : 'transparent',
+                  borderColor: selected ? ledgeColors.lilac : 'transparent',
+                  borderRadius: theme.radii.md,
                 },
               ]}
             >
@@ -49,12 +57,11 @@ export function BottomTabs() {
             </View>
             <Text
               style={[
-                theme.typography.caption,
+                textVariants.label,
                 {
                   color: selected
-                    ? theme.colors.primary
+                    ? theme.colors.focus
                     : theme.colors.textMuted,
-                  fontWeight: selected ? '900' : '700',
                 },
               ]}
             >
@@ -70,23 +77,20 @@ export function BottomTabs() {
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
-    borderTopWidth: 1,
-    paddingTop: 6,
-    paddingBottom: 8,
+    borderTopWidth: 2,
   },
   tab: {
     flex: 1,
     minHeight: 56,
-    paddingVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 3,
+    gap: 2,
   },
   iconWrap: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
-    height: 38,
+    borderWidth: 2,
+    height: 40,
     width: 56,
   },
 });

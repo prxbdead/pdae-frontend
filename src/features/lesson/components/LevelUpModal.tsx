@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import type { LevelUp } from '@/api/contracts';
-import { Button, Sheet } from '@/components/ui';
+import { Artwork, Button, Sheet } from '@/components/ui';
 import { useTheme } from '@/theme/useTheme';
 
 export interface LevelUpModalProps {
@@ -24,6 +24,7 @@ export function LevelUpModal({
   return (
     <Sheet visible={visible} title="Level up!" onClose={onClose}>
       <View style={styles.body}>
+        <Artwork name="level" size={96} />
         <Text
           style={[theme.typography.heading, { color: theme.colors.text }]}
         >
@@ -47,6 +48,7 @@ export function LevelUpModal({
 
 const styles = StyleSheet.create({
   body: {
+    alignItems: 'center',
     gap: 8,
   },
 });
