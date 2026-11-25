@@ -1,0 +1,4 @@
+appId: com.pdae.app
+---
+- launchApp
+- assertVisible: 'Hodlo'
