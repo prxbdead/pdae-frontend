@@ -3,13 +3,22 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
+import { UpdateBanner } from '@/components/pwa/UpdateBanner';
 import { useRootRedirect } from '@/auth/rootRedirect';
 import { AppProviders } from '@/providers/AppProviders';
+import { captureInstallPrompt } from '@/pwa/installPrompt';
+import { initWebPwa } from '@/pwa/registerServiceWorker';
 import { useAppFonts } from '@/theme/fonts';
 
 void SplashScreen.preventAutoHideAsync().catch(() => {
   // The splash screen is already hidden or unavailable; nothing to do.
 });
+
+// Capture beforeinstallprompt before any screen mounts; the browser may fire it
+// during the first page load. The PWA head and worker registration also run
+// here, once per web page load.
+captureInstallPrompt();
+initWebPwa();
 
 function RootNavigator() {
   useRootRedirect();
@@ -17,6 +26,7 @@ function RootNavigator() {
   return (
     <>
       <StatusBar style="auto" />
+      <UpdateBanner />
       <Stack screenOptions={{ headerShown: false }} />
     </>
   );

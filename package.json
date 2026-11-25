@@ -13,7 +13,8 @@
     "test": "jest",
     "test:e2e": "playwright test",
     "e2e:serve": "EXPO_PUBLIC_API_MODE=mock npm run build:web && npx serve dist -s -l 4173",
-    "build:web": "expo export -p web"
+    "build:web": "expo export -p web && workbox generateSW workbox-config.js",
+    "icons:generate": "node scripts/generate-pwa-icons.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/nunito": "^0.4.2",
@@ -74,7 +75,9 @@
     "prettier": "^2.8.8",
     "react-test-renderer": "19.3.0",
     "serve": "^14.2.8",
-    "typescript": "^6.0.3"
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3",
+    "workbox-cli": "^7.4.1"
   },
   "engines": {
     "node": ">= 22.13.0"

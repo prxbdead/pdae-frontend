@@ -17,6 +17,12 @@
   "web": {
     "bundler": "metro",
     "output": "single",
-    "favicon": "./assets/favicon.png"
+    "favicon": "./assets/favicon.png",
+    "name": "Hodlo",
+    "shortName": "Hodlo",
+    "themeColor": "#6C4CF1",
+    "backgroundColor": "#F5F2FF",
+    "display": "standalone",
+    "startUrl": "/"
   }
 }
