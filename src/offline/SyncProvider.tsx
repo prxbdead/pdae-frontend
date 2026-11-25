@@ -108,3 +108,11 @@ export function useSync(): SyncApi {
 
   return value;
 }
+
+/**
+ * Optional variant for presentation components that may render in isolation
+ * (tests, previews) without a SyncProvider. The app always has one.
+ */
+export function useSyncOptional(): SyncApi | null {
+  return useContext(SyncContext);
+}

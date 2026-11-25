@@ -12,10 +12,9 @@ import {
   Avatar,
   Card,
   EmptyState,
-  OfflineBanner,
   PageHeader,
 } from '@/components/ui';
-import { useSyncStatus } from '@/offline/useSyncStatus';
+import { SyncBanner } from '@/offline/SyncBanner';
 import { ledgeColors, textVariants } from '@/theme/tokens';
 import { useTheme } from '@/theme/useTheme';
 
@@ -113,9 +112,7 @@ function ZoneLabel({
 
 export function LeaguesScreen() {
   const theme = useTheme();
-  const sync = useSyncStatus();
   const { data, isLoading, error, isStale, refresh } = useLeaderboard();
-  const offline = sync.state === 'offline';
 
   const podium = data
     ? data.entries.filter((entry) => entry.rank <= 3).sort((a, b) => a.rank - b.rank)
@@ -129,9 +126,7 @@ export function LeaguesScreen() {
     <View style={[styles.root, { backgroundColor: theme.colors.background }]}>
       <PageHeader title="Leagues" subtitle="Weekly standings" tier="standard" />
 
-      {offline ? (
-        <OfflineBanner state="offline" testID="leaderboard-offline-banner" />
-      ) : null}
+      <SyncBanner testID="leaderboard-offline-banner" />
 
       {isLoading && !data ? (
         <View style={styles.centered}>

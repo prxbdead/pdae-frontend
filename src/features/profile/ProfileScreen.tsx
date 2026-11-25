@@ -18,7 +18,6 @@ import {
   Chip,
   EmptyState,
   Icon,
-  OfflineBanner,
   PageHeader,
   Sheet,
   TextField,
@@ -26,6 +25,7 @@ import {
 import { screenContent } from '@/components/layout/screen';
 import { CHARACTERS } from '@/components/mascot/types';
 import { useSession } from '@/auth/useSession';
+import { SyncBanner } from '@/offline/SyncBanner';
 import { useSyncStatus } from '@/offline/useSyncStatus';
 import { useProgressStore } from '@/stores/progressStore';
 import { textVariants } from '@/theme/tokens';
@@ -180,9 +180,7 @@ export function ProfileScreen() {
         tier="standard"
       />
 
-      {offline ? (
-        <OfflineBanner state="offline" testID="profile-offline-banner" />
-      ) : null}
+      <SyncBanner testID="profile-offline-banner" />
 
       <ScrollView contentContainerStyle={screenContent}>
         <Card padded={false}>
