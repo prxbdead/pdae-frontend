@@ -26,7 +26,6 @@ export function Card({
       : tone === 'danger'
         ? theme.colors.danger
         : theme.colors.surface;
-  const textColor = tone === 'default' ? theme.colors.text : theme.colors.onSecondary;
   const ledgeColor =
     tone === 'accent' ? ledgeColors.lilac
     : tone === 'danger' ? ledgeColors.coral
