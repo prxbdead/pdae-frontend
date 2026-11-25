@@ -144,8 +144,8 @@ Use Expo SDK 58 + Expo Router. Route groups:
 - `settings`, `glossary`, `disclaimer`, `dev/health`
 
 The custom `AppShell` renders a bottom tab bar below 768 px, an icon rail from
-768–1099 px, and a sidebar + right rail at 1100 px and up. Center content is
-capped at 600 px (720 px for lessons).
+768–1099 px, and a sidebar at 1100 px and up. Center content is capped at 600 px
+(720 px for lessons). There is no right-hand rail at any breakpoint.
 
 ### D2. Typed contract + mock adapter
 
