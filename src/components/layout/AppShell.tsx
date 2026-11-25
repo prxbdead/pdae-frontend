@@ -7,6 +7,7 @@ import { useTheme } from '@/theme/useTheme';
 import { BottomTabs } from './BottomTabs';
 import { ContentColumn } from './ContentColumn';
 import { IconRail } from './IconRail';
+import { RightRail } from './RightRail';
 import { Sidebar } from './Sidebar';
 
 export interface AppShellProps {
@@ -18,7 +19,7 @@ export interface AppShellProps {
  * rail on tablet, and a single focused content column beside the desktop nav.
  */
 export function AppShell({ children }: AppShellProps) {
-  const { isMobile, isTablet } = useBreakpoint();
+  const { isMobile, isTablet, isDesktop } = useBreakpoint();
   const theme = useTheme();
   const themedRoot = [
     styles.root,
@@ -38,6 +39,7 @@ export function AppShell({ children }: AppShellProps) {
     <View style={[themedRoot, styles.row]}>
       {isTablet ? <IconRail /> : <Sidebar />}
       <ContentColumn>{children}</ContentColumn>
+      {isDesktop ? <RightRail /> : null}
     </View>
   );
 }
